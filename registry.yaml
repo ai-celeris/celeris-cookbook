@@ -30,6 +30,32 @@
     - typescript
     - latency
 
+- title: Next.js on Vercel
+  path: examples/nextjs-vercel/README.md
+  slug: nextjs-vercel
+  description: Maximally simple full-stack Next.js app calling Celeris from a server-side route handler, with the API key in Vercel's managed environment store — never in the browser, code, or git.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - deployment
+    - security
+    - typescript
+    - nextjs
+
+- title: FastAPI on Fly.io
+  path: examples/fastapi-fly/README.md
+  slug: fastapi-fly
+  description: Maximally simple FastAPI app calling Celeris server-side, with the API key in Fly.io's encrypted secret store (fly secrets set) — never in the browser, code, or git.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - deployment
+    - security
+    - python
+    - fastapi
+
 - title: Alert triage agent
   path: examples/alert-triage-agent/README.md
   slug: alert-triage-agent

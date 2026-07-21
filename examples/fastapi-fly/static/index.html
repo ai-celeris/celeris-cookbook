@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Celeris on FastAPI</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 3rem auto; padding: 0 1rem; }
+  input { width: 70%; padding: 0.5rem; }
+  button { padding: 0.5rem 1rem; margin-left: 0.5rem; }
+  p { white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>Celeris on FastAPI</h1>
+<form id="form">
+  <input id="prompt" placeholder="Ask celeris-1 something…" autocomplete="off">
+  <button id="go">Generate</button>
+</form>
+<p id="reply"></p>
+
+<script>
+// The browser only ever talks to OUR /api/generate endpoint. The Celeris API
+// key lives server-side in an environment variable; it never reaches this page.
+const form = document.getElementById("form");
+const promptInput = document.getElementById("prompt");
+const button = document.getElementById("go");
+const reply = document.getElementById("reply");
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const prompt = promptInput.value.trim();
+  if (!prompt) return;
+  button.disabled = true;
+  reply.textContent = "…";
+  try {
+    const response = await fetch("api/generate", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ prompt }),
+    });
+    const body = await response.json();
+    reply.textContent = response.ok ? body.reply : `Error: ${body.detail}`;
+  } catch (error) {
+    reply.textContent = `Error: ${error}`;
+  } finally {
+    button.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

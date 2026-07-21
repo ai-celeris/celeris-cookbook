@@ -29,6 +29,11 @@ jobs:
       - name: Compile Python examples
         run: python3 -m compileall -q examples
 
+      - name: Import-check FastAPI example (offline)
+        run: |
+          python3 -m pip install -r examples/fastapi-fly/requirements.txt
+          python3 -c "import sys; sys.path.insert(0, 'examples/fastapi-fly'); import main; assert main.app.title"
+
       - name: Build site (production base path)
         run: BASE_URL=/cookbook/ python3 site/build.py
 
@@ -57,3 +62,25 @@ jobs:
         run: |
           npm install
           npm run typecheck
+
+  build-nextjs-example:
+    name: Build Next.js example
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # next build type-checks and compiles the app; no credentials needed.
+      - name: Install and build
+        working-directory: examples/nextjs-vercel
+        run: |
+          npm install
+          npm run build
