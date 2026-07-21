@@ -43,6 +43,8 @@ normalization helpers.
   instead of repeating the rules.
 - [The cascade, fast model first](guides/cascade.md): the reference
   architecture for pairing celeris-1 with a larger model.
+- [Framework compatibility](guides/compatibility.md): verified snippets for
+  common SDKs and frameworks.
 
 ## Examples
 
@@ -58,6 +60,9 @@ normalization helpers.
 | [`guardrails`](examples/guardrails) | A moderation gate fast enough to run on every request. |
 | [`agent-latency`](examples/agent-latency) | How per-step latency compounds in agents, with measured numbers. |
 | [`instant-suggest`](examples/instant-suggest) | A regex synthesized live on every typing pause, validated in the browser. |
+| [`instant-search`](examples/instant-search) | Query rewriting in front of search at about 300 ms per rewrite. |
+| [`extraction-at-scale`](examples/extraction-at-scale) | Structured extraction over a corpus, 182 to 289 docs per minute measured. |
+| [`burst-rendering`](examples/burst-rendering) | Three ways to render a whole-reply-at-once model in a chat UI. |
 
 ## Repository layout
 

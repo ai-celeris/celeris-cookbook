@@ -158,3 +158,52 @@
     - guide
     - architecture
     - agents
+
+- title: Extraction at scale
+  path: examples/extraction-at-scale/README.md
+  slug: extraction-at-scale
+  description: Structured JSON extraction over a document corpus with asyncio concurrency and a cheap-repair pass. Measured at 182 to 289 docs per minute with 99 percent field accuracy and zero failed documents.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - extraction
+    - throughput
+    - production
+
+- title: Rendering a one-burst reply
+  path: examples/burst-rendering/README.md
+  slug: burst-rendering
+  description: Three ways to render a whole-reply-at-once model in a chat UI (instant, fast fade, fixed-duration typewriter), with reduced-motion handling and guidance on when each feels best.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - interactive
+    - latency
+    - typescript
+
+- title: Instant query understanding for search
+  path: examples/instant-search/README.md
+  slug: instant-search
+  description: Query rewriting in front of a search index, measured at about 300 ms per rewrite, with graceful fallback to the raw query. Every successful rewrite improved the results.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - search
+    - latency
+    - production
+
+- title: Framework compatibility
+  path: guides/compatibility.md
+  slug: compatibility
+  kind: guide
+  order: 4
+  description: Verified snippets for the OpenAI SDKs, Vercel AI SDK, LangChain, LiteLLM, and Instructor against the Celeris endpoint, with the max_tokens caveat per framework and the known limits.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - guide
+    - integrations

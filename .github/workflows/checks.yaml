@@ -81,6 +81,12 @@ jobs:
           npm install
           npm run typecheck
 
+      - name: Build burst-rendering example
+        working-directory: examples/burst-rendering
+        run: |
+          npm install
+          npm run build
+
   nextjs:
     name: Build Next.js example
     runs-on: ubuntu-latest
