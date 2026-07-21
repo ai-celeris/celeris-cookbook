@@ -118,3 +118,43 @@
     - agents
     - latency
     - tool-use
+
+- title: Instant regex, synthesized as you type
+  path: examples/instant-suggest/README.md
+  slug: instant-suggest
+  description: A web app that turns a plain-English description into a working regex on every typing pause, with in-browser test validation. Measured at about 0.8 s per synthesis end to end.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - interactive
+    - latency
+    - typescript
+
+- title: Understanding latency with celeris-1
+  path: guides/latency.md
+  slug: latency
+  kind: guide
+  order: 2
+  description: How to measure, budget, and design for latency. Metric vocabulary, the one-burst delivery model, the 4096-token window and 256-step max_tokens rules, and what becomes possible around 300 ms.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - guide
+    - latency
+    - token-budgeting
+
+- title: The cascade, fast model first
+  path: guides/cascade.md
+  slug: cascade
+  kind: guide
+  order: 3
+  description: A reference architecture. celeris-1 answers in the hot path in about 300 ms; a larger model refines or handles escalations asynchronously. When to use which, with a runnable sketch.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - guide
+    - architecture
+    - agents

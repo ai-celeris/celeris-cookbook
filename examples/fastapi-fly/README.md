@@ -17,8 +17,7 @@ Five files:
 
 `main.py` carries the two Celeris conventions used across this cookbook:
 append `/v1` to `CELERIS_BASE_URL` for the OpenAI SDK, and normalize
-`max_tokens` to a multiple of 256 in [256, 1024] (input + output share a
-4096-token window).
+`max_tokens` (rules in the [latency guide](../../guides/latency.md)).
 
 ## Why Fly.io (and not Render/Railway/…)?
 

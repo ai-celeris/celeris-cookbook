@@ -36,6 +36,14 @@ Every example budgets its prompt accordingly; the
 [getting-started notebook](examples/getting-started) has the canonical
 normalization helpers.
 
+## Guides
+
+- [Understanding latency with celeris-1](guides/latency.md): metrics, the
+  one-burst delivery model, and token-window budgeting. Examples link here
+  instead of repeating the rules.
+- [The cascade, fast model first](guides/cascade.md): the reference
+  architecture for pairing celeris-1 with a larger model.
+
 ## Examples
 
 | Example | What it shows |
@@ -49,6 +57,7 @@ normalization helpers.
 | [`realtime-classification`](examples/realtime-classification) | Ticket routing in the request path, about 260 ms per decision. |
 | [`guardrails`](examples/guardrails) | A moderation gate fast enough to run on every request. |
 | [`agent-latency`](examples/agent-latency) | How per-step latency compounds in agents, with measured numbers. |
+| [`instant-suggest`](examples/instant-suggest) | A regex synthesized live on every typing pause, validated in the browser. |
 
 ## Repository layout
 

@@ -44,9 +44,9 @@ between "route it while the page loads" and "route it later in a queue".
   short sentence back. celeris-1 answers bare one-word prompts unreliably
   (they often come back empty), so the parser pulls the route name out of a
   sentence instead. First route mentioned wins.
-- `max_tokens` is normalized to 256 (the wire value must be a multiple of
-  256 in the range 256 to 1024). Input and output share a 4096-token window,
-  which is far more than a ticket needs.
+- `max_tokens` is normalized to 256; see the [latency guide](../../guides/latency.md)
+  for the window and budgeting rules. A ticket needs a fraction of the
+  4096-token window.
 - The sequential pass measures the interactive path. The concurrent pass
   shows a small worker pool draining a burst.
 

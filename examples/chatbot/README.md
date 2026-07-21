@@ -31,10 +31,10 @@ npm start
 - **`server.ts`** serves `public/` and exposes `POST /api/chat`: it takes the
   conversation so far, fits it into the model's input budget, and streams the
   completion back as plain text chunks.
-- **`budget.ts`** is the Celeris token-window math: `max_tokens` must be a
-  multiple of 256 in [256, 1024], and input + output share a 4096-token total
-  window. `fitConversation` keeps the system prompt and the newest turns,
-  dropping the oldest history first, so long chats keep working.
+- **`budget.ts`** is the Celeris token-window math (rules in the
+  [latency guide](../../guides/latency.md)). `fitConversation` keeps the system prompt
+  and the newest turns, dropping the oldest history first, so long chats
+  keep working.
 - **`config.ts`** resolves the endpoint and credential in one place. The
   browser never holds the server's key.
 - **`public/app.js`** renders the stream as it arrives and computes

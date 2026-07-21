@@ -20,6 +20,8 @@ ROOT = Path(__file__).resolve().parent.parent
 
 SCOPE = [
     "examples",
+    "guides",
+    "llms.txt",
     "demo-proxy",
     "registry.yaml",
     "authors.yaml",

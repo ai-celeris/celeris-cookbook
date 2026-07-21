@@ -7,9 +7,9 @@ Markdown report of latency, reliability, and correctness.
 
 What it measures per request:
 
-- **Latency**: time-to-first-token and total (p50/p90/p99/mean). celeris-1 is
-  a diffusion model that usually delivers the whole reply in one burst, so
-  TTFT ≈ total, it is measured anyway so you can see that for yourself.
+- **Latency**: time-to-first-token and total (p50/p90/p99/mean). celeris-1
+  usually delivers the whole reply in one burst, so TTFT equals total in
+  practice (see the [latency guide](../../guides/latency.md)).
 - **Reliability**: throttles (429s, retried with backoff and counted),
   transport/HTTP errors, empty outputs, truncation (`finish_reason=length`).
 - **Correctness** where tasks are objectively checkable: extracted JSON must

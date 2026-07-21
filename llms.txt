@@ -1,0 +1,40 @@
+# Celeris Cookbook
+
+> Runnable examples and guides for the Celeris API. celeris-1 is a diffusion
+> model served through an OpenAI-compatible API: replies arrive as one burst,
+> typically in 250 to 300 ms for short outputs, inside a 4096-token window
+> with max_tokens as a multiple of 256 between 256 and 1024.
+
+The published site is at https://docs.celeris.ai/cookbook/. Every example is
+a standalone directory that runs with CELERIS_BASE_URL and CELERIS_API_KEY
+set. The index of examples is registry.yaml.
+
+## Guides
+
+- [Understanding latency](guides/latency.md): metrics, the one-burst
+  delivery model, token-window budgeting, what becomes possible at 300 ms.
+- [The cascade](guides/cascade.md): fast model in the hot path, larger model
+  refining or escalating asynchronously.
+
+## Examples
+
+- [Getting started](examples/getting-started/getting-started.ipynb): first
+  request with the OpenAI SDK, budgeting helpers, burst timing.
+- [Streaming chatbot](examples/chatbot/README.md): web chat measuring
+  time-to-first-token in the browser.
+- [Instant regex](examples/instant-suggest/README.md): artifact synthesized
+  on every typing pause with in-browser validation.
+- [Real-time ticket routing](examples/realtime-classification/README.md):
+  classification in the request path at about 260 ms median.
+- [Guardrails](examples/guardrails/README.md): an allow/block/flag gate fast
+  enough for every request.
+- [Agent latency](examples/agent-latency/README.md): how per-step latency
+  compounds over agent steps, measured.
+- [Alert triage agent](examples/alert-triage-agent/README.md): multi-step
+  tool loop with a structured verdict.
+- [Benchmark harness](examples/benchmark/README.md): latency percentiles,
+  reliability counters, correctness scoring against your own workspace.
+- [Next.js on Vercel](examples/nextjs-vercel/README.md): managed-secret
+  deployment pattern for TypeScript.
+- [FastAPI on Fly.io](examples/fastapi-fly/README.md): managed-secret
+  deployment pattern for Python.

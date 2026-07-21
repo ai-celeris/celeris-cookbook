@@ -64,8 +64,9 @@ branch in the loop is for.
 
 ### Budgeting inside a 4096-token window
 
-Agent loops usually assume a big context. Celeris gives you 4096 tokens total,
-so this example treats budget as a design constraint:
+Agent loops usually assume a big context. Celeris gives you 4096 tokens
+total (rules in the [latency guide](../../guides/latency.md)), so this example treats
+budget as a design constraint:
 
 - **Tool results are compact by design**, the runbook search returns the top
   2 hits, not the whole corpus. A tool that returns pages of JSON would evict

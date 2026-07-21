@@ -10,7 +10,7 @@
       },
       "path": {
         "type": "string",
-        "pattern": "^examples/.+\\.(md|ipynb)$"
+        "pattern": "^(examples|guides)/.+\\.(md|ipynb)$"
       },
       "slug": {
         "type": "string",
@@ -45,6 +45,13 @@
       "order": {
         "type": "integer",
         "minimum": 1
+      },
+      "kind": {
+        "type": "string",
+        "enum": [
+          "example",
+          "guide"
+        ]
       }
     },
     "required": [

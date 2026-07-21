@@ -55,8 +55,8 @@ the difference between an interactive agent and a background job.
 - The loop is the same prompt-driven JSON pattern as the alert triage
   example: the model replies with one JSON object per turn, either a tool
   call or the final answer. It works on any OpenAI-compatible endpoint.
-- Tool results are compact so every step fits the 4096-token window beside a
-  normalized `max_tokens` of 256.
+- Tool results are compact so every step fits the token window beside a
+  normalized `max_tokens` of 256 (see the [latency guide](../../guides/latency.md)).
 - The harness times each model call separately, so you can see exactly where
   the wall clock goes.
 

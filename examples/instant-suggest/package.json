@@ -1,0 +1,21 @@
+{
+  "name": "celeris-cookbook-instant-suggest",
+  "private": true,
+  "type": "module",
+  "description": "Regex synthesized live as you type a description, using the OpenAI SDK for JS.",
+  "scripts": {
+    "start": "tsx server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "openai": "^4.104.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
