@@ -35,7 +35,7 @@ jobs:
           python3 -c "import sys; sys.path.insert(0, 'examples/fastapi-fly'); import main; assert main.app.title"
 
   typecheck-chatbot:
-    name: Typecheck chatbot example
+    name: Typecheck chatbot and demo proxy
     runs-on: ubuntu-latest
 
     steps:
@@ -47,8 +47,14 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install and typecheck
+      - name: Install and typecheck chatbot
         working-directory: examples/chatbot
+        run: |
+          npm install
+          npm run typecheck
+
+      - name: Install and typecheck demo-proxy
+        working-directory: demo-proxy
         run: |
           npm install
           npm run typecheck
