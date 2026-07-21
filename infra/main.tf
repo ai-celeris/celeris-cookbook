@@ -1,62 +1,29 @@
-# Celeris Cookbook website: private S3 bucket + CloudFront with Origin Access
-# Control, served on cookbook.<zone>. Mirrors the celeris-apps
-# infra/modules/static-site pattern, minus the staff gate — this site is
-# public. Publishing is `scripts/deploy-site` (s3 sync + invalidation).
+# Cookbook site hosting pieces the cookbook OWNS:
+#
+#   1. A private S3 bucket holding the built site under the cookbook/ prefix.
+#   2. A GitHub-OIDC deploy role for ai-celeris/celeris-cookbook-deploy that
+#      may sync that prefix and invalidate /cookbook/* on the docs
+#      distribution.
+#
+# The cookbook does NOT own a CloudFront distribution: the site is served at
+# https://docs.celeris.ai/cookbook/ by the EXISTING docs distribution
+# (diffusion-llm-service infra/management/docs-hosting.tf), which needs a
+# second origin pointing at this bucket and an ordered /cookbook* cache
+# behavior. That change lives in the diffusion-llm-service repo; see README.md
+# here for the exact shape. This root must be applied first so the bucket
+# exists for the distribution to reference.
+#
+# CloudFront forwards the full request path to the origin, so /cookbook/x
+# resolves to s3://<bucket>/cookbook/x — which is why the deploy syncs into
+# the cookbook/ prefix instead of the bucket root.
 
 locals {
   name = "celeris-cookbook"
-  fqdn = var.fqdn != "" ? var.fqdn : "cookbook.${var.zone_name}"
 }
 
 data "aws_caller_identity" "current" {}
 
-data "aws_route53_zone" "site" {
-  name         = var.zone_name
-  private_zone = false
-}
-
-data "aws_cloudfront_cache_policy" "caching_optimized" {
-  name = "Managed-CachingOptimized"
-}
-
-# --- TLS certificate (us-east-1, DNS-validated) ------------------------------
-
-resource "aws_acm_certificate" "site" {
-  provider = aws.us_east_1
-
-  domain_name       = local.fqdn
-  validation_method = "DNS"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_route53_record" "cert_validation" {
-  for_each = {
-    for dvo in aws_acm_certificate.site.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      type   = dvo.resource_record_type
-      record = dvo.resource_record_value
-    }
-  }
-
-  zone_id         = data.aws_route53_zone.site.zone_id
-  name            = each.value.name
-  type            = each.value.type
-  records         = [each.value.record]
-  ttl             = 300
-  allow_overwrite = true
-}
-
-resource "aws_acm_certificate_validation" "site" {
-  provider = aws.us_east_1
-
-  certificate_arn         = aws_acm_certificate.site.arn
-  validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
-}
-
-# --- Assets bucket -----------------------------------------------------------
+# --- Assets bucket ------------------------------------------------------------
 
 resource "aws_s3_bucket" "assets" {
   bucket        = "${local.name}-assets-${data.aws_caller_identity.current.account_id}"
@@ -71,93 +38,10 @@ resource "aws_s3_bucket_public_access_block" "assets" {
   restrict_public_buckets = true
 }
 
-# --- CloudFront --------------------------------------------------------------
-
-resource "aws_cloudfront_origin_access_control" "assets" {
-  name                              = local.name
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
-}
-
-resource "aws_cloudfront_response_headers_policy" "security" {
-  name = "${local.name}-security"
-
-  security_headers_config {
-    content_type_options {
-      override = true
-    }
-    frame_options {
-      frame_option = "DENY"
-      override     = true
-    }
-    referrer_policy {
-      referrer_policy = "strict-origin-when-cross-origin"
-      override        = true
-    }
-    strict_transport_security {
-      access_control_max_age_sec = 31536000
-      include_subdomains         = true
-      override                   = true
-    }
-  }
-}
-
-resource "aws_cloudfront_distribution" "site" {
-  enabled             = true
-  is_ipv6_enabled     = true
-  comment             = "${local.name} (${local.fqdn})"
-  default_root_object = "index.html"
-  price_class         = "PriceClass_100"
-  aliases             = [local.fqdn]
-
-  origin {
-    domain_name              = aws_s3_bucket.assets.bucket_regional_domain_name
-    origin_id                = "s3-assets"
-    origin_access_control_id = aws_cloudfront_origin_access_control.assets.id
-  }
-
-  default_cache_behavior {
-    target_origin_id           = "s3-assets"
-    viewer_protocol_policy     = "redirect-to-https"
-    allowed_methods            = ["GET", "HEAD", "OPTIONS"]
-    cached_methods             = ["GET", "HEAD"]
-    compress                   = true
-    cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
-    response_headers_policy_id = aws_cloudfront_response_headers_policy.security.id
-  }
-
-  # S3 returns 403 for missing keys behind OAC; surface the site's 404 page.
-  custom_error_response {
-    error_code            = 403
-    response_code         = 404
-    response_page_path    = "/404.html"
-    error_caching_min_ttl = 10
-  }
-
-  custom_error_response {
-    error_code            = 404
-    response_code         = 404
-    response_page_path    = "/404.html"
-    error_caching_min_ttl = 10
-  }
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
-
-  viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate_validation.site.certificate_arn
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2021"
-  }
-}
-
+# Only the docs distribution (via OAC) may read objects.
 data "aws_iam_policy_document" "assets" {
   statement {
-    sid       = "AllowCloudFrontRead"
+    sid       = "AllowDocsCloudFrontRead"
     effect    = "Allow"
     actions   = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.assets.arn}/*"]
@@ -170,7 +54,7 @@ data "aws_iam_policy_document" "assets" {
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = [aws_cloudfront_distribution.site.arn]
+      values   = [var.docs_distribution_arn]
     }
   }
 }
@@ -182,28 +66,96 @@ resource "aws_s3_bucket_policy" "assets" {
   depends_on = [aws_s3_bucket_public_access_block.assets]
 }
 
-# --- DNS ---------------------------------------------------------------------
+# --- GitHub OIDC deploy role --------------------------------------------------
+# Same shape as diffusion-llm-service infra/modules/github-oidc: federated
+# trust on the exact repo subject claim, no static keys. The account can hold
+# only one provider per URL, so creation is opt-in.
 
-resource "aws_route53_record" "a" {
-  zone_id = data.aws_route53_zone.site.zone_id
-  name    = local.fqdn
-  type    = "A"
+locals {
+  oidc_host         = "token.actions.githubusercontent.com"
+  oidc_provider_arn = var.create_github_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : data.aws_iam_openid_connect_provider.github[0].arn
+}
 
-  alias {
-    name                   = aws_cloudfront_distribution.site.domain_name
-    zone_id                = aws_cloudfront_distribution.site.hosted_zone_id
-    evaluate_target_health = false
+resource "aws_iam_openid_connect_provider" "github" {
+  count = var.create_github_oidc_provider ? 1 : 0
+
+  url            = "https://${local.oidc_host}"
+  client_id_list = ["sts.amazonaws.com"]
+}
+
+data "aws_iam_openid_connect_provider" "github" {
+  count = var.create_github_oidc_provider ? 0 : 1
+
+  url = "https://${local.oidc_host}"
+}
+
+data "aws_iam_policy_document" "assume" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [local.oidc_provider_arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_host}:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+
+    # Any ref in the deploy repo may deploy; tighten to an environment claim
+    # if the deploy repo adopts GitHub environments.
+    condition {
+      test     = "StringLike"
+      variable = "${local.oidc_host}:sub"
+      values   = ["repo:${var.github_org}/${var.deploy_github_repo}:*"]
+    }
   }
 }
 
-resource "aws_route53_record" "aaaa" {
-  zone_id = data.aws_route53_zone.site.zone_id
-  name    = local.fqdn
-  type    = "AAAA"
+resource "aws_iam_role" "deploy" {
+  name                 = "${local.name}-deploy"
+  assume_role_policy   = data.aws_iam_policy_document.assume.json
+  max_session_duration = 3600
+}
 
-  alias {
-    name                   = aws_cloudfront_distribution.site.domain_name
-    zone_id                = aws_cloudfront_distribution.site.hosted_zone_id
-    evaluate_target_health = false
+data "aws_iam_policy_document" "deploy" {
+  statement {
+    sid       = "ListCookbookPrefix"
+    effect    = "Allow"
+    actions   = ["s3:ListBucket"]
+    resources = [aws_s3_bucket.assets.arn]
+
+    condition {
+      test     = "StringLike"
+      variable = "s3:prefix"
+      values   = ["cookbook/*", "cookbook", ""]
+    }
   }
+
+  statement {
+    sid    = "WriteCookbookPrefix"
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+    ]
+    resources = ["${aws_s3_bucket.assets.arn}/cookbook/*"]
+  }
+
+  statement {
+    sid       = "InvalidateDocsDistribution"
+    effect    = "Allow"
+    actions   = ["cloudfront:CreateInvalidation"]
+    resources = ["arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/${var.docs_distribution_id}"]
+  }
+}
+
+resource "aws_iam_role_policy" "deploy" {
+  name   = "deploy-cookbook-site"
+  role   = aws_iam_role.deploy.id
+  policy = data.aws_iam_policy_document.deploy.json
 }

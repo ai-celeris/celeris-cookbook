@@ -1,0 +1,77 @@
+# Alert triage agent
+
+A multi-step **tool-use agent loop** on `celeris-1`: given a production alert,
+the agent investigates by calling tools — `get_alert`, `search_runbooks`,
+`check_recent_deploys` — over synthetic fixture data, reasons across the
+results, and emits a structured verdict:
+
+```json
+{
+  "root_cause": "…",
+  "evidence": ["…"],
+  "recommended_action": "…",
+  "confidence": "high|medium|low"
+}
+```
+
+The scenario is self-contained: a checkout-service latency alert whose fixture
+data contains a smoking gun (a deploy 16 minutes before the alert fired that
+made payment calls synchronous) plus plausible decoys, so the agent has to
+actually correlate evidence rather than pattern-match.
+
+## Run it
+
+```sh
+cd examples/alert-triage-agent
+pip install -r requirements.txt
+
+export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+export CELERIS_API_KEY="<your-api-key>"
+
+python3 main.py               # triage ALERT-4127
+```
+
+You'll see each tool call as the agent makes it, then the final verdict.
+
+## How the loop works
+
+Each turn, the model must answer with **exactly one JSON object**: either a
+tool call —
+
+```json
+{"tool": "search_runbooks", "args": {"query": "checkout-api latency"}}
+```
+
+— or the final verdict. The harness parses the JSON, executes the tool over
+the fixtures, and feeds the result back as the next user message. Malformed
+replies get one corrective nudge; a step cap keeps the loop bounded.
+
+### Why prompt-driven tool calls (not the `tools` parameter)?
+
+This pattern works on **any** OpenAI-compatible endpoint — including small,
+fast models that don't implement native function-calling. It also keeps every
+byte of the exchange visible in the transcript, which makes the agent easy to
+debug. If your endpoint supports native `tools`, the loop body is the only
+thing that changes; the tools and verdict schema stay the same.
+
+### Budgeting inside a 4096-token window
+
+Agent loops usually assume a big context. Celeris gives you 4096 tokens total,
+so this example treats budget as a design constraint:
+
+- **Tool results are compact by design** — the runbook search returns the top
+  2 hits, not the whole corpus. A tool that returns pages of JSON would evict
+  the reasoning that needs it.
+- `max_tokens` is normalized to a supported value (multiple of 256 in
+  [256, 1024]); the rest of the window is the input budget.
+- `fit_messages` drops the oldest tool exchanges (never the system prompt or
+  the task) when the transcript outgrows the input budget.
+
+## Files
+
+| File | Purpose |
+| --- | --- |
+| `main.py` | The agent loop, tools, and budgeting. |
+| `fixtures/alerts.json` | The alert being triaged. |
+| `fixtures/runbooks.json` | Searchable runbook snippets (with decoys). |
+| `fixtures/deploys.json` | Recent deploys (with the smoking gun). |

@@ -26,8 +26,11 @@ jobs:
       - name: Validate registry
         run: python3 scripts/validate.py
 
-      - name: Build site
-        run: python3 site/build.py
+      - name: Compile Python examples
+        run: python3 -m compileall -q examples
+
+      - name: Build site (production base path)
+        run: BASE_URL=/cookbook/ python3 site/build.py
 
       - name: Upload site artifact
         uses: actions/upload-artifact@v4
@@ -35,3 +38,22 @@ jobs:
           name: site-dist
           path: site/dist
           retention-days: 7
+
+  typecheck-chatbot:
+    name: Typecheck chatbot example
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install and typecheck
+        working-directory: examples/chatbot
+        run: |
+          npm install
+          npm run typecheck

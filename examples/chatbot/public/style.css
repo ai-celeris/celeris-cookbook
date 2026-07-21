@@ -1,0 +1,144 @@
+:root {
+  --bg: #ffffff;
+  --fg: #1a1a24;
+  --muted: #5c5f6e;
+  --border: #e3e4ea;
+  --accent: #4338ca;
+  --accent-soft: #eef2ff;
+  --warn-bg: #fef3c7;
+  --warn-fg: #92400e;
+  --error-bg: #fee2e2;
+  --error-fg: #991b1b;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12131a;
+    --fg: #e7e8ee;
+    --muted: #9a9dae;
+    --border: #2a2c38;
+    --accent: #a5b4fc;
+    --accent-soft: #232447;
+    --warn-bg: #453a16;
+    --warn-fg: #fcd34d;
+    --error-bg: #4c1d1d;
+    --error-fg: #fca5a5;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0 auto;
+  max-width: 680px;
+  padding: 1.5rem 1rem 3rem;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+header h1 { margin: 0; font-size: 1.4rem; }
+header p { margin: 0.25rem 0 1.25rem; color: var(--muted); }
+header code { font-size: 0.9em; }
+
+.notice {
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+.notice.warn { background: var(--warn-bg); color: var(--warn-fg); }
+.notice.error { background: var(--error-bg); color: var(--error-fg); }
+
+#transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-height: 8rem;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-bottom: 0.5rem;
+}
+
+.bubble {
+  max-width: 85%;
+  padding: 0.55rem 0.9rem;
+  border-radius: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.bubble.user {
+  align-self: flex-end;
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.bubble.assistant {
+  align-self: flex-start;
+  background: var(--accent-soft);
+  border-bottom-left-radius: 4px;
+}
+
+.bubble.pending::after {
+  content: "▍";
+  animation: blink 1s steps(2) infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+.stats {
+  align-self: flex-start;
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin: -0.3rem 0 0.2rem 0.3rem;
+}
+
+#composer {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+#prompt {
+  flex: 1;
+  padding: 0.6rem 0.9rem;
+  font-size: 1rem;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+#send {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#send:disabled { opacity: 0.5; cursor: default; }
+
+.own-key {
+  margin-top: 1.25rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.own-key summary { cursor: pointer; }
+.own-key p { margin: 0.5rem 0; }
+
+#api-key {
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.95rem;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}

@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
 """Build the Celeris Cookbook website.
 
-Renders registry.yaml + each registered example README into a static site at
-site/dist/. Deliberately boring: no framework, one pass, plain HTML output.
+Renders registry.yaml + each registered example page (Markdown README or
+Jupyter notebook) into a static site at site/dist/. Deliberately boring: no
+framework, one pass, plain HTML output.
 
     python3 -m pip install -r site/requirements.txt
     python3 site/build.py
+
+The site is served under a configurable base path (production:
+https://docs.celeris.ai/cookbook/). Set BASE_URL to change it:
+
+    BASE_URL=/cookbook/ python3 site/build.py
 """
 
 import html
 import json
+import os
 import shutil
 from datetime import date
 from pathlib import Path
@@ -22,6 +29,12 @@ SITE = ROOT / "site"
 DIST = SITE / "dist"
 GITHUB_REPO = "https://github.com/ai-celeris/celeris-cookbook"
 
+# Absolute URL prefix the site is served under ("/" locally, "/cookbook/" on
+# docs.celeris.ai). Always normalized to have leading and trailing slashes.
+BASE_URL = "/" + os.environ.get("BASE_URL", "/").strip("/")
+if not BASE_URL.endswith("/"):
+    BASE_URL += "/"
+
 MARKDOWN_EXTENSIONS = ["fenced_code", "tables", "toc", "sane_lists"]
 
 PAGE_TEMPLATE = """<!doctype html>
@@ -31,12 +44,12 @@ PAGE_TEMPLATE = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{description}">
-<link rel="stylesheet" href="{root}style.css">
+<link rel="stylesheet" href="{base}style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#9889;</text></svg>">
 </head>
 <body>
 <header class="site-header">
-  <a class="brand" href="{root}">Celeris Cookbook</a>
+  <a class="brand" href="{base}">Celeris Cookbook</a>
   <nav><a href="{github}">GitHub</a></nav>
 </header>
 <main>
@@ -98,7 +111,7 @@ def load_registry():
     registry = yaml.safe_load((ROOT / "registry.yaml").read_text()) or []
     authors = yaml.safe_load((ROOT / "authors.yaml").read_text()) or {}
     registry = [entry for entry in registry if not entry.get("archived")]
-    registry.sort(key=lambda entry: entry["date"], reverse=True)
+    registry.sort(key=lambda entry: str(entry["date"]), reverse=True)
     return registry, authors
 
 
@@ -115,9 +128,63 @@ def format_date(value):
     return html.escape(str(value))
 
 
+def render_markdown_source(source: Path) -> str:
+    return markdown.markdown(source.read_text(), extensions=MARKDOWN_EXTENSIONS)
+
+
+def render_notebook_source(source: Path) -> str:
+    """Render a Jupyter notebook (nbformat 4 JSON) to HTML.
+
+    Markdown cells render as markdown; code cells render as <pre> blocks
+    followed by any captured outputs (streams, text results, embedded PNGs).
+    No nbconvert dependency: the JSON format is stable and this site only
+    needs the common output types.
+    """
+    notebook = json.loads(source.read_text())
+    parts = []
+    for cell in notebook.get("cells", []):
+        cell_source = "".join(cell.get("source", []))
+        if cell.get("cell_type") == "markdown":
+            parts.append(markdown.markdown(cell_source, extensions=MARKDOWN_EXTENSIONS))
+        elif cell.get("cell_type") == "code":
+            if cell_source.strip():
+                parts.append(
+                    f'<pre class="nb-code"><code>{html.escape(cell_source)}</code></pre>'
+                )
+            for output in cell.get("outputs", []):
+                parts.append(render_notebook_output(output))
+    return "\n".join(part for part in parts if part)
+
+
+def render_notebook_output(output) -> str:
+    output_type = output.get("output_type")
+    if output_type == "stream":
+        text = "".join(output.get("text", []))
+        return f'<pre class="nb-output"><code>{html.escape(text)}</code></pre>'
+    if output_type in ("execute_result", "display_data"):
+        data = output.get("data", {})
+        if "image/png" in data:
+            payload = data["image/png"]
+            if isinstance(payload, list):
+                payload = "".join(payload)
+            payload = payload.replace("\n", "")
+            return f'<img class="nb-image" alt="notebook output" src="data:image/png;base64,{payload}">'
+        if "text/plain" in data:
+            text = "".join(data["text/plain"])
+            return f'<pre class="nb-output"><code>{html.escape(text)}</code></pre>'
+        return ""
+    if output_type == "error":
+        text = "\n".join(output.get("traceback", []))
+        return f'<pre class="nb-output nb-error"><code>{html.escape(text)}</code></pre>'
+    return ""
+
+
 def render_example(entry, authors):
     source = ROOT / entry["path"]
-    body = markdown.markdown(source.read_text(), extensions=MARKDOWN_EXTENSIONS)
+    if source.suffix == ".ipynb":
+        body = render_notebook_source(source)
+    else:
+        body = render_markdown_source(source)
     authors_line = ", ".join(author_html(a, authors) for a in entry["authors"])
     tags_line = " ".join(
         f'<span class="tag">{html.escape(tag)}</span>' for tag in entry["tags"]
@@ -136,7 +203,7 @@ def render_example(entry, authors):
     page = PAGE_TEMPLATE.format(
         title=f"{html.escape(entry['title'])} · Celeris Cookbook",
         description=html.escape(entry["description"]),
-        root="../",
+        base=BASE_URL,
         github=GITHUB_REPO,
         content=content,
         scripts=COPY_SCRIPT,
@@ -162,7 +229,7 @@ def render_index(registry, authors):
         )
         authors_line = ", ".join(author_html(a, authors) for a in entry["authors"])
         cards.append(
-            f"""<a class="card" href="{entry["slug"]}/"
+            f"""<a class="card" href="{BASE_URL}{entry["slug"]}/"
    data-text="{html.escape(text)}" data-tags="{html.escape(" ".join(entry["tags"]))}">
   <h2>{html.escape(entry["title"])}</h2>
   <p class="card-meta">{format_date(entry["date"])} &middot; {tags_line}</p>
@@ -185,7 +252,7 @@ def render_index(registry, authors):
     page = PAGE_TEMPLATE.format(
         title="Celeris Cookbook",
         description="Practical, runnable examples for building with the Celeris API.",
-        root="",
+        base=BASE_URL,
         github=GITHUB_REPO,
         content=content,
         scripts=INDEX_SCRIPT,
@@ -194,14 +261,14 @@ def render_index(registry, authors):
 
 
 def render_404():
-    content = """<section class="hero">
+    content = f"""<section class="hero">
   <h1>Page not found</h1>
-  <p>That page does not exist (or was renamed). <a href="/">Browse all examples</a>.</p>
+  <p>That page does not exist (or was renamed). <a href="{BASE_URL}">Browse all examples</a>.</p>
 </section>"""
     page = PAGE_TEMPLATE.format(
         title="Not found · Celeris Cookbook",
         description="Page not found.",
-        root="/",
+        base=BASE_URL,
         github=GITHUB_REPO,
         content=content,
         scripts="",
@@ -224,7 +291,7 @@ def main():
         for entry in registry
     ]
     (DIST / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    print(f"built {len(registry)} example page(s) -> {DIST}")
+    print(f"built {len(registry)} example page(s) -> {DIST} (base {BASE_URL})")
 
 
 if __name__ == "__main__":

@@ -162,3 +162,9 @@ pre code { background: none; padding: 0; }
 .copy-button:hover { color: var(--accent); border-color: var(--accent); }
 
 #empty { color: var(--muted); text-align: center; margin-top: 2rem; }
+
+/* Notebook cells */
+.nb-code { border-left: 3px solid var(--accent); }
+.nb-output { background: transparent; border-style: dashed; color: var(--muted); }
+.nb-error { border-color: #c0392b; }
+.nb-image { max-width: 100%; }

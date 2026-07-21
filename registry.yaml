@@ -1,17 +1,43 @@
 # yaml-language-server: $schema=./.github/registry_schema.json
 
 # Index of cookbook examples. The website is generated from this file: each
-# entry becomes a page rendered from the README at `path`. See CONTRIBUTING.md
-# for the entry format and rules.
+# entry becomes a page rendered from the file at `path` (a Markdown README or
+# a Jupyter notebook). See CONTRIBUTING.md for the entry format and rules.
 
 - title: Getting started with the Celeris API
-  path: examples/getting-started/README.md
+  path: examples/getting-started/getting-started.ipynb
   slug: getting-started
-  description: Make your first Celeris chat completion, with correct max_tokens normalization and input budgeting for the 4096-token window.
+  description: Make your first Celeris chat completion with the OpenAI SDK, with correct max_tokens normalization and input budgeting for the 4096-token window.
   date: 2026-07-21
   authors:
-    - orlade
+    - celeris
   tags:
     - getting-started
     - chat-completions
+    - token-budgeting
+    - streaming
+
+- title: Streaming chatbot
+  path: examples/chatbot/README.md
+  slug: chatbot
+  description: A web chatbot that streams celeris-1 replies and measures time-to-first-token in the browser — a TypeScript server plus vanilla JS UI showcasing Celeris latency.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - streaming
+    - chat-completions
+    - typescript
+    - latency
+
+- title: Alert triage agent
+  path: examples/alert-triage-agent/README.md
+  slug: alert-triage-agent
+  description: A multi-step tool-use agent loop that triages a synthetic production alert with tools over fixture data and emits a structured verdict — all inside the 4096-token window.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - agents
+    - tool-use
     - token-budgeting

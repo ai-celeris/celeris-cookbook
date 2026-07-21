@@ -1,16 +1,33 @@
 variable "region" {
-  description = "Primary AWS region for the site bucket."
+  description = "AWS region for the cookbook assets bucket. Must match the docs distribution's account region conventions."
   type        = string
-  default     = "ap-southeast-2"
+  default     = "us-west-2"
 }
 
-variable "zone_name" {
-  description = "Existing public Route 53 hosted zone the site record is created in (e.g. celeris.ai)."
+variable "docs_distribution_arn" {
+  description = "ARN of the existing docs.celeris.ai CloudFront distribution (diffusion-llm-service infra/management, aws_cloudfront_distribution.docs). Grants it OAC read access to the cookbook bucket."
   type        = string
 }
 
-variable "fqdn" {
-  description = "Fully qualified domain for the cookbook site. Defaults to cookbook.<zone_name>."
+variable "docs_distribution_id" {
+  description = "ID of the docs.celeris.ai CloudFront distribution. The deploy role may create invalidations on it."
   type        = string
-  default     = ""
+}
+
+variable "github_org" {
+  description = "GitHub org the deploy workflow runs in."
+  type        = string
+  default     = "ai-celeris"
+}
+
+variable "deploy_github_repo" {
+  description = "Repository whose GitHub Actions workflow may assume the deploy role."
+  type        = string
+  default     = "celeris-cookbook-deploy"
+}
+
+variable "create_github_oidc_provider" {
+  description = "Create the token.actions.githubusercontent.com OIDC provider. Leave false when the account already has one (an account can only have one per URL)."
+  type        = bool
+  default     = false
 }
