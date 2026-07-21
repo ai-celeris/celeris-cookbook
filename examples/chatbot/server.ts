@@ -2,7 +2,7 @@
 //
 // Serves the static UI from public/ and streams chat completions through
 // POST /api/chat using the OpenAI SDK pointed at the Celeris base URL. The
-// browser measures time-to-first-token itself — the point of this example is
+// browser measures time-to-first-token itself, the point of this example is
 // seeing Celeris's latency, so the server adds as little as possible on top.
 //
 //   npm install
@@ -73,7 +73,7 @@ async function handleChat(request: IncomingMessage, response: ServerResponse): P
     return;
   }
 
-  // maxRetries: 0 — the SDK's default silent retries add seconds of backoff
+  // maxRetries: 0, the SDK's default silent retries add seconds of backoff
   // before a 429 surfaces; this UI wants the rate-limited state immediately.
   const client = new OpenAI({
     baseURL: upstream.baseURL,

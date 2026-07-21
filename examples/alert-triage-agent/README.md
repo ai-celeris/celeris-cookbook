@@ -1,8 +1,8 @@
 # Alert triage agent
 
 A multi-step **tool-use agent loop** on `celeris-1`: given a production alert,
-the agent investigates by calling tools — `get_alert`, `search_runbooks`,
-`check_recent_deploys` — over synthetic fixture data, reasons across the
+the agent investigates by calling tools, `get_alert`, `search_runbooks`,
+`check_recent_deploys`, over synthetic fixture data, reasons across the
 results, and emits a structured verdict:
 
 ```json
@@ -35,20 +35,20 @@ You'll see each tool call as the agent makes it, then the final verdict.
 
 ## How the loop works
 
-Each turn, the model must answer with **exactly one JSON object**: either a
-tool call —
+Each turn, the model must answer with **exactly one JSON object**. That is
+either a tool call:
 
 ```json
 {"tool": "search_runbooks", "args": {"query": "checkout-api latency"}}
 ```
 
-— or the final verdict. The harness parses the JSON, executes the tool over
+or the final verdict. The harness parses the JSON, executes the tool over
 the fixtures, and feeds the result back as the next user message. Malformed
 replies get one corrective nudge; a step cap keeps the loop bounded.
 
 ### Why prompt-driven tool calls (not the `tools` parameter)?
 
-This pattern works on **any** OpenAI-compatible endpoint — including small,
+This pattern works on **any** OpenAI-compatible endpoint, including small,
 fast models that don't implement native function-calling. It also keeps every
 byte of the exchange visible in the transcript, which makes the agent easy to
 debug. If your endpoint supports native `tools`, the loop body is the only
@@ -57,7 +57,7 @@ thing that changes; the tools and verdict schema stay the same.
 Concretely: the current Celeris serving deployment rejects the `tools`
 parameter (`400: "auto" tool choice requires --enable-auto-tool-choice and
 --tool-call-parser to be set`), so prompt-driven is the pattern that works
-today. The model follows it well — in smoke testing, celeris-1 completed the
+today. The model follows it well, in smoke testing, celeris-1 completed the
 triage in 4 tool turns with a correct, well-evidenced verdict on every run;
 the occasional truncated JSON reply is exactly what the corrective-nudge
 branch in the loop is for.
@@ -67,7 +67,7 @@ branch in the loop is for.
 Agent loops usually assume a big context. Celeris gives you 4096 tokens total,
 so this example treats budget as a design constraint:
 
-- **Tool results are compact by design** — the runbook search returns the top
+- **Tool results are compact by design**, the runbook search returns the top
   2 hits, not the whole corpus. A tool that returns pages of JSON would evict
   the reasoning that needs it.
 - `max_tokens` is normalized to a supported value (multiple of 256 in

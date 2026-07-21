@@ -1,6 +1,6 @@
 // In-memory rate limiting for the demo proxy: a global token bucket (protects
 // the shared Celeris key) plus a per-IP fixed window (stops one visitor from
-// draining the bucket). Deliberately process-local — the demo runs as a
+// draining the bucket). Deliberately process-local, the demo runs as a
 // single container; use a shared store only if that ever changes.
 
 export class TokenBucket {

@@ -9,7 +9,7 @@ const sendButton = document.getElementById("send");
 const notice = document.getElementById("notice");
 const apiKeyInput = document.getElementById("api-key");
 
-// [{role, content}] — resent whole each turn; the server clips history to the
+// [{role, content}], resent whole each turn; the server clips history to the
 // model's input budget.
 const messages = [];
 
@@ -68,7 +68,7 @@ async function send(text) {
       messages.pop();
       assistantBubble.remove();
       showNotice(
-        "Rate limited — the shared demo key has a low request cap. " +
+        "Rate limited, the shared demo key has a low request cap. " +
           "Wait a few seconds and try again, or expand “Use your own API key” below.",
         "warn",
       );

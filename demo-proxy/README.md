@@ -4,7 +4,7 @@ A small hardened proxy that lets the docs site's **live chatbot demo widget**
 (the optional widget on the [chatbot example](../examples/chatbot) page) talk
 to Celeris without ever exposing an API key to the browser.
 
-Not an example — this is the operational piece behind the demo. It exposes
+This is not an example. It is the operational piece behind the demo. It exposes
 `POST /api/chat` with the same request/response shape as the chatbot example
 server, plus the hardening a public shared endpoint needs:
 
@@ -18,7 +18,7 @@ server, plus the hardening a public shared endpoint needs:
 
 Throttled requests get a **friendly JSON 429** (`{"error": "rate_limited",
 "message": …, "retry_after_s": 5}` with a `Retry-After` header) that the
-widget renders as a "busy — try again shortly" state. Message content and key
+widget renders as a "busy, try again shortly" state. Message content and key
 material are never logged; the only logs are startup configuration shape and
 upstream failure classes.
 
@@ -37,13 +37,13 @@ npm start          # POST /api/chat on :8080, GET /healthz
 
 ## Deploy
 
-No standing infrastructure exists for this yet — deploying is a deliberate
-manual step. The natural home is the existing celeris-apps compose host
-(Docker Compose behind Caddy):
+No standing infrastructure exists for this yet. Deploying is a deliberate
+manual step. Any small host that runs Docker Compose behind a reverse proxy
+works:
 
 1. Build the image from this directory's `Dockerfile` and add a service to
    the compose file with `CELERIS_BASE_URL`, `CELERIS_API_KEY` (from the
-   host's secret store — never in the compose file), and
+   host's secret store, never in the compose file), and
    `DEMO_ALLOWED_ORIGINS=https://docs.celeris.ai`.
 2. Route it in Caddy (e.g. `demo.<zone>` → container port 8080). The proxy
    trusts the first `X-Forwarded-For` hop for per-IP limiting, which Caddy

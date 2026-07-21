@@ -9,7 +9,7 @@ What it measures per request:
 
 - **Latency**: time-to-first-token and total (p50/p90/p99/mean). celeris-1 is
   a diffusion model that usually delivers the whole reply in one burst, so
-  TTFT ≈ total — it is measured anyway so you can see that for yourself.
+  TTFT ≈ total, it is measured anyway so you can see that for yourself.
 - **Reliability**: throttles (429s, retried with backoff and counted),
   transport/HTTP errors, empty outputs, truncation (`finish_reason=length`).
 - **Correctness** where tasks are objectively checkable: extracted JSON must
@@ -69,6 +69,6 @@ Prompts that demand a **bare single-word or single-number answer** ("Reply
 with just the number") frequently return an *empty* completion from celeris-1
 (`completion_tokens=1`, `finish_reason=stop`). Sentence-eliciting phrasings
 ("Answer in a short sentence") respond reliably, so the built-in tasks use
-those — and the empty-output counter surfaces the defect whenever it shows up
+those, and the empty-output counter surfaces the defect whenever it shows up
 anyway. If you add your own tasks, prefer sentence-shaped answers and let the
 checkers do substring/label matching.

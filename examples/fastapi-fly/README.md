@@ -13,7 +13,7 @@ Five files:
 | `static/index.html` | Prompt box that POSTs to `/api/generate`. |
 | `requirements.txt` | fastapi, uvicorn, openai. |
 | `Dockerfile` | Standard slim Python image running uvicorn. |
-| `fly.toml` | Fly app config — contains **no** secrets. |
+| `fly.toml` | Fly app config, contains **no** secrets. |
 
 `main.py` carries the two Celeris conventions used across this cookbook:
 append `/v1` to `CELERIS_BASE_URL` for the OpenAI SDK, and normalize
@@ -28,8 +28,8 @@ CLI: `fly secrets set NAME=value` is one command, encrypted at rest, exposed
 to the app only as a runtime environment variable, write-only after creation
 (`fly secrets list` shows names and digests, never values), and it lives
 entirely outside the config file that gets committed. Render works the same
-way conceptually — dashboard → Environment → add `CELERIS_API_KEY` — if you
-prefer it, `main.py` runs unchanged.
+way (dashboard, then Environment, then add `CELERIS_API_KEY`). If you
+prefer Render, `main.py` runs unchanged.
 
 ## Run locally
 
@@ -53,7 +53,7 @@ fly auth login
 fly launch --no-deploy         # registers the app; accept the generated name
                                # (or edit `app` in fly.toml first)
 
-# THE POINT OF THIS EXAMPLE — the key goes into Fly's encrypted secret store:
+# The point of this example: the key goes into Fly's encrypted secret store.
 fly secrets set CELERIS_API_KEY="<your-api-key>"
 fly secrets set CELERIS_BASE_URL="https://<your-celeris-endpoint>"
 
@@ -67,8 +67,8 @@ exactly as it does locally.
 ## Security notes
 
 - **The key lives only in the platform secret store** (Fly secrets / your
-  local shell). Nothing in this directory — no `.env`, no `fly.toml` entry —
-  contains it, and the server never returns it in a response.
+  local shell). Nothing in this directory contains it (no `.env`, no
+  `fly.toml` entry), and the server never returns it in a response.
 - **The browser only ever talks to your own backend.** `index.html` fetches
   `api/generate`; the Celeris endpoint and credentials are invisible to the
   client.

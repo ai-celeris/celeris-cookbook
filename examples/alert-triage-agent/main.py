@@ -2,13 +2,13 @@
 """Alert triage agent: a multi-step tool-use loop on the Celeris API.
 
 The agent triages a synthetic production alert by calling tools over fixture
-data — get_alert, search_runbooks, check_recent_deploys — then emits a
+data, get_alert, search_runbooks, check_recent_deploys, then emits a
 structured verdict (root-cause hypothesis, recommended action, confidence).
 
 Tool calling here is PROMPT-DRIVEN: each turn the model must reply with one
 JSON object naming a tool (or the final verdict), which the loop executes and
-feeds back. This pattern works on any OpenAI-compatible endpoint — including
-small, fast models without native `tools` support — and every step fits
+feeds back. This pattern works on any OpenAI-compatible endpoint, including
+small, fast models without native `tools` support, and every step fits
 Celeris's 4096-token window because tool results are compact by design.
 
 Usage:
@@ -214,7 +214,7 @@ def main() -> int:
 
     print()
     if verdict is None:
-        print("no verdict within the step budget — try again or raise MAX_STEPS")
+        print("no verdict within the step budget, try again or raise MAX_STEPS")
         return 1
     print("VERDICT")
     print(json.dumps(verdict, indent=2))

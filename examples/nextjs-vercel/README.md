@@ -35,7 +35,7 @@ npm run dev
 
 ## Deploy to Vercel
 
-Store the key in Vercel's encrypted environment store — this is the whole
+Store the key in Vercel's encrypted environment store, this is the whole
 point of the example:
 
 ```sh
@@ -58,8 +58,8 @@ does locally.
 ## Security notes
 
 - **The key lives only in the platform secret store** (Vercel env vars /
-  your local shell). Nothing in this repo — no `.env` file, no config —
-  contains it, and `route.ts` never returns it in a response.
+  your local shell). Nothing in this repo contains it (no `.env` file, no
+  config), and `route.ts` never returns it in a response.
 - **The browser only ever talks to your own backend.** `page.tsx` fetches
   `/api/generate`; the Celeris endpoint and credentials are invisible to the
   client.

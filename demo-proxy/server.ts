@@ -83,7 +83,7 @@ function rateLimited(response: ServerResponse, headers: Record<string, string>):
     429,
     {
       error: "rate_limited",
-      message: "The shared demo is busy right now — wait a few seconds and try again.",
+      message: "The shared demo is busy right now, wait a few seconds and try again.",
       retry_after_s: 5,
     },
     { "retry-after": "5", ...headers },
@@ -185,7 +185,7 @@ async function handleChat(
       rateLimited(response, headers);
       return;
     }
-    // Log the failure class only — never the request or response content.
+    // Log the failure class only, never the request or response content.
     console.error("upstream request failed:", error instanceof Error ? error.constructor.name : "unknown");
     sendJson(response, 502, { error: "upstream_failed" }, headers);
   }
@@ -221,7 +221,7 @@ const server = createServer(async (request, response) => {
 });
 
 server.listen(PORT, () => {
-  // Startup log carries configuration shape only — no key material.
+  // Startup log carries configuration shape only, no key material.
   console.log(
     `demo-proxy on :${PORT} · origins=[${[...ALLOWED_ORIGINS].join(", ")}] · ` +
       `global ${process.env.DEMO_GLOBAL_RPS ?? 2} rps · per-ip ${process.env.DEMO_PER_IP_PER_MIN ?? 6}/min`,

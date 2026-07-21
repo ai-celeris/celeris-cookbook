@@ -1,7 +1,7 @@
 // The one server-side file that talks to Celeris. Runs only on the server
-// (Vercel function / Node process); the API key comes from the environment —
-// locally from your shell, in production from Vercel's encrypted env store —
-// and never ships to the browser.
+// (Vercel function / Node process). The API key comes from the environment:
+// locally from your shell, in production from Vercel's encrypted env store.
+// It never ships to the browser.
 
 import OpenAI from "openai";
 

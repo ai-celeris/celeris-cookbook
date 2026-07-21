@@ -3,7 +3,7 @@
 A small web chatbot on `celeris-1` built to show off the thing Celeris is for:
 **speed**. The browser measures time-to-first-token and total latency for
 every reply and prints them under each message. On a warm connection a full
-multi-sentence reply typically lands in **~250–300 ms end to end** — and
+multi-sentence reply typically lands in **~250-300 ms end to end**, and
 because celeris-1 is a diffusion model that generates the whole reply in
 parallel, the stream usually arrives as a single burst (first token ≈ full
 response).
@@ -44,12 +44,12 @@ npm start
 ## Credential seams (for hosted demos)
 
 This example is built to run locally on your own key, but the credential path
-is deliberately pluggable — `config.ts` is the only place that decides whose
+is deliberately pluggable, `config.ts` is the only place that decides whose
 key a request runs on:
 
 1. **Server key (default)**: from `CELERIS_API_KEY` in the server's
    environment. A hosted demo swaps this for a shared, low-rate-limit proxy
-   key — which is why the UI treats **429 as a first-class "rate limited —
+   key. That is why the UI treats **429 as a first-class "rate limited,
    try again shortly" state** with retry guidance, not a generic error.
 2. **User-supplied key**: expand *"Use your own API key"* in the UI to run
    requests on your key instead. It is kept in browser memory only, sent per

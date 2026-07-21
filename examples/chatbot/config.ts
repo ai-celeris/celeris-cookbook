@@ -2,12 +2,12 @@
 //
 // The web client never talks to Celeris directly: it talks to this server,
 // which holds the credential. That is exactly the shape a future hosted demo
-// takes — swap this module's env lookup for a shared low-RPS proxy key or a
+// takes, swap this module's env lookup for a shared low-RPS proxy key or a
 // workspace-aware (Cognito-backed) key lookup and nothing else changes.
 //
 // Credential precedence per request:
 //   1. A user-supplied key forwarded by the browser (in-memory only, sent as
-//      the x-user-api-key header) — lets users bypass a shared rate-limited
+//      the x-user-api-key header), lets users bypass a shared rate-limited
 //      key with their own.
 //   2. The server's own key from CELERIS_API_KEY / OPENAI_API_KEY.
 

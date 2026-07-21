@@ -22,7 +22,7 @@
   path: examples/chatbot/README.md
   slug: chatbot
   order: 2
-  description: A web chatbot that streams celeris-1 replies and measures time-to-first-token in the browser — a TypeScript server plus vanilla JS UI showcasing Celeris speed and latency.
+  description: A web chatbot that streams celeris-1 replies and measures time-to-first-token in the browser, a TypeScript server plus vanilla JS UI showcasing Celeris speed and latency.
   date: 2026-07-21
   authors:
     - celeris
@@ -35,7 +35,7 @@
 - title: Next.js on Vercel
   path: examples/nextjs-vercel/README.md
   slug: nextjs-vercel
-  description: Maximally simple full-stack Next.js app calling Celeris from a server-side route handler, with the API key in Vercel's managed environment store — never in the browser, code, or git.
+  description: Maximally simple full-stack Next.js app calling Celeris from a server-side route handler, with the API key in Vercel's managed environment store, never in the browser, code, or git.
   date: 2026-07-21
   authors:
     - celeris
@@ -48,7 +48,7 @@
 - title: FastAPI on Fly.io
   path: examples/fastapi-fly/README.md
   slug: fastapi-fly
-  description: Maximally simple FastAPI app calling Celeris server-side, with the API key in Fly.io's encrypted secret store (fly secrets set) — never in the browser, code, or git.
+  description: Maximally simple FastAPI app calling Celeris server-side, with the API key in Fly.io's encrypted secret store (fly secrets set), never in the browser, code, or git.
   date: 2026-07-21
   authors:
     - celeris
@@ -61,7 +61,7 @@
 - title: Alert triage agent
   path: examples/alert-triage-agent/README.md
   slug: alert-triage-agent
-  description: A multi-step tool-use agent loop that triages a synthetic production alert with tools over fixture data and emits a structured verdict — all inside the 4096-token window.
+  description: A multi-step tool-use agent loop that triages a synthetic production alert with tools over fixture data and emits a structured verdict, all inside the 4096-token window.
   date: 2026-07-21
   authors:
     - celeris
@@ -73,7 +73,7 @@
 - title: Benchmark harness
   path: examples/benchmark/README.md
   slug: benchmark
-  description: A mini benchmark you can run against your own workspace — latency percentiles (TTFT and total), throttle/retry/empty/truncation counts, and objective correctness scoring, reported as a Markdown table.
+  description: A mini benchmark you can run against your own workspace, latency percentiles (TTFT and total), throttle/retry/empty/truncation counts, and objective correctness scoring, reported as a Markdown table.
   date: 2026-07-21
   authors:
     - celeris
@@ -81,3 +81,40 @@
     - benchmarking
     - latency
     - evals
+
+- title: Real-time ticket routing
+  path: examples/realtime-classification/README.md
+  slug: realtime-classification
+  description: Route support tickets in the request path. Measured at 260 ms median per ticket with 100 percent routing accuracy on the sample set, fast enough to classify before the page loads.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - classification
+    - latency
+    - production
+
+- title: Guardrails on every request
+  path: examples/guardrails/README.md
+  slug: guardrails
+  description: A moderation and validation gate fast enough for the hot path. Structured allow, block, or flag verdicts with reasons, measured at about 290 ms median added latency per request.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - guardrails
+    - moderation
+    - latency
+    - production
+
+- title: Agent latency compounds
+  path: examples/agent-latency/README.md
+  slug: agent-latency
+  description: Why per-step speed decides whether an agent is interactive. A measured multi-step tool loop on celeris-1, and a table showing how per-step latency compounds over N steps.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - agents
+    - latency
+    - tool-use

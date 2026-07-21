@@ -7,73 +7,90 @@ on:
       - main
 
 jobs:
-  validate:
-    name: Validate registry and Python examples
+  style:
+    name: Content style rules
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - name: No dashes or forbidden terms in user-visible content
+        run: python3 scripts/style_check.py
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+  registry:
+    name: Registry and notebook validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Install dependencies
-        run: python3 -m pip install -r scripts/requirements.txt
-
-      - name: Validate registry
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Validate registry and authors
         run: python3 scripts/validate.py
+      - name: Validate notebooks (nbformat)
+        run: |
+          python3 - <<'EOF'
+          from pathlib import Path
+          import nbformat
+          checked = 0
+          for notebook in Path("examples").rglob("*.ipynb"):
+              if "node_modules" in notebook.parts:
+                  continue
+              nbformat.validate(nbformat.read(notebook, as_version=4))
+              checked += 1
+          print(f"{checked} notebook(s) valid")
+          EOF
 
-      - name: Compile Python examples
+  python:
+    name: Python lint and unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Lint (ruff)
+        run: ruff check examples scripts tests
+      - name: Compile all examples
         run: python3 -m compileall -q examples
-
+      - name: Unit tests (offline)
+        run: python3 -m pytest tests -q
       - name: Import-check FastAPI example (offline)
         run: |
           python3 -m pip install -r examples/fastapi-fly/requirements.txt
           python3 -c "import sys; sys.path.insert(0, 'examples/fastapi-fly'); import main; assert main.app.title"
 
-  typecheck-chatbot:
+  typescript:
     name: Typecheck chatbot and demo proxy
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "22"
-
       - name: Install and typecheck chatbot
         working-directory: examples/chatbot
         run: |
           npm install
           npm run typecheck
-
       - name: Install and typecheck demo-proxy
         working-directory: demo-proxy
         run: |
           npm install
           npm run typecheck
 
-  build-nextjs-example:
+  nextjs:
     name: Build Next.js example
     runs-on: ubuntu-latest
     env:
       NEXT_TELEMETRY_DISABLED: "1"
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "22"
-
       # next build type-checks and compiles the app; no credentials needed.
       - name: Install and build
         working-directory: examples/nextjs-vercel

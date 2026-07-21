@@ -3,7 +3,7 @@
     "id": "RB-12",
     "title": "checkout-api latency",
     "keywords": ["checkout-api", "latency", "p99", "slow"],
-    "body": "High checkout-api tail latency is usually one of: (1) a recent deploy changing the payment-provider call path — roll back first, ask questions later; (2) connection-pool exhaustion to the orders DB — check pool saturation and bump max connections; (3) a payment provider brownout — check the provider status page and enable the degraded-checkout feature flag."
+    "body": "High checkout-api tail latency is usually one of: (1) a recent deploy changing the payment-provider call path, roll back first, ask questions later; (2) connection-pool exhaustion to the orders DB, check pool saturation and bump max connections; (3) a payment provider brownout, check the provider status page and enable the degraded-checkout feature flag."
   },
   {
     "id": "RB-19",

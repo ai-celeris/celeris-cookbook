@@ -7,7 +7,7 @@ correctness report you can paste anywhere (the summary is Markdown).
 
 Measures per request: time-to-first-token and total latency (celeris-1 is a
 diffusion model that usually delivers the whole reply in one burst, so TTFT
-tends to equal total — it is measured anyway), throttles (429s), retries,
+tends to equal total, it is measured anyway), throttles (429s), retries,
 transport/HTTP errors, empty outputs, and truncation (finish_reason=length).
 Tasks with checkable answers (JSON parses + required keys, classification
 label match, short-answer match) are scored for correctness.
@@ -28,7 +28,7 @@ import statistics
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from openai import APIError, APIStatusError, OpenAI
 
@@ -78,7 +78,7 @@ EXTRACT_PROMPTS = [
 # still catches the defect whenever it occurs.
 
 CLASSIFY_PROMPTS = [
-    ("The new dashboard is fantastic — setup took two minutes and everything just worked.", "positive"),
+    ("The new dashboard is fantastic, setup took two minutes and everything just worked.", "positive"),
     ("Support never replied and the invoice was wrong twice in a row.", "negative"),
     ("The meeting has been moved from Tuesday to Wednesday afternoon.", "neutral"),
     ("I love how fast the responses are, genuinely impressive work.", "positive"),
@@ -144,7 +144,7 @@ def build_tasks() -> list:
         tasks.append(
             Task(
                 "classify",
-                f"What is the sentiment of this message — positive, negative, or neutral? Answer in a short sentence. Message: {text}",
+                f"What is the sentiment of this message, positive, negative, or neutral? Answer in a short sentence. Message: {text}",
                 normalize_max_tokens(256),
                 label_checker(label),
             )

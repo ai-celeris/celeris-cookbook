@@ -1,8 +1,8 @@
 """Minimal FastAPI app calling Celeris server-side.
 
 The browser talks only to THIS app; the Celeris API key comes from the
-environment — locally from your shell, in production from Fly.io's encrypted
-secret store (`fly secrets set`) — and never reaches the client.
+environment, locally from your shell, in production from Fly.io's encrypted
+secret store (`fly secrets set`), and never reaches the client.
 
     export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
     export CELERIS_API_KEY="<your-api-key>"
