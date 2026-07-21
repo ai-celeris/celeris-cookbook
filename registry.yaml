@@ -8,7 +8,7 @@
   path: examples/getting-started/getting-started.ipynb
   slug: getting-started
   order: 1
-  description: Make your first Celeris chat completion with the OpenAI SDK, with correct max_tokens normalization and input budgeting for the 4096-token window.
+  description: Make your first Celeris chat completion with the OpenAI SDK, with correct max_tokens normalization and input budgeting for the 4096-token window. Includes a streaming cell that times time-to-first-token.
   date: 2026-07-21
   authors:
     - celeris
