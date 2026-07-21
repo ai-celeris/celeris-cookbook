@@ -21,6 +21,7 @@
 - title: Streaming chatbot
   path: examples/chatbot/README.md
   slug: chatbot
+  order: 2
   description: A web chatbot that streams celeris-1 replies and measures time-to-first-token in the browser — a TypeScript server plus vanilla JS UI showcasing Celeris speed and latency.
   date: 2026-07-21
   authors:
