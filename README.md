@@ -6,9 +6,10 @@ API — published at [docs.celeris.ai/cookbook](https://docs.celeris.ai/cookbook
 Celeris serves **celeris-1**, a low-latency diffusion LLM, through an
 OpenAI-compatible API: the official OpenAI SDKs *are* the Celeris clients,
 pointed at your Celeris base URL. Each example lives in `examples/<name>/`
-as a Jupyter notebook or a runnable mini-app. The cookbook website is
-generated from this repository: `registry.yaml` is the index, and every
-registered page (README or notebook) becomes a page on the site.
+as a Jupyter notebook or a runnable mini-app — every example is standalone
+and clonable. The published site is generated from this repository:
+`registry.yaml` is the index, and every registered page (README or notebook)
+becomes a page under docs.celeris.ai/cookbook.
 
 ## Running the examples
 
@@ -52,27 +53,24 @@ normalization helpers.
 | `registry.yaml` | Index of examples: title, slug, description, tags, authors, date. The website builds from this. |
 | `authors.yaml` | Optional display metadata for authors (falls back to GitHub profile). |
 | `examples/` | One directory per example: a notebook or a mini-app with a README. |
-| `site/` | Static site generator that renders the registry and example pages. |
-| `scripts/` | Validation and deployment helpers. |
-| `infra/` | OpenTofu for the pieces the cookbook owns (assets bucket, deploy role). |
+| `scripts/` | Registry validation (`scripts/validate.py`). |
 
-## Building the website locally
+## Publishing
 
-```sh
-python3 -m pip install -r site/requirements.txt
-python3 site/build.py           # BASE_URL=/cookbook/ in production
-open site/dist/index.html
-```
+This repository is a **git submodule** of the Celeris docs site
+(`components/docs-external/cookbook` in marqo-ai/diffusion-llm-service). The
+docs build converts `registry.yaml` and each registered page into the
+`/cookbook` section of docs.celeris.ai, rendered in the docs theme with a
+filterable index.
 
-## Deployment
-
-Merges to `main` dispatch a deploy workflow in the private
-`ai-celeris/celeris-cookbook-deploy` repo, which builds the site and publishes
-it to S3 + CloudFront under `docs.celeris.ai/cookbook/` via GitHub OIDC. See
-`infra/README.md` for the architecture.
+On every merge to `main` here, the `Notify Docs Site` workflow dispatches the
+docs repo's `Bump Cookbook Submodule` workflow, which opens a
+submodule-pointer-bump PR; merging that PR republishes the site. To preview
+your example as it will appear on the site, build the docs repo's
+`components/docs-external` with the submodule pointed at your branch.
 
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). In short: add
 `examples/<your-example>/`, register it in `registry.yaml`, and open a pull
-request. CI validates the registry and builds the site on every PR.
+request. CI validates the registry and the examples on every PR.

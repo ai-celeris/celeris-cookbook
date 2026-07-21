@@ -4,6 +4,7 @@
 Checks (beyond the JSON schemas): registered paths exist, slugs are unique,
 and authors.yaml keys are well-formed. Run in CI on every PR and locally via:
 
+    python3 -m pip install -r scripts/requirements.txt
     python3 scripts/validate.py
 """
 
