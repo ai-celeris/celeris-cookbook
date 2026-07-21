@@ -7,6 +7,7 @@
 - title: Getting started with the Celeris API
   path: examples/getting-started/getting-started.ipynb
   slug: getting-started
+  order: 1
   description: Make your first Celeris chat completion with the OpenAI SDK, with correct max_tokens normalization and input budgeting for the 4096-token window.
   date: 2026-07-21
   authors:
@@ -20,7 +21,7 @@
 - title: Streaming chatbot
   path: examples/chatbot/README.md
   slug: chatbot
-  description: A web chatbot that streams celeris-1 replies and measures time-to-first-token in the browser — a TypeScript server plus vanilla JS UI showcasing Celeris latency.
+  description: A web chatbot that streams celeris-1 replies and measures time-to-first-token in the browser — a TypeScript server plus vanilla JS UI showcasing Celeris speed and latency.
   date: 2026-07-21
   authors:
     - celeris
@@ -67,3 +68,15 @@
     - agents
     - tool-use
     - token-budgeting
+
+- title: Benchmark harness
+  path: examples/benchmark/README.md
+  slug: benchmark
+  description: A mini benchmark you can run against your own workspace — latency percentiles (TTFT and total), throttle/retry/empty/truncation counts, and objective correctness scoring, reported as a Markdown table.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - benchmarking
+    - latency
+    - evals

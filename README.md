@@ -45,6 +45,7 @@ normalization helpers.
 | [`alert-triage-agent`](examples/alert-triage-agent) | Multi-step tool-use agent loop with a structured verdict, inside the 4096-token window. |
 | [`nextjs-vercel`](examples/nextjs-vercel) | Minimal full-stack Next.js deploy with the key in Vercel's managed env store. |
 | [`fastapi-fly`](examples/fastapi-fly) | Minimal FastAPI deploy with the key in Fly.io's encrypted secret store. |
+| [`benchmark`](examples/benchmark) | Mini benchmark harness: latency percentiles, reliability counters, correctness scoring. |
 
 ## Repository layout
 
