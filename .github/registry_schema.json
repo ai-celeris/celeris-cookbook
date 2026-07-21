@@ -52,6 +52,9 @@
           "example",
           "guide"
         ]
+      },
+      "featured": {
+        "type": "boolean"
       }
     },
     "required": [

@@ -45,6 +45,8 @@ normalization helpers.
   architecture for pairing celeris-1 with a larger model.
 - [Framework compatibility](guides/compatibility.md): verified snippets for
   common SDKs and frameworks.
+- [The voice turn budget](guides/voice-turn.md): the measured reply step
+  beside cited speech-step ranges.
 
 ## Examples
 
@@ -63,6 +65,7 @@ normalization helpers.
 | [`instant-search`](examples/instant-search) | Query rewriting in front of search at about 300 ms per rewrite. |
 | [`extraction-at-scale`](examples/extraction-at-scale) | Structured extraction over a corpus, 182 to 289 docs per minute measured. |
 | [`burst-rendering`](examples/burst-rendering) | Three ways to render a whole-reply-at-once model in a chat UI. |
+| [`task-fit`](examples/task-fit) | Evaluate your own prompts and get honest per-task fit verdicts. |
 
 ## Repository layout
 

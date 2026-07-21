@@ -1,0 +1,6 @@
+{"id": "math-multistep", "prompt": "A tank holds 2400 liters. Pump A fills 45 liters per minute, pump B drains 18 liters per minute, and both run together starting from empty. After 60 minutes pump B stops. How many more minutes does pump A need to fill the tank? Answer in a short sentence ending with the number of minutes.", "checker": "contains", "expected": "17.3"}
+{"id": "letters-count", "prompt": "How many times does the letter r appear in the word strawberry? Answer in a short sentence ending with the number.", "checker": "contains", "expected": "3"}
+{"id": "letters-reverse", "prompt": "Spell the word deployment backwards. Answer with just the reversed word in a short sentence.", "checker": "contains", "expected": "tnemyolped"}
+{"id": "logic-order", "prompt": "Ana is taller than Ben. Ben is taller than Cara. Dan is shorter than Cara. Who is the second shortest? Answer in a short sentence.", "checker": "contains", "expected": "cara"}
+{"id": "math-remainder", "prompt": "What is the remainder when 7 to the power of 5 is divided by 100? Answer in a short sentence ending with the number.", "checker": "contains", "expected": "7"}
+{"id": "calendar-reasoning", "prompt": "If the 1st of a month is a Friday and the month has 31 days, what weekday is the last day? Answer in a short sentence.", "checker": "contains", "expected": "sunday"}

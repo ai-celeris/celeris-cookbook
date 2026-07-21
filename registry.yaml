@@ -8,6 +8,7 @@
   path: examples/getting-started/getting-started.ipynb
   slug: getting-started
   order: 1
+  featured: true
   description: Make your first Celeris chat completion with the OpenAI SDK, with correct max_tokens normalization and input budgeting for the 4096-token window. Includes a streaming cell that times time-to-first-token.
   date: 2026-07-21
   authors:
@@ -22,7 +23,7 @@
   path: examples/chatbot/README.md
   slug: chatbot
   order: 2
-  description: A web chatbot that streams celeris-1 replies and measures time-to-first-token in the browser, a TypeScript server plus vanilla JS UI showcasing Celeris speed and latency.
+  description: See the speed in a browser. A web chatbot that measures time-to-first-token on every reply, built as a small TypeScript server plus a vanilla JS UI.
   date: 2026-07-21
   authors:
     - celeris
@@ -35,7 +36,7 @@
 - title: Next.js on Vercel
   path: examples/nextjs-vercel/README.md
   slug: nextjs-vercel
-  description: Maximally simple full-stack Next.js app calling Celeris from a server-side route handler, with the API key in Vercel's managed environment store, never in the browser, code, or git.
+  description: Put Celeris behind your own Next.js backend on Vercel. One route handler, with the API key in the managed environment store, never in the browser, code, or git.
   date: 2026-07-21
   authors:
     - celeris
@@ -48,7 +49,7 @@
 - title: FastAPI on Fly.io
   path: examples/fastapi-fly/README.md
   slug: fastapi-fly
-  description: Maximally simple FastAPI app calling Celeris server-side, with the API key in Fly.io's encrypted secret store (fly secrets set), never in the browser, code, or git.
+  description: Put Celeris behind your own FastAPI backend on Fly.io. One endpoint, with the API key in the encrypted secret store (fly secrets set), never in the browser, code, or git.
   date: 2026-07-21
   authors:
     - celeris
@@ -73,7 +74,7 @@
 - title: Benchmark harness
   path: examples/benchmark/README.md
   slug: benchmark
-  description: A mini benchmark you can run against your own workspace, latency percentiles (TTFT and total), throttle/retry/empty/truncation counts, and objective correctness scoring, reported as a Markdown table.
+  description: Measure your own workspace in under a minute. Latency percentiles (TTFT and total), throttle, retry, empty, and truncation counts, and objective correctness scoring in one Markdown report.
   date: 2026-07-21
   authors:
     - celeris
@@ -122,6 +123,7 @@
 - title: Instant regex, synthesized as you type
   path: examples/instant-suggest/README.md
   slug: instant-suggest
+  featured: true
   description: A web app that turns a plain-English description into a working regex on every typing pause, with in-browser test validation. Measured at about 0.8 s per synthesis end to end.
   date: 2026-07-21
   authors:
@@ -136,6 +138,7 @@
   slug: latency
   kind: guide
   order: 2
+  featured: true
   description: How to measure, budget, and design for latency. Metric vocabulary, the one-burst delivery model, the 4096-token window and 256-step max_tokens rules, and what becomes possible around 300 ms.
   date: 2026-07-21
   authors:
@@ -207,3 +210,29 @@
   tags:
     - guide
     - integrations
+
+- title: Task fit, bring your own prompts
+  path: examples/task-fit/README.md
+  slug: task-fit
+  description: Answer "is this model enough for my task?" with your own prompts. A JSONL evaluation harness with objective checkers, per-task verdicts, and latency percentiles. Committed runs show it telling the truth in both directions.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - evals
+    - benchmarking
+    - production
+
+- title: The voice turn budget
+  path: guides/voice-turn.md
+  slug: voice-turn
+  kind: guide
+  order: 5
+  description: Where the milliseconds go in a voice agent turn. Measured celeris-1 reply step at 288 ms median beside cited ranges for speech to text and text to speech, and the total both ways.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - guide
+    - voice
+    - latency

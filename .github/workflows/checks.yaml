@@ -63,7 +63,7 @@ jobs:
           python3 -c "import sys; sys.path.insert(0, 'examples/fastapi-fly'); import main; assert main.app.title"
 
   typescript:
-    name: Typecheck chatbot and demo proxy
+    name: TypeScript examples and demo proxy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
