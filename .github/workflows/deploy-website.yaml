@@ -1,0 +1,26 @@
+# Mirrors openai-cookbook's build-website.yaml: on merge to main, poke a
+# deploy hook that rebuilds and publishes the cookbook website. The hook URL
+# is a repository secret; until it is configured this workflow no-ops so main
+# stays green.
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call deploy hook
+        env:
+          DEPLOY_HOOK_URL: ${{ secrets.WEBSITE_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$DEPLOY_HOOK_URL" ]; then
+            echo "WEBSITE_DEPLOY_HOOK_URL secret is not configured; skipping deploy."
+            exit 0
+          fi
+          curl -fsS -X POST "$DEPLOY_HOOK_URL"
+          echo "Deploy hook called."

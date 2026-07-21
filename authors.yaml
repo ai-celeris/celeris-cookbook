@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=./.github/authors_schema.json
+
+# Optional display metadata for registry authors. Any author key missing here
+# falls back to their GitHub username, profile URL, and avatar.
+
+orlade:
+  name: Oliver Lade
+  website: https://github.com/orlade
+  avatar: https://avatars.githubusercontent.com/orlade

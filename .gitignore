@@ -1,0 +1,22 @@
+# Build output
+site/dist/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Secrets and local config — never commit these
+.env
+.env.*
+*.pem
+
+# OpenTofu
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.auto.tfvars.example
+
+# OS noise
+.DS_Store

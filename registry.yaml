@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=./.github/registry_schema.json
+
+# Index of cookbook examples. The website is generated from this file: each
+# entry becomes a page rendered from the README at `path`. See CONTRIBUTING.md
+# for the entry format and rules.
+
+- title: Getting started with the Celeris API
+  path: examples/getting-started/README.md
+  slug: getting-started
+  description: Make your first Celeris chat completion, with correct max_tokens normalization and input budgeting for the 4096-token window.
+  date: 2026-07-21
+  authors:
+    - orlade
+  tags:
+    - getting-started
+    - chat-completions
+    - token-budgeting

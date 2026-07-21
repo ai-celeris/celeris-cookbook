@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Build the cookbook site and publish it to S3 + CloudFront.
+#
+# This is what the deploy hook (or a human with AWS credentials) runs. It is
+# the same publish pattern as celeris-apps scripts/deploy for static
+# components: sync the built site to the private assets bucket, then
+# invalidate the distribution.
+#
+# Required environment:
+#   COOKBOOK_BUCKET           S3 bucket name (tofu output: site_bucket)
+#   COOKBOOK_DISTRIBUTION_ID  CloudFront distribution id (tofu output: distribution_id)
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+: "${COOKBOOK_BUCKET:?set COOKBOOK_BUCKET (see infra/ outputs)}"
+: "${COOKBOOK_DISTRIBUTION_ID:?set COOKBOOK_DISTRIBUTION_ID (see infra/ outputs)}"
+
+python3 -m pip install --quiet -r "$ROOT/site/requirements.txt"
+python3 "$ROOT/scripts/validate.py"
+python3 "$ROOT/site/build.py"
+
+aws s3 sync "$ROOT/site/dist" "s3://$COOKBOOK_BUCKET" --delete --no-cli-pager
+aws cloudfront create-invalidation \
+  --distribution-id "$COOKBOOK_DISTRIBUTION_ID" \
+  --paths '/*' --no-cli-pager >/dev/null
+
+echo "deployed cookbook site to s3://$COOKBOOK_BUCKET"
