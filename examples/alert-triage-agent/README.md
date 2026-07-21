@@ -54,6 +54,14 @@ byte of the exchange visible in the transcript, which makes the agent easy to
 debug. If your endpoint supports native `tools`, the loop body is the only
 thing that changes; the tools and verdict schema stay the same.
 
+Concretely: the current Celeris serving deployment rejects the `tools`
+parameter (`400: "auto" tool choice requires --enable-auto-tool-choice and
+--tool-call-parser to be set`), so prompt-driven is the pattern that works
+today. The model follows it well — in smoke testing, celeris-1 completed the
+triage in 4 tool turns with a correct, well-evidenced verdict on every run;
+the occasional truncated JSON reply is exactly what the corrective-nudge
+branch in the loop is for.
+
 ### Budgeting inside a 4096-token window
 
 Agent loops usually assume a big context. Celeris gives you 4096 tokens total,

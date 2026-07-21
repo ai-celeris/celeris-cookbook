@@ -73,7 +73,13 @@ async function handleChat(request: IncomingMessage, response: ServerResponse): P
     return;
   }
 
-  const client = new OpenAI({ baseURL: upstream.baseURL, apiKey: upstream.apiKey });
+  // maxRetries: 0 — the SDK's default silent retries add seconds of backoff
+  // before a 429 surfaces; this UI wants the rate-limited state immediately.
+  const client = new OpenAI({
+    baseURL: upstream.baseURL,
+    apiKey: upstream.apiKey,
+    maxRetries: 0,
+  });
   const maxTokens = normalizeMaxTokens(512);
   const messages = fitConversation(SYSTEM_PROMPT, history, maxTokens);
 

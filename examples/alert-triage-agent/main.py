@@ -150,9 +150,18 @@ def fit_messages(messages: list) -> list:
     return kept
 
 
+def celeris_base_url() -> str:
+    """CELERIS_BASE_URL is the endpoint root (no /v1); the OpenAI SDK wants
+    the versioned path, so append /v1 unless it is already there."""
+    base = (
+        os.environ.get("CELERIS_BASE_URL") or os.environ.get("OPENAI_BASE_URL") or ""
+    ).rstrip("/")
+    return base if base.endswith("/v1") else base + "/v1"
+
+
 def triage(alert_id: str) -> dict | None:
     client = OpenAI(
-        base_url=os.environ.get("CELERIS_BASE_URL") or os.environ.get("OPENAI_BASE_URL"),
+        base_url=celeris_base_url(),
         api_key=os.environ.get("CELERIS_API_KEY") or os.environ.get("OPENAI_API_KEY"),
     )
     model = os.environ.get("CELERIS_MODEL", "celeris-1")

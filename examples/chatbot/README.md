@@ -1,9 +1,12 @@
 # Streaming chatbot
 
 A small web chatbot on `celeris-1` built to show off the thing Celeris is for:
-**speed**. The browser measures time-to-first-token and streaming rate for
-every reply and prints them under each message — on a warm connection the
-first token typically lands fast enough to feel instant.
+**speed**. The browser measures time-to-first-token and total latency for
+every reply and prints them under each message. On a warm connection a full
+multi-sentence reply typically lands in **~250–300 ms end to end** — and
+because celeris-1 is a diffusion model that generates the whole reply in
+parallel, the stream usually arrives as a single burst (first token ≈ full
+response).
 
 The stack is deliberately tiny: a vanilla JS page served by a ~150-line
 Node/TypeScript server that streams chat completions through the

@@ -96,10 +96,17 @@ async function send(text) {
     messages.push({ role: "assistant", content: reply });
     const total = performance.now() - started;
     const ttft = firstTokenAt === null ? total : firstTokenAt - started;
-    const streamMs = Math.max(total - ttft, 1);
+    const streamMs = total - ttft;
+    // celeris-1 is a diffusion model: it usually generates the whole reply in
+    // parallel and the stream arrives as one burst, so a chars/s figure over
+    // the (near-zero) stream window is meaningless. Only show a rate when the
+    // delivery was actually spread out.
+    const rate =
+      streamMs > 50
+        ? ` · ${Math.round(reply.length / (streamMs / 1000))} chars/s`
+        : ` · ${reply.length} chars in one burst`;
     addStats(
-      `first token ${Math.round(ttft)} ms · total ${Math.round(total)} ms · ` +
-        `${Math.round(reply.length / (streamMs / 1000))} chars/s`,
+      `first token ${Math.round(ttft)} ms · total ${Math.round(total)} ms${rate}`,
     );
   } catch (error) {
     messages.pop();

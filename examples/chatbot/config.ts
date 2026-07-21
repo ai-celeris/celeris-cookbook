@@ -20,11 +20,15 @@ export interface Upstream {
 }
 
 export function resolveUpstream(userApiKey?: string): Upstream {
-  const baseURL =
+  const root =
     process.env.CELERIS_BASE_URL?.trim() || process.env.OPENAI_BASE_URL?.trim();
-  if (!baseURL) {
+  if (!root) {
     throw new Error("Set CELERIS_BASE_URL (or OPENAI_BASE_URL) first.");
   }
+  // CELERIS_BASE_URL is the endpoint root (no /v1); the OpenAI SDK wants the
+  // versioned path, so append /v1 unless it is already there.
+  const trimmed = root.replace(/\/+$/, "");
+  const baseURL = trimmed.endsWith("/v1") ? trimmed : `${trimmed}/v1`;
 
   const serverKey =
     process.env.CELERIS_API_KEY?.trim() || process.env.OPENAI_API_KEY?.trim();
