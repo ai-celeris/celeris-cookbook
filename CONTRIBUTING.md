@@ -30,6 +30,7 @@
    - title: Human-readable title
      path: examples/<name>/<name>.ipynb   # or examples/<name>/README.md
      slug: <name>
+     topic: getting-started
      description: One-sentence description shown on the index page.
      date: YYYY-MM-DD
      authors:
@@ -58,5 +59,8 @@ site's build from your README/notebook, no site code lives in this repo.
 - `path` must exist in the repository and be a `.md` or `.ipynb` file under
   `examples/`.
 - `slug` must be unique and URL-safe (`a-z0-9-`).
+- `topic` controls the sidebar group. Use one of `getting-started`,
+  `interactive-apps`, `agents`, `production`, or
+  `evals-and-optimization`.
 - `tags` are free-form but reuse existing tags where possible; the site's
   filter list is derived from them.
