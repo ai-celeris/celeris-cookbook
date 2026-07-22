@@ -11,7 +11,7 @@ account, general) with celeris-1 and measures what that costs in latency.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/realtime-classification
 pip install -r requirements.txt
 
@@ -25,7 +25,7 @@ python3 main.py
 
 A real run against a live workspace (2026-07-21):
 
-```text
+```text docs-e2e=skip
 routing accuracy: 10/10 (100%)
 latency: p50 260 ms, p95 917 ms, max 917 ms, mean 328 ms
 

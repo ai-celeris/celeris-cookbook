@@ -12,7 +12,7 @@ sample strings against the regex instantly in the browser.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/instant-suggest
 npm install
 
@@ -31,7 +31,7 @@ and the test strings below re-check themselves against it.
 
 Real runs against a live workspace (2026-07-21), end to end from the browser:
 
-```text
+```text docs-e2e=skip
 phone number pattern: synthesized in 839 ms (820 ms model time)
 email pattern:        synthesized in 779 ms (767 ms model time)
 date pattern:         synthesized in 844 ms (830 ms model time)

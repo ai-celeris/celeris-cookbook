@@ -9,7 +9,7 @@ const GUIDE = resolve(HERE, "../../guides/compatibility.md");
 const TSC = resolve(HERE, "node_modules/.bin/tsc");
 const TSX = resolve(HERE, "node_modules/.bin/tsx");
 
-const snippets = [...readFileSync(GUIDE, "utf8").matchAll(/```ts\n([\s\S]*?)```/g)].map(
+const snippets = [...readFileSync(GUIDE, "utf8").matchAll(/```ts[^\n]*\n([\s\S]*?)```/g)].map(
   (match) => match[1],
 );
 if (snippets.length !== 2) {

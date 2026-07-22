@@ -19,7 +19,7 @@ What it measures per request:
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/benchmark
 pip install -r requirements.txt
 
@@ -37,7 +37,7 @@ test. 429s are retried (up to twice, with backoff) and reported.
 
 A real run against a live workspace (2026-07-21, concurrency 2):
 
-```text
+```text docs-e2e=skip
 model celeris-1 · 48 requests (3x16 tasks) · concurrency 2
 
 completed 48/48 requests

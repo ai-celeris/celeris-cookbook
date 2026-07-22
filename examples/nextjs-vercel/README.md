@@ -21,7 +21,7 @@ normalize `max_tokens` (rules in the [latency guide](../../guides/latency.md)).
 
 ## Run locally
 
-```sh
+```sh docs-e2e=skip
 cd examples/nextjs-vercel
 npm install
 
@@ -37,7 +37,7 @@ npm run dev
 Store the key in Vercel's encrypted environment store, this is the whole
 point of the example:
 
-```sh
+```sh docs-e2e=skip
 npm i -g vercel
 vercel link                                  # create/link the project
 

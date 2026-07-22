@@ -32,7 +32,7 @@ prefer Render, `main.py` runs unchanged.
 
 ## Run locally
 
-```sh
+```sh docs-e2e=skip
 cd examples/fastapi-fly
 pip install -r requirements.txt
 
@@ -45,7 +45,7 @@ uvicorn main:app --reload
 
 ## Deploy to Fly.io
 
-```sh
+```sh docs-e2e=skip
 brew install flyctl            # or: curl -L https://fly.io/install.sh | sh
 fly auth login
 

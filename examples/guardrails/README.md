@@ -12,7 +12,7 @@ latency the gate adds.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/guardrails
 pip install -r requirements.txt
 
@@ -26,7 +26,7 @@ python3 main.py
 
 A real run against a live workspace (2026-07-21):
 
-```text
+```text docs-e2e=skip
 parseable verdicts: 8/8
 agreement with expected action: 8/8
 added latency per request: p50 293 ms, p95 1006 ms, mean 384 ms

@@ -9,7 +9,7 @@ launch, a strong-fit answer saves you a larger bill.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/task-fit
 pip install -r requirements.txt
 
@@ -22,7 +22,7 @@ python3 main.py your-tasks.jsonl --repetitions 5
 
 Task file format (one JSON object per line):
 
-```json
+```json docs-e2e=skip
 {"id": "route-1", "prompt": "...", "checker": "label_set",
  "labels": ["billing", "technical"], "expected": "billing"}
 ```

@@ -6,6 +6,7 @@ import io
 import json
 import os
 import re
+import shlex
 import subprocess
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -14,7 +15,10 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-FENCE = re.compile(r"^```([^\n]*)\n(.*?)^```$", re.MULTILINE | re.DOTALL)
+FENCE = re.compile(
+    r"^```(?P<language>[^\s`]*)?(?P<meta>[^\n]*)\n(?P<code>.*?)^```$",
+    re.MULTILINE | re.DOTALL,
+)
 SUPPORTED_FENCES = {"json", "python", "sh", "text", "ts"}
 
 
@@ -23,8 +27,15 @@ def registered_sources() -> list[Path]:
     return [ROOT / entry["path"] for entry in registry]
 
 
-def markdown_blocks(path: Path) -> list[tuple[str, str]]:
-    return [(match.group(1), match.group(2)) for match in FENCE.finditer(path.read_text())]
+def metadata(raw: str) -> dict[str, str]:
+    return dict(token.split("=", 1) for token in shlex.split(raw) if "=" in token)
+
+
+def markdown_blocks(text: str) -> list[tuple[str, dict[str, str], str]]:
+    return [
+        (match.group("language"), metadata(match.group("meta")), match.group("code"))
+        for match in FENCE.finditer(text)
+    ]
 
 
 def notebook_cells(path: Path) -> list[str]:
@@ -32,17 +43,36 @@ def notebook_cells(path: Path) -> list[str]:
     return ["".join(cell.get("source", [])) for cell in notebook["cells"] if cell["cell_type"] == "code"]
 
 
+def check_e2e_metadata(source: Path, index: int, values: dict[str, str]) -> None:
+    classification = values.get("docs-e2e") or values.get("classification")
+    if classification not in {"live", "skip"}:
+        raise ValueError(f"{source.relative_to(ROOT)}: snippet {index} needs docs-e2e=live|skip")
+    if classification == "live" and not (values.get("expect") or values.get("expectation")):
+        raise ValueError(f"{source.relative_to(ROOT)}: live snippet {index} needs expect=...")
+
+
 def check_static_syntax(sources: list[Path]) -> tuple[int, int]:
     fenced = 0
     cells = 0
     for source in sources:
         if source.suffix == ".ipynb":
+            notebook = json.loads(source.read_text())
+            check_e2e_metadata(source, 1, notebook.get("metadata", {}).get("docs_e2e", {}))
+            for cell_index, cell in enumerate(notebook["cells"], 1):
+                if cell["cell_type"] != "markdown":
+                    continue
+                for fence_index, (_language, values, _code) in enumerate(
+                    markdown_blocks("".join(cell.get("source", []))), 1
+                ):
+                    check_e2e_metadata(source, cell_index * 1000 + fence_index, values)
+                    fenced += 1
             for index, code in enumerate(notebook_cells(source), 1):
                 compile(code, f"{source.relative_to(ROOT)}:cell-{index}", "exec")
                 cells += 1
             continue
 
-        for index, (language, code) in enumerate(markdown_blocks(source), 1):
+        for index, (language, values, code) in enumerate(markdown_blocks(source.read_text()), 1):
+            check_e2e_metadata(source, index, values)
             if language not in SUPPORTED_FENCES:
                 raise ValueError(f"{source.relative_to(ROOT)}: fence {index} has unsupported language {language!r}")
             if language == "python":
@@ -137,7 +167,7 @@ def execute_python_snippets() -> int:
                 executed += 1
 
             for guide in sorted((ROOT / "guides").glob("*.md")):
-                for index, (language, code) in enumerate(markdown_blocks(guide), 1):
+                for index, (language, _values, code) in enumerate(markdown_blocks(guide.read_text()), 1):
                     if language != "python":
                         continue
                     namespace = {"__name__": "__main__"}

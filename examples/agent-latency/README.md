@@ -11,7 +11,7 @@ clock per step, and shows how the totals compound.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/agent-latency
 pip install -r requirements.txt
 
@@ -27,7 +27,7 @@ A real run against a live workspace (2026-07-21). The agent answered a
 customer question ("where is my order, can I still get a refund?") using
 three tools:
 
-```text
+```text docs-e2e=skip
   step 1:   1093 ms  get_order({"order_id": "ORD-1042"})
   step 2:    269 ms  get_shipping_status({"tracking_id": "TRK-88231"})
   step 3:    282 ms  get_refund_policy({})

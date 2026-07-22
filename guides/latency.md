@@ -32,7 +32,7 @@ mixed tasks at 687 ms total with TTFT within 1 ms of total in every sample.
 
 Wall clock for one request is roughly:
 
-```text
+```text docs-e2e=skip
 total = network round trip + server time
 ```
 
@@ -67,7 +67,7 @@ split by setting `max_tokens`, which must be a multiple of 256 between 256
 and 1024. Reserve output first, then fit the input in what remains. The
 canonical helpers, used across this cookbook:
 
-```python
+```python docs-e2e=skip
 TOTAL_TOKEN_LIMIT = 4096
 MIN_OUTPUT_TOKENS = 256
 MAX_OUTPUT_TOKENS = 1024

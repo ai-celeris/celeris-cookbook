@@ -16,7 +16,7 @@ the rest. It uses no speech dependencies; it is a budget, not a voice app.
 Ten realistic voice turns (timers, lookups, small talk, a translation),
 `max_tokens` 256, one to two sentence replies, run live on 2026-07-22:
 
-```text
+```text docs-e2e=skip
 p50 288 ms, mean 363 ms, min 270 ms, max 1020 ms (n=10)
 ```
 

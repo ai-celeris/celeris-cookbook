@@ -24,7 +24,7 @@ Every snippet below was run against a live workspace on 2026-07-22.
 
 Install the client with `pip install openai`.
 
-```python
+```python docs-e2e=live expect=nonempty
 import os
 from openai import OpenAI
 
@@ -44,7 +44,7 @@ print(reply.choices[0].message.content)
 
 Install the client with `npm install openai`.
 
-```ts
+```ts docs-e2e=live expect=nonempty
 import OpenAI from "openai";
 
 const baseURL = process.env.CELERIS_BASE_URL;
@@ -71,7 +71,7 @@ Use the `@ai-sdk/openai-compatible` provider. Note the parameter name:
 `maxOutputTokens`, same 256-step rule.
 Install both packages with `npm install ai @ai-sdk/openai-compatible`.
 
-```ts
+```ts docs-e2e=live expect=nonempty
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText } from "ai";
 
@@ -91,6 +91,7 @@ const { text } = await generateText({
   prompt: "Say hello in five words.",
   maxOutputTokens: 256,
 });
+console.log(text);
 ```
 
 ## LangChain (Python)
@@ -100,7 +101,7 @@ Current versions map the `max_tokens` constructor argument to
 `max_completion_tokens`, which the Celeris endpoint does not use. Put the
 required wire field in `extra_body` instead:
 
-```python
+```python docs-e2e=live expect=nonempty
 import os
 from langchain_openai import ChatOpenAI
 
@@ -118,7 +119,7 @@ print(llm.invoke("Say hello in five words.").content)
 Prefix the model name with `openai/` so LiteLLM uses its OpenAI-compatible
 path. Install it with `pip install litellm`.
 
-```python
+```python docs-e2e=live expect=nonempty
 import os
 import litellm
 
@@ -140,7 +141,7 @@ with a server error. Install the integration with
 `pip install instructor openai pydantic`, then use `Mode.MD_JSON`, which is
 prompt-based and works:
 
-```python
+```python docs-e2e=live expect=json_fields:name,country
 import os
 import instructor
 from openai import OpenAI
@@ -163,7 +164,7 @@ city = client.chat.completions.create(
     response_model=City,
     max_tokens=256,
 )
-# City(name='Sydney', country='Australia')
+print(city.model_dump_json())
 ```
 
 ## Known limits across all frameworks

@@ -5,7 +5,7 @@ the agent investigates by calling tools, `get_alert`, `search_runbooks`,
 `check_recent_deploys`, over synthetic fixture data, reasons across the
 results, and emits a structured verdict:
 
-```json
+```json docs-e2e=skip
 {
   "root_cause": "…",
   "evidence": ["…"],
@@ -21,7 +21,7 @@ actually correlate evidence rather than pattern-match.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/alert-triage-agent
 pip install -r requirements.txt
 
@@ -38,7 +38,7 @@ You'll see each tool call as the agent makes it, then the final verdict.
 Each turn, the model must answer with **exactly one JSON object**. That is
 either a tool call:
 
-```json
+```json docs-e2e=skip
 {"tool": "search_runbooks", "args": {"query": "checkout-api latency"}}
 ```
 

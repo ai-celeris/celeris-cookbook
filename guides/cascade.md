@@ -8,7 +8,7 @@ the cases that need it, off the critical path where possible.
 
 ## The shape
 
-```text
+```text docs-e2e=skip
             request
                |
                v
@@ -44,7 +44,7 @@ The fast call blocks; the slow call runs in the background and reports
 later. This complete demo uses a delayed local function for the slow model,
 replace `call_large_model` with the provider you use in production:
 
-```python
+```python docs-e2e=live expect=initial_nonempty
 import asyncio
 import os
 

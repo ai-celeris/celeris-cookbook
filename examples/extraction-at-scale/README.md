@@ -13,7 +13,7 @@ truth.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/extraction-at-scale
 pip install -r requirements.txt
 
