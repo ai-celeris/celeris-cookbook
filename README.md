@@ -77,7 +77,7 @@ budgeting helpers.
 
 | Path | Purpose |
 | --- | --- |
-| `registry.yaml` | Index of examples: title, slug, description, tags, authors, date. The website builds from this. |
+| `registry.yaml` | Index of examples: title, slug, topic, description, tags, authors, date. The website builds its topic-grouped sidebar from this. |
 | `authors.yaml` | Optional display metadata for authors (falls back to GitHub profile). |
 | `examples/` | One directory per example: a notebook or a mini-app with a README. |
 | `scripts/` | Registry validation (`scripts/validate.py`). |

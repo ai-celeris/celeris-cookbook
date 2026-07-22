@@ -16,6 +16,16 @@
         "type": "string",
         "pattern": "^[a-z0-9][a-z0-9-]*$"
       },
+      "topic": {
+        "type": "string",
+        "enum": [
+          "getting-started",
+          "interactive-apps",
+          "agents",
+          "production",
+          "evals-and-optimization"
+        ]
+      },
       "description": {
         "type": "string",
         "minLength": 1
@@ -61,6 +71,7 @@
       "title",
       "path",
       "slug",
+      "topic",
       "description",
       "date",
       "authors",
