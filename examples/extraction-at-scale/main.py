@@ -72,11 +72,6 @@ def celeris_base_url() -> str:
     return base if base.endswith("/v1") else base + "/v1"
 
 
-def normalize_max_tokens(requested: int) -> int:
-    """max_tokens must be a multiple of 256 in [256, 1024]."""
-    return min(max(-(-requested // 256) * 256, 256), 1024)
-
-
 PROMPT = (
     "Extract from this invoice text as JSON with keys "
     '"vendor" (string), "invoice_number" (string), "total_usd" (number), '
@@ -145,7 +140,7 @@ async def call_model(client: AsyncOpenAI, model: str, prompt: str, stats: Stats)
             response = await client.chat.completions.create(
                 model=model,
                 messages=[{"role": "user", "content": prompt}],
-                max_tokens=normalize_max_tokens(256),
+                max_tokens=256,  # small extraction object; general default is 2048
                 temperature=0.0,
             )
             return response.choices[0].message.content or ""

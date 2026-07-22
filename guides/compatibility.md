@@ -5,9 +5,10 @@ that speaks to OpenAI works by pointing it at your Celeris base URL. Two
 rules apply everywhere:
 
 1. The SDK-level base URL is your endpoint root **plus `/v1`**.
-2. `max_tokens` (whatever the framework calls it) must be a multiple of 256
-   between 256 and 1024. See the [latency guide](latency.md) for the full
-   budgeting rules.
+2. Use 2048 output tokens by default (whatever the framework calls the
+   parameter), or a smaller value for a deliberately short reply. See the
+   [latency guide](latency.md) for the 8192-token total and 2048-token input
+   limits.
 
 Every snippet below was run against a live workspace on 2026-07-22.
 
@@ -68,7 +69,8 @@ console.log(reply.choices[0].message.content);
 ## Vercel AI SDK
 
 Use the `@ai-sdk/openai-compatible` provider. Note the parameter name:
-`maxOutputTokens`, same 256-step rule.
+`maxOutputTokens`. This five-word example deliberately uses 256 rather than
+the 2048-token default.
 Install both packages with `npm install ai @ai-sdk/openai-compatible`.
 
 ```ts docs-e2e=live expect=nonempty

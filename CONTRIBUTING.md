@@ -8,9 +8,10 @@
   and shows the expected output.
 - **OpenAI SDK first**: Celeris is OpenAI-compatible; use the official OpenAI
   SDK pointed at the Celeris base URL rather than hand-rolled HTTP.
-- **Budget-aware**: respect the 4096-token total window. `max_tokens` must be a
-  multiple of 256 in 256-1024; the rest of the window is your input budget.
-  Reuse the normalization helpers from the getting-started notebook.
+- **Budget-aware**: respect the 8192-token total window and 2048-token input
+  cap. Use `max_tokens=2048` by default; choose a smaller value only when the
+  example deliberately asks for a shorter output. Reuse the budgeting helpers
+  from the getting-started notebook.
 - **Offline-friendly checks**: CI never calls the real API. Anything that runs
   in CI (typechecks, compiles, registry validation) must work without
   credentials.

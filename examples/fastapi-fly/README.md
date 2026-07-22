@@ -16,8 +16,9 @@ Five files:
 | `fly.toml` | Fly app config, contains **no** secrets. |
 
 `main.py` carries the two Celeris conventions used across this cookbook:
-append `/v1` to `CELERIS_BASE_URL` for the OpenAI SDK, and normalize
-`max_tokens` (rules in the [latency guide](../../guides/latency.md)).
+append `/v1` to `CELERIS_BASE_URL` for the OpenAI SDK, and use the default
+`max_tokens=2048` output budget (rules in the
+[latency guide](../../guides/latency.md)).
 
 ## Why Fly.io (and not Render/Railway/…)?
 

@@ -60,7 +60,7 @@ async def fast_answer(question: str) -> str:
     response = await client.chat.completions.create(
         model="celeris-1",
         messages=[{"role": "user", "content": question}],
-        max_tokens=256,  # multiple of 256 in [256, 1024]
+        max_tokens=256,  # deliberately short fast-path draft; default is 2048
         temperature=0.2,
     )
     return response.choices[0].message.content or ""

@@ -12,11 +12,7 @@ function celerisBaseUrl(): string {
   return root.endsWith("/v1") ? root : `${root}/v1`;
 }
 
-// Celeris accepts max_tokens only as a multiple of 256 in [256, 1024], inside
-// a 4096-token total window shared with the input.
-function normalizeMaxTokens(requested: number): number {
-  return Math.min(Math.max(Math.ceil(requested / 256) * 256, 256), 1024);
-}
+const DEFAULT_MAX_OUTPUT_TOKENS = 2048;
 
 export async function POST(request: Request) {
   const { prompt } = await request.json().catch(() => ({ prompt: "" }));
@@ -34,7 +30,7 @@ export async function POST(request: Request) {
     const completion = await client.chat.completions.create({
       model: process.env.CELERIS_MODEL ?? "celeris-1",
       messages: [{ role: "user", content: prompt.slice(0, 8000) }],
-      max_tokens: normalizeMaxTokens(512),
+      max_tokens: DEFAULT_MAX_OUTPUT_TOKENS,
       temperature: 0.3,
     });
     return Response.json({ reply: completion.choices[0]?.message?.content ?? "" });

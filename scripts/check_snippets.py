@@ -194,8 +194,8 @@ def execute_python_snippets() -> int:
         if body.get("model") != "celeris-1":
             raise AssertionError(f"unexpected model: {body.get('model')}")
         max_tokens = body.get("max_tokens")
-        if max_tokens not in {256, 512, 768, 1024}:
-            raise AssertionError(f"unsupported max_tokens: {max_tokens}")
+        if max_tokens not in {256, 512, 2048}:
+            raise AssertionError(f"unexpected cookbook max_tokens: {max_tokens}")
         for unsupported in ("response_format", "tools"):
             if unsupported in body:
                 raise AssertionError(f"snippet sent unsupported field: {unsupported}")

@@ -71,11 +71,6 @@ def celeris_base_url() -> str:
     return base if base.endswith("/v1") else base + "/v1"
 
 
-def normalize_max_tokens(requested: int) -> int:
-    """max_tokens must be a multiple of 256 in [256, 1024]."""
-    return min(max(-(-requested // 256) * 256, 256), 1024)
-
-
 REWRITE_PROMPT = (
     "Rewrite this search query into 3 to 6 lowercase keywords for a keyword "
     "search over product documentation. Expand abbreviations and add close "
@@ -109,7 +104,7 @@ def rewrite(client: OpenAI, model: str, query: str) -> tuple:
             response = client.chat.completions.create(
                 model=model,
                 messages=[{"role": "user", "content": REWRITE_PROMPT + query}],
-                max_tokens=normalize_max_tokens(256),
+                max_tokens=256,  # short query rewrite; general default is 2048
                 temperature=0.0,
             )
             break

@@ -6,8 +6,9 @@ it. Two facts drive everything else:
 
 1. celeris-1 is a diffusion model. It generates the whole reply in parallel
    and usually delivers it as **one burst**, not token by token.
-2. Requests share a **4096-token window** between input and output, and the
-   wire `max_tokens` value must be a multiple of 256 between 256 and 1024.
+2. Requests have an **8192-token total window**, with input capped at **2048
+   tokens**. Cookbook examples request **2048 output tokens by default** and
+   use smaller values only for deliberately short replies.
 
 ## The vocabulary
 
@@ -62,39 +63,31 @@ Because the reply arrives whole:
 
 ## Budgeting the token window
 
-One request has 4096 tokens for input and output combined. You choose the
-split by setting `max_tokens`, which must be a multiple of 256 between 256
-and 1024. Reserve output first, then fit the input in what remains. The
-canonical helpers, used across this cookbook:
+One request has 8192 tokens for input and output combined, and input alone
+cannot exceed 2048 tokens. `max_tokens` reserves the output canvas. The
+cookbook defaults it to 2048; a label, small JSON object, or other explicitly
+short result can reserve less. The input budget is the smaller of the
+2048-token input cap and the room left in the total window:
 
 ```python docs-e2e=skip
-TOTAL_TOKEN_LIMIT = 4096
-MIN_OUTPUT_TOKENS = 256
-MAX_OUTPUT_TOKENS = 1024
-OUTPUT_TOKEN_STEP = 256
+TOTAL_TOKEN_LIMIT = 8192
+MAX_INPUT_TOKENS = 2048
+DEFAULT_MAX_OUTPUT_TOKENS = 2048
 
 
-def normalize_max_tokens(requested: int) -> int:
-    """Round up to a supported 256-token step, clamped to [256, 1024]."""
-    if requested <= MIN_OUTPUT_TOKENS:
-        return MIN_OUTPUT_TOKENS
-    if requested >= MAX_OUTPUT_TOKENS:
-        return MAX_OUTPUT_TOKENS
-    step = OUTPUT_TOKEN_STEP
-    return ((requested + step - 1) // step) * step
-
-
-def input_token_budget(max_tokens: int) -> int:
-    """Tokens left for ALL input messages after the output reservation."""
-    return TOTAL_TOKEN_LIMIT - normalize_max_tokens(max_tokens)
+def input_token_budget(max_tokens: int = DEFAULT_MAX_OUTPUT_TOKENS) -> int:
+    """Maximum input tokens allowed with this output reservation."""
+    if not 0 < max_tokens < TOTAL_TOKEN_LIMIT:
+        raise ValueError("max_tokens must be between 1 and 8191")
+    return min(MAX_INPUT_TOKENS, TOTAL_TOKEN_LIMIT - max_tokens)
 ```
 
-Worked example: you request 512 output tokens. That is already a legal
-value, so the reservation is 512 and your input budget is 3584 tokens for
-all messages combined, including the chat template. Request 300 and the
-reservation rounds **up** to 512 (rounding down would silently shrink the
-output you asked for). Request 2000 and it clamps to 1024, leaving 3072 for
-input.
+With the default 2048-token output reservation, the input budget is 2048
+tokens because the input cap binds before the 8192-token total. A short
+classification can request 256 output tokens and still has the same 2048-token
+input cap. An
+unusually large 7000-token output reservation leaves only 1192 tokens for
+input because the total-window limit then binds.
 
 Celeris does not expose its tokenizer. Estimate about 4 bytes per token,
 leave an allowance for the chat template (the cookbook helpers use 8 tokens
@@ -103,8 +96,9 @@ not clip for you; an oversized request fails.
 
 Two budgeting habits from the examples:
 
-- **Small canvas by default.** Labels, verdicts, and tool calls fit in 256.
-  Every step of reservation you do not use is input room you keep.
+- **Use the default unless the task is clearly short.** General examples use
+  2048 output tokens. Labels, compact verdicts, and tool calls deliberately
+  reserve 256 or 512 instead.
 - **Drop oldest first.** Chat history and agent transcripts should evict
   their oldest turns, never the system prompt or the newest message.
 

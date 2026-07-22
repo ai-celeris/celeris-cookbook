@@ -30,10 +30,7 @@ def celeris_base_url() -> str:
     return base if base.endswith("/v1") else base + "/v1"
 
 
-def normalize_max_tokens(requested: int) -> int:
-    """Celeris accepts max_tokens only as a multiple of 256 in [256, 1024],
-    inside a 4096-token total window shared with the input."""
-    return min(max(-(-requested // 256) * 256, 256), 1024)
+DEFAULT_MAX_OUTPUT_TOKENS = 2048
 
 
 class GenerateRequest(BaseModel):
@@ -67,7 +64,7 @@ def generate(request: GenerateRequest) -> dict:
         completion = client.chat.completions.create(
             model=os.environ.get("CELERIS_MODEL", "celeris-1"),
             messages=[{"role": "user", "content": prompt[:8000]}],
-            max_tokens=normalize_max_tokens(512),
+            max_tokens=DEFAULT_MAX_OUTPUT_TOKENS,
             temperature=0.3,
         )
     except Exception as error:  # noqa: BLE001 - single boundary to the upstream

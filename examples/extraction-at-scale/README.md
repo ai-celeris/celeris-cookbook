@@ -57,7 +57,7 @@ Three things worth reading off that table:
 - **asyncio + a semaphore.** `AsyncOpenAI` with a semaphore per concurrency
   level. 429s sleep and retry up to twice, and are reported, not hidden.
 - **Small canvas per document.** Each snippet plus the instruction fits far
-  inside the input budget, and `max_tokens` stays at 256 (see the
+  inside the input budget, and this compact JSON task uses `max_tokens=256` (see the
   [latency guide](../../guides/latency.md) for the budgeting rules).
 - **Repair, then give up.** Unparseable output gets exactly one repair call
   with the broken text. At a few hundred milliseconds per attempt, a repair

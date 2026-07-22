@@ -48,8 +48,8 @@ breach, an account deletion request).
   ...}`. The parser tolerates code fences and surrounding prose, validates
   the action against the allowed set, and treats anything else as a failed
   check (fail closed or open is your call, make it deliberately).
-- `max_tokens` is normalized to 256 (see the [latency guide](../../guides/latency.md)).
-  Verdicts are short by design.
+- This deliberately short verdict uses `max_tokens=256` (see the
+  [latency guide](../../guides/latency.md)).
 
 ## Where this pattern fits
 

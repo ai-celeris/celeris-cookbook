@@ -9,7 +9,11 @@ the truth in both directions; a poor-fit result is as useful as a good one.
 Task file format (one JSON object per line):
 
     {"id": "route-1", "prompt": "...", "checker": "label_set",
-     "labels": ["billing", "technical"], "expected": "billing"}
+     "labels": ["billing", "technical"], "expected": "billing",
+     "max_tokens": 256}
+
+max_tokens is optional and defaults to 2048. Set it lower when the task
+explicitly asks for a short output.
 
 Checkers:
     exact       reply equals "expected" (after trimming)
@@ -91,7 +95,9 @@ def load_tasks(path: Path) -> list:
                 "task": benchmark.Task(
                     category=str(spec.get("checker", "none")),
                     prompt=str(spec["prompt"]),
-                    max_tokens=benchmark.normalize_max_tokens(int(spec.get("max_tokens", 256))),
+                    max_tokens=benchmark.max_output_tokens(
+                        int(spec["max_tokens"]) if "max_tokens" in spec else None
+                    ),
                     checker=build_checker(spec),
                 ),
             }

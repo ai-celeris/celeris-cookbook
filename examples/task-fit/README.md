@@ -24,11 +24,14 @@ Task file format (one JSON object per line):
 
 ```json docs-e2e=skip
 {"id": "route-1", "prompt": "...", "checker": "label_set",
- "labels": ["billing", "technical"], "expected": "billing"}
+ "labels": ["billing", "technical"], "expected": "billing",
+ "max_tokens": 256}
 ```
 
 Checkers: `exact`, `contains`, `json_keys` (with `expected_keys`),
 `label_set` (with `labels`), or `none` (latency and reliability only). The
+optional `max_tokens` field defaults to 2048; the shipped tasks set it to 256
+because they all request a short sentence, label, or compact JSON object. The
 measurement loop, checkers, and percentile math are imported from the
 [benchmark harness](../benchmark), not duplicated.
 
