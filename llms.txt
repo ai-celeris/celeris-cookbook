@@ -15,6 +15,8 @@ set. The index of examples is registry.yaml.
   delivery model, token-window budgeting, what becomes possible at 300 ms.
 - [The cascade](guides/cascade.md): fast model in the hot path, larger model
   refining or escalating asynchronously.
+- [Shell tasks with the CLI](guides/cli-shell-tasks.md): semantic operations
+  in shell pipes with the official CLI.
 
 ## Examples
 
