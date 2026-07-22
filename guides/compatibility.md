@@ -16,11 +16,13 @@ Every snippet below was run against a live workspace on 2026-07-22.
 | OpenAI SDK (Python) | Verified | `max_tokens` | Used across this cookbook. |
 | OpenAI SDK (JS/TS) | Verified | `max_tokens` | Used across this cookbook. |
 | Vercel AI SDK | Verified | `maxOutputTokens` | Use the `@ai-sdk/openai-compatible` provider. |
-| LangChain (Python) | Verified | `max_tokens` | `langchain-openai` package. |
+| LangChain (Python) | Verified | `extra_body.max_tokens` | Current `langchain-openai` otherwise renames the wire field. |
 | LiteLLM | Verified | `max_tokens` | Prefix the model with `openai/`. |
 | Instructor | Verified with `Mode.MD_JSON` | `max_tokens` | Tool-calling and `Mode.JSON` modes do not work; see notes. |
 
 ## OpenAI SDK (Python)
+
+Install the client with `pip install openai`.
 
 ```python
 import os
@@ -40,12 +42,20 @@ print(reply.choices[0].message.content)
 
 ## OpenAI SDK (JS/TS)
 
+Install the client with `npm install openai`.
+
 ```ts
 import OpenAI from "openai";
 
+const baseURL = process.env.CELERIS_BASE_URL;
+const apiKey = process.env.CELERIS_API_KEY;
+if (!baseURL || !apiKey) {
+  throw new Error("Set CELERIS_BASE_URL and CELERIS_API_KEY first.");
+}
+
 const client = new OpenAI({
-  baseURL: process.env.CELERIS_BASE_URL.replace(/\/+$/, "") + "/v1",
-  apiKey: process.env.CELERIS_API_KEY,
+  baseURL: baseURL.replace(/\/+$/, "") + "/v1",
+  apiKey,
 });
 const reply = await client.chat.completions.create({
   model: "celeris-1",
@@ -59,15 +69,22 @@ console.log(reply.choices[0].message.content);
 
 Use the `@ai-sdk/openai-compatible` provider. Note the parameter name:
 `maxOutputTokens`, same 256-step rule.
+Install both packages with `npm install ai @ai-sdk/openai-compatible`.
 
 ```ts
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText } from "ai";
 
+const baseURL = process.env.CELERIS_BASE_URL;
+const apiKey = process.env.CELERIS_API_KEY;
+if (!baseURL || !apiKey) {
+  throw new Error("Set CELERIS_BASE_URL and CELERIS_API_KEY first.");
+}
+
 const celeris = createOpenAICompatible({
   name: "celeris",
-  baseURL: process.env.CELERIS_BASE_URL.replace(/\/+$/, "") + "/v1",
-  apiKey: process.env.CELERIS_API_KEY,
+  baseURL: baseURL.replace(/\/+$/, "") + "/v1",
+  apiKey,
 });
 const { text } = await generateText({
   model: celeris("celeris-1"),
@@ -78,6 +95,11 @@ const { text } = await generateText({
 
 ## LangChain (Python)
 
+Install the integration with `pip install langchain-openai`.
+Current versions map the `max_tokens` constructor argument to
+`max_completion_tokens`, which the Celeris endpoint does not use. Put the
+required wire field in `extra_body` instead:
+
 ```python
 import os
 from langchain_openai import ChatOpenAI
@@ -86,7 +108,7 @@ llm = ChatOpenAI(
     model="celeris-1",
     base_url=os.environ["CELERIS_BASE_URL"].rstrip("/") + "/v1",
     api_key=os.environ["CELERIS_API_KEY"],
-    max_tokens=256,
+    extra_body={"max_tokens": 256},
 )
 print(llm.invoke("Say hello in five words.").content)
 ```
@@ -94,7 +116,7 @@ print(llm.invoke("Say hello in five words.").content)
 ## LiteLLM
 
 Prefix the model name with `openai/` so LiteLLM uses its OpenAI-compatible
-path.
+path. Install it with `pip install litellm`.
 
 ```python
 import os
@@ -114,7 +136,9 @@ print(response.choices[0].message.content)
 
 Instructor's default mode uses native tool calling, which the endpoint does
 not support, and `Mode.JSON` sends `response_format`, which currently fails
-with a server error. Use `Mode.MD_JSON`, which is prompt-based and works:
+with a server error. Install the integration with
+`pip install instructor openai pydantic`, then use `Mode.MD_JSON`, which is
+prompt-based and works:
 
 ```python
 import os

@@ -1,0 +1,7 @@
+-r requirements-dev.txt
+
+# Frameworks used by the executable snippets in guides/compatibility.md.
+openai==2.46.0
+langchain-openai==1.4.0
+litellm==1.93.0
+instructor==1.15.4

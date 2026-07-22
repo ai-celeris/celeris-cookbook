@@ -2,6 +2,7 @@
 max_tokens is a multiple of 256 in [256, 1024], and the base URL gains /v1."""
 
 import pytest
+
 from conftest import load_example
 
 benchmark = load_example("benchmark", "examples/benchmark/main.py")

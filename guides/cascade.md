@@ -40,8 +40,9 @@ Three common variants:
 
 ## A runnable sketch
 
-The pattern in about 30 lines. The fast call blocks; the slow call runs in
-the background and reports later:
+The fast call blocks; the slow call runs in the background and reports
+later. This complete demo uses a delayed local function for the slow model,
+replace `call_large_model` with the provider you use in production:
 
 ```python
 import asyncio
@@ -65,18 +66,45 @@ async def fast_answer(question: str) -> str:
     return response.choices[0].message.content or ""
 
 
+async def call_large_model(question: str, draft: str) -> str:
+    """Stand-in for your slower model provider."""
+    await asyncio.sleep(1)
+    return f"Refined answer for {question!r}: {draft}"
+
+
+async def publish_update(improved: str) -> None:
+    """Replace this with a WebSocket, event, database write, or callback."""
+    print(f"refined: {improved}")
+
+
 async def refine_later(question: str, draft: str) -> None:
-    # Call your larger model here (any provider, any latency). It is off
-    # the critical path, so its response time no longer sets yours.
-    improved = await call_large_model(question, draft)  # noqa: F821
-    await publish_update(improved)  # noqa: F821
+    improved = await call_large_model(question, draft)
+    await publish_update(improved)
+
+
+background_tasks: set[asyncio.Task[None]] = set()
 
 
 async def handle(question: str) -> str:
-    draft = await fast_answer(question)          # user waits ~300 ms
-    asyncio.create_task(refine_later(question, draft))  # user does not wait
+    draft = await fast_answer(question)  # user waits on the fast path only
+    task = asyncio.create_task(refine_later(question, draft))
+    background_tasks.add(task)
+    task.add_done_callback(background_tasks.discard)
     return draft
+
+
+async def main() -> None:
+    print(f"initial: {await handle('How should I handle a failed payment?')}")
+    await asyncio.gather(*background_tasks)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
+
+The task set keeps strong references until each refinement finishes. In a
+serverless request handler, enqueue the refinement in a durable job system
+instead, because the runtime may stop after returning the fast answer.
 
 ## When to use which model
 
