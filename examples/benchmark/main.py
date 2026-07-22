@@ -34,14 +34,23 @@ from openai import APIError, APIStatusError, OpenAI
 
 # --- Celeris conventions (see the getting-started example) --------------------
 
-MIN_OUTPUT_TOKENS = 256
-MAX_OUTPUT_TOKENS = 1024
-OUTPUT_TOKEN_STEP = 256
+TOTAL_TOKEN_LIMIT = 8192
+MAX_INPUT_TOKENS = 2048
+DEFAULT_MAX_OUTPUT_TOKENS = 2048
+SHORT_OUTPUT_TOKENS = 256
 
 
-def normalize_max_tokens(requested: int) -> int:
-    """Round up to a supported 256-token step, clamped to [256, 1024]."""
-    return min(max(-(-requested // OUTPUT_TOKEN_STEP) * OUTPUT_TOKEN_STEP, MIN_OUTPUT_TOKENS), MAX_OUTPUT_TOKENS)
+def max_output_tokens(requested: int | None = None) -> int:
+    """Use the 2048-token default or validate an explicit output budget."""
+    value = DEFAULT_MAX_OUTPUT_TOKENS if requested is None else requested
+    if not 0 < value < TOTAL_TOKEN_LIMIT:
+        raise ValueError("max_tokens must be between 1 and 8191")
+    return value
+
+
+def input_token_budget(max_tokens: int = DEFAULT_MAX_OUTPUT_TOKENS) -> int:
+    """Maximum input tokens allowed with this output reservation."""
+    return min(MAX_INPUT_TOKENS, TOTAL_TOKEN_LIMIT - max_output_tokens(max_tokens))
 
 
 def celeris_base_url() -> str:
@@ -137,20 +146,20 @@ def answer_checker(expected: str):
 def build_tasks() -> list:
     tasks = []
     for text in SUMMARIZE_TEXTS:
-        tasks.append(Task("summarize", f"Summarize in one sentence: {text}", normalize_max_tokens(256)))
+        tasks.append(Task("summarize", f"Summarize in one sentence: {text}", SHORT_OUTPUT_TOKENS))
     for prompt, keys in EXTRACT_PROMPTS:
-        tasks.append(Task("extract-json", prompt, normalize_max_tokens(256), json_checker(keys)))
+        tasks.append(Task("extract-json", prompt, SHORT_OUTPUT_TOKENS, json_checker(keys)))
     for text, label in CLASSIFY_PROMPTS:
         tasks.append(
             Task(
                 "classify",
                 f"What is the sentiment of this message, positive, negative, or neutral? Answer in a short sentence. Message: {text}",
-                normalize_max_tokens(256),
+                SHORT_OUTPUT_TOKENS,
                 label_checker(label),
             )
         )
     for prompt, answer in SHORT_ANSWER_PROMPTS:
-        tasks.append(Task("short-answer", prompt, normalize_max_tokens(256), answer_checker(answer)))
+        tasks.append(Task("short-answer", prompt, SHORT_OUTPUT_TOKENS, answer_checker(answer)))
     return tasks
 
 

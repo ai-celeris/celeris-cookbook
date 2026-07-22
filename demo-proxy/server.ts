@@ -25,7 +25,7 @@ const PORT = Number(process.env.PORT ?? 8080);
 const MAX_BODY_BYTES = Number(process.env.DEMO_MAX_BODY_BYTES ?? 16_384);
 const MAX_MESSAGES = 20;
 const MAX_TOTAL_CHARS = 8_000;
-const MAX_TOKENS = 512; // multiple of 256 in [256, 1024] per the Celeris window
+const MAX_TOKENS = 512; // this demo explicitly asks for short answers; general default is 2048
 
 const ALLOWED_ORIGINS = new Set(
   (process.env.DEMO_ALLOWED_ORIGINS ?? "http://localhost:3000")

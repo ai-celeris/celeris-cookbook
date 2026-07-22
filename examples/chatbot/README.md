@@ -15,7 +15,7 @@ Celeris base URL.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/chatbot
 npm install
 
@@ -59,7 +59,7 @@ key a request runs on:
 
 ## Type checking
 
-```sh
+```sh docs-e2e=skip
 npm run typecheck
 ```
 

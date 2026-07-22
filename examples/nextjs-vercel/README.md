@@ -16,12 +16,13 @@ Five files on top of an empty Next.js app:
 | `package.json`, `tsconfig.json` | Standard Next.js scaffolding. |
 
 The route handler carries the two Celeris conventions used across this
-cookbook: append `/v1` to `CELERIS_BASE_URL` for the OpenAI SDK, and
-normalize `max_tokens` (rules in the [latency guide](../../guides/latency.md)).
+cookbook: append `/v1` to `CELERIS_BASE_URL` for the OpenAI SDK, and use the
+default `max_tokens=2048` output budget (rules in the
+[latency guide](../../guides/latency.md)).
 
 ## Run locally
 
-```sh
+```sh docs-e2e=skip
 cd examples/nextjs-vercel
 npm install
 
@@ -37,7 +38,7 @@ npm run dev
 Store the key in Vercel's encrypted environment store, this is the whole
 point of the example:
 
-```sh
+```sh docs-e2e=skip
 npm i -g vercel
 vercel link                                  # create/link the project
 

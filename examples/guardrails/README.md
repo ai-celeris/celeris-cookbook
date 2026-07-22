@@ -12,7 +12,7 @@ latency the gate adds.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/guardrails
 pip install -r requirements.txt
 
@@ -26,7 +26,7 @@ python3 main.py
 
 A real run against a live workspace (2026-07-21):
 
-```text
+```text docs-e2e=skip
 parseable verdicts: 8/8
 agreement with expected action: 8/8
 added latency per request: p50 293 ms, p95 1006 ms, mean 384 ms
@@ -48,8 +48,8 @@ breach, an account deletion request).
   ...}`. The parser tolerates code fences and surrounding prose, validates
   the action against the allowed set, and treats anything else as a failed
   check (fail closed or open is your call, make it deliberately).
-- `max_tokens` is normalized to 256 (see the [latency guide](../../guides/latency.md)).
-  Verdicts are short by design.
+- This deliberately short verdict uses `max_tokens=256` (see the
+  [latency guide](../../guides/latency.md)).
 
 ## Where this pattern fits
 

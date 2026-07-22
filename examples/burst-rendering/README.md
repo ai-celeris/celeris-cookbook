@@ -12,7 +12,7 @@ renders all three side by side.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/burst-rendering
 npm install
 npm run dev

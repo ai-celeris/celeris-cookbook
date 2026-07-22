@@ -15,7 +15,7 @@ import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import OpenAI from "openai";
 
-import { fitConversation, normalizeMaxTokens, type ChatMessage } from "./budget.ts";
+import { fitConversation, type ChatMessage } from "./budget.ts";
 import { resolveUpstream } from "./config.ts";
 
 const PORT = Number(process.env.PORT ?? 8787);
@@ -80,7 +80,7 @@ async function handleChat(request: IncomingMessage, response: ServerResponse): P
     apiKey: upstream.apiKey,
     maxRetries: 0,
   });
-  const maxTokens = normalizeMaxTokens(512);
+  const maxTokens = 512; // this chatbot explicitly asks for short, direct answers
   const messages = fitConversation(SYSTEM_PROMPT, history, maxTokens);
 
   try {

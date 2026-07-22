@@ -27,8 +27,8 @@ const CONTENT_TYPES: Record<string, string> = {
   ".css": "text/css; charset=utf-8",
 };
 
-// max_tokens must be a multiple of 256 in [256, 1024]. A regex plus a short
-// explanation fits comfortably in the smallest step.
+// A regex plus one short explanation is deliberately below the general
+// 2048-token output default.
 const MAX_TOKENS = 256;
 
 const PROMPT = `Write ONE JavaScript regular expression for the description below.

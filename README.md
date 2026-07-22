@@ -26,15 +26,18 @@ Then follow the example's README, Python examples use
 
 ## The Celeris token window
 
-Celeris requests share a **4096-token total window** between input and output:
+Celeris requests have an **8192-token total window**:
 
-- The wire `max_tokens` value must be a multiple of 256 in the range 256-1024.
-- Whatever you reserve for output leaves `4096 - max_tokens` tokens for all
-  input messages combined.
+- Input is capped at **2048 tokens**, including all messages and chat-template
+  overhead.
+- Cookbook examples use **2048 output tokens by default**. Examples that ask
+  for a label, small JSON object, or another deliberately short answer use a
+  smaller `max_tokens` value.
+- Input plus the requested output must stay within the 8192-token total.
 
 Every example budgets its prompt accordingly; the
 [getting-started notebook](examples/getting-started) has the canonical
-normalization helpers.
+budgeting helpers.
 
 ## Guides
 
@@ -57,7 +60,7 @@ normalization helpers.
 | --- | --- |
 | [`getting-started`](examples/getting-started) | First chat completion with the OpenAI SDK, token-window budgeting, streaming. |
 | [`chatbot`](examples/chatbot) | Streaming web chatbot measuring time-to-first-token, the latency showcase. |
-| [`alert-triage-agent`](examples/alert-triage-agent) | Multi-step tool-use agent loop with a structured verdict, inside the 4096-token window. |
+| [`alert-triage-agent`](examples/alert-triage-agent) | Multi-step tool-use agent loop with a structured verdict, inside the 8192-token window. |
 | [`nextjs-vercel`](examples/nextjs-vercel) | Minimal full-stack Next.js deploy with the key in Vercel's managed env store. |
 | [`fastapi-fly`](examples/fastapi-fly) | Minimal FastAPI deploy with the key in Fly.io's encrypted secret store. |
 | [`benchmark`](examples/benchmark) | Mini benchmark harness: latency percentiles, reliability counters, correctness scoring. |

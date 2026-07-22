@@ -46,4 +46,11 @@ def test_shipped_task_files_load():
     good = task_fit.load_tasks(task_fit.HERE / "tasks" / "good-fit-classification.jsonl")
     hard = task_fit.load_tasks(task_fit.HERE / "tasks" / "hard-reasoning.jsonl")
     assert len(good) == 8 and len(hard) == 6
-    assert all(entry["task"].max_tokens % 256 == 0 for entry in good + hard)
+    assert all(entry["task"].max_tokens == 256 for entry in good + hard)
+
+
+def test_custom_tasks_default_to_2048_output_tokens(tmp_path):
+    task_file = tmp_path / "tasks.jsonl"
+    task_file.write_text('{"id":"custom","prompt":"Write a launch plan.","checker":"none"}\n')
+    [entry] = task_fit.load_tasks(task_file)
+    assert entry["task"].max_tokens == 2048

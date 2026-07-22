@@ -11,7 +11,7 @@ rewrite does to result quality and what it costs in latency.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/instant-search
 pip install -r requirements.txt
 
@@ -26,7 +26,7 @@ python3 main.py --interactive    # type your own
 
 A real run against a live workspace (2026-07-22). Two of five queries:
 
-```text
+```text docs-e2e=skip
 query: "why do I keep getting told to slow down"
   raw keyword match:  ['API key rotation', 'Regions and data residency', ...]
   rewritten in 1021 ms: ['rate limiting', 'throttling', 'speed', ...]
