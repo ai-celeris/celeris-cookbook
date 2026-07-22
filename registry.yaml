@@ -236,3 +236,18 @@
     - guide
     - voice
     - latency
+
+- title: Shell tasks with the celeris CLI
+  path: guides/cli-shell-tasks.md
+  slug: cli-shell-tasks
+  kind: guide
+  order: 6
+  description: Put semantic operations in your pipes. Commit messages from diffs, per-line log triage, semantic filtering, extraction into jq, and the scripting patterns that make the official CLI dependable in loops.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - guide
+    - cli
+    - shell
+    - extraction

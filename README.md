@@ -47,6 +47,9 @@ normalization helpers.
   common SDKs and frameworks.
 - [The voice turn budget](guides/voice-turn.md): the measured reply step
   beside cited speech-step ranges.
+- [Shell tasks with the celeris CLI](guides/cli-shell-tasks.md): semantic
+  operations inside ordinary pipes, with the scripting patterns that make
+  them dependable.
 
 ## Examples
 
