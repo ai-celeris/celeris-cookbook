@@ -93,11 +93,6 @@ def celeris_base_url() -> str:
     return base if base.endswith("/v1") else base + "/v1"
 
 
-def normalize_max_tokens(requested: int) -> int:
-    """max_tokens must be a multiple of 256 in [256, 1024]."""
-    return min(max(-(-requested // 256) * 256, 256), 1024)
-
-
 def extract_json(text: str) -> dict | None:
     """Parse the first JSON object in the model's reply."""
     start = text.find("{")
@@ -138,7 +133,7 @@ def run_agent(client: OpenAI, model: str) -> tuple[str | None, list]:
         response = client.chat.completions.create(
             model=model,
             messages=messages,
-            max_tokens=normalize_max_tokens(256),
+            max_tokens=256,  # one compact JSON object; general default is 2048
             temperature=0.1,
         )
         latency_ms = (time.monotonic() - started) * 1000

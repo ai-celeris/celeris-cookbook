@@ -16,8 +16,9 @@ Five files:
 | `fly.toml` | Fly app config, contains **no** secrets. |
 
 `main.py` carries the two Celeris conventions used across this cookbook:
-append `/v1` to `CELERIS_BASE_URL` for the OpenAI SDK, and normalize
-`max_tokens` (rules in the [latency guide](../../guides/latency.md)).
+append `/v1` to `CELERIS_BASE_URL` for the OpenAI SDK, and use the default
+`max_tokens=2048` output budget (rules in the
+[latency guide](../../guides/latency.md)).
 
 ## Why Fly.io (and not Render/Railway/…)?
 
@@ -32,7 +33,7 @@ prefer Render, `main.py` runs unchanged.
 
 ## Run locally
 
-```sh
+```sh docs-e2e=skip
 cd examples/fastapi-fly
 pip install -r requirements.txt
 
@@ -45,7 +46,7 @@ uvicorn main:app --reload
 
 ## Deploy to Fly.io
 
-```sh
+```sh docs-e2e=skip
 brew install flyctl            # or: curl -L https://fly.io/install.sh | sh
 fly auth login
 

@@ -2,8 +2,9 @@
 
 > Runnable examples and guides for the Celeris API. celeris-1 is a diffusion
 > model served through an OpenAI-compatible API: replies arrive as one burst,
-> typically in 250 to 300 ms for short outputs, inside a 4096-token window
-> with max_tokens as a multiple of 256 between 256 and 1024.
+> typically in 250 to 300 ms for short outputs, inside an 8192-token total
+> window with at most 2048 input tokens. Examples default max_tokens to 2048
+> unless the requested output is deliberately shorter.
 
 The published site is at https://docs.celeris.ai/cookbook/. Every example is
 a standalone directory that runs with CELERIS_BASE_URL and CELERIS_API_KEY
@@ -15,6 +16,8 @@ set. The index of examples is registry.yaml.
   delivery model, token-window budgeting, what becomes possible at 300 ms.
 - [The cascade](guides/cascade.md): fast model in the hot path, larger model
   refining or escalating asynchronously.
+- [Shell tasks with the CLI](guides/cli-shell-tasks.md): semantic operations
+  in shell pipes with the official CLI.
 
 ## Examples
 

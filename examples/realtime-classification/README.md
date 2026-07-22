@@ -11,7 +11,7 @@ account, general) with celeris-1 and measures what that costs in latency.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/realtime-classification
 pip install -r requirements.txt
 
@@ -25,7 +25,7 @@ python3 main.py
 
 A real run against a live workspace (2026-07-21):
 
-```text
+```text docs-e2e=skip
 routing accuracy: 10/10 (100%)
 latency: p50 260 ms, p95 917 ms, max 917 ms, mean 328 ms
 
@@ -44,9 +44,9 @@ between "route it while the page loads" and "route it later in a queue".
   short sentence back. celeris-1 answers bare one-word prompts unreliably
   (they often come back empty), so the parser pulls the route name out of a
   sentence instead. First route mentioned wins.
-- `max_tokens` is normalized to 256; see the [latency guide](../../guides/latency.md)
-  for the window and budgeting rules. A ticket needs a fraction of the
-  4096-token window.
+- This deliberately short classification uses `max_tokens=256`; see the
+  [latency guide](../../guides/latency.md) for the 8192-token total window and
+  2048-token input cap.
 - The sequential pass measures the interactive path. The concurrent pass
   shows a small worker pool draining a burst.
 

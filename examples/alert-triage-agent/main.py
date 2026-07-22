@@ -9,7 +9,7 @@ Tool calling here is PROMPT-DRIVEN: each turn the model must reply with one
 JSON object naming a tool (or the final verdict), which the loop executes and
 feeds back. This pattern works on any OpenAI-compatible endpoint, including
 small, fast models without native `tools` support, and every step fits
-Celeris's 4096-token window because tool results are compact by design.
+Celeris's 8192-token window because tool results are compact by design.
 
 Usage:
     export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
@@ -31,29 +31,16 @@ MAX_STEPS = 8
 
 # --- Celeris token window (see the getting-started example) -------------------
 
-TOTAL_TOKEN_LIMIT = 4096
-MIN_OUTPUT_TOKENS = 256
-MAX_OUTPUT_TOKENS = 1024
-OUTPUT_TOKEN_STEP = 256
+TOTAL_TOKEN_LIMIT = 8192
+MAX_INPUT_TOKENS = 2048
 ESTIMATED_BYTES_PER_TOKEN = 4
 
-
-def normalize_max_tokens(requested: int) -> int:
-    """Round up to a supported 256-token step, clamped to [256, 1024]."""
-    if requested <= MIN_OUTPUT_TOKENS:
-        return MIN_OUTPUT_TOKENS
-    if requested >= MAX_OUTPUT_TOKENS:
-        return MAX_OUTPUT_TOKENS
-    step = OUTPUT_TOKEN_STEP
-    return ((requested + step - 1) // step) * step
-
-
-MAX_TOKENS = normalize_max_tokens(512)
-# Everything sent to the model must fit in the remaining input budget.
-INPUT_BUDGET_BYTES = (TOTAL_TOKEN_LIMIT - MAX_TOKENS - 64) * ESTIMATED_BYTES_PER_TOKEN
+MAX_TOKENS = 512  # deliberately compact JSON tool calls; general default is 2048
+# Everything sent to the model must fit under the independent input cap.
+INPUT_BUDGET_BYTES = (MAX_INPUT_TOKENS - 64) * ESTIMATED_BYTES_PER_TOKEN
 
 # --- Tools over fixture data --------------------------------------------------
-# Tool results are deliberately compact: with a 4096-token window, a tool that
+# Tool results are deliberately compact: with a 2048-token input cap, a tool that
 # returns pages of JSON would evict the reasoning that needs it.
 
 

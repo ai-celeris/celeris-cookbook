@@ -10,7 +10,7 @@
   topic: getting-started
   order: 1
   featured: true
-  description: Make your first Celeris chat completion with the OpenAI SDK, with correct max_tokens normalization and input budgeting for the 4096-token window. Includes a streaming cell that times time-to-first-token.
+  description: Make your first Celeris chat completion with the OpenAI SDK, with correct output and input budgeting for the 8192-token total window and 2048-token input cap. Includes a streaming cell that times time-to-first-token.
   date: 2026-07-21
   authors:
     - celeris
@@ -67,7 +67,7 @@
   path: examples/alert-triage-agent/README.md
   slug: alert-triage-agent
   topic: agents
-  description: A multi-step tool-use agent loop that triages a synthetic production alert with tools over fixture data and emits a structured verdict, all inside the 4096-token window.
+  description: A multi-step tool-use agent loop that triages a synthetic production alert with tools over fixture data and emits a structured verdict, all inside the 8192-token window.
   date: 2026-07-21
   authors:
     - celeris
@@ -150,7 +150,7 @@
   kind: guide
   order: 2
   featured: true
-  description: How to measure, budget, and design for latency. Metric vocabulary, the one-burst delivery model, the 4096-token window and 256-step max_tokens rules, and what becomes possible around 300 ms.
+  description: How to measure, budget, and design for latency. Metric vocabulary, the one-burst delivery model, the 8192-token total window and 2048-token input cap, and what becomes possible around 300 ms.
   date: 2026-07-21
   authors:
     - celeris
@@ -254,3 +254,18 @@
     - guide
     - voice
     - latency
+
+- title: Shell tasks with the celeris CLI
+  path: guides/cli-shell-tasks.md
+  slug: cli-shell-tasks
+  kind: guide
+  order: 6
+  description: Put semantic operations in your pipes. Commit messages from diffs, per-line log triage, semantic filtering, extraction into jq, and the scripting patterns that make the official CLI dependable in loops.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - guide
+    - cli
+    - shell
+    - extraction

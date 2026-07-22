@@ -11,7 +11,7 @@ clock per step, and shows how the totals compound.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/agent-latency
 pip install -r requirements.txt
 
@@ -27,7 +27,7 @@ A real run against a live workspace (2026-07-21). The agent answered a
 customer question ("where is my order, can I still get a refund?") using
 three tools:
 
-```text
+```text docs-e2e=skip
   step 1:   1093 ms  get_order({"order_id": "ORD-1042"})
   step 2:    269 ms  get_shipping_status({"tracking_id": "TRK-88231"})
   step 3:    282 ms  get_refund_policy({})
@@ -55,8 +55,9 @@ the difference between an interactive agent and a background job.
 - The loop is the same prompt-driven JSON pattern as the alert triage
   example: the model replies with one JSON object per turn, either a tool
   call or the final answer. It works on any OpenAI-compatible endpoint.
-- Tool results are compact so every step fits the token window beside a
-  normalized `max_tokens` of 256 (see the [latency guide](../../guides/latency.md)).
+- Tool results are compact and every reply is one JSON object, so this
+  deliberately short task uses `max_tokens=256` (see the
+  [latency guide](../../guides/latency.md)).
 - The harness times each model call separately, so you can see exactly where
   the wall clock goes.
 

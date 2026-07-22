@@ -46,11 +46,6 @@ def celeris_base_url() -> str:
     return base if base.endswith("/v1") else base + "/v1"
 
 
-def normalize_max_tokens(requested: int) -> int:
-    """max_tokens must be a multiple of 256 in [256, 1024]."""
-    return min(max(-(-requested // 256) * 256, 256), 1024)
-
-
 def build_prompt(ticket: str) -> str:
     # Sentence-style answers are reliable on celeris-1. Prompts that demand a
     # bare one-word answer often come back empty, so ask for a short sentence
@@ -74,7 +69,7 @@ def classify(client: OpenAI, model: str, ticket: str) -> tuple[str | None, float
     response = client.chat.completions.create(
         model=model,
         messages=[{"role": "user", "content": build_prompt(ticket)}],
-        max_tokens=normalize_max_tokens(256),
+        max_tokens=256,  # one routing label; general default is 2048
         temperature=0.1,
     )
     latency_ms = (time.monotonic() - started) * 1000

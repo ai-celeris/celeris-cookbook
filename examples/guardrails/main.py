@@ -58,11 +58,6 @@ def celeris_base_url() -> str:
     return base if base.endswith("/v1") else base + "/v1"
 
 
-def normalize_max_tokens(requested: int) -> int:
-    """max_tokens must be a multiple of 256 in [256, 1024]."""
-    return min(max(-(-requested // 256) * 256, 256), 1024)
-
-
 def parse_verdict(output: str) -> dict | None:
     """Parse {"action": ..., "reason": ...} from the reply. Tolerates a
     fenced code block and surrounding prose. Returns None if unusable."""
@@ -93,7 +88,7 @@ def check(client: OpenAI, model: str, message: str) -> tuple[dict | None, float]
     response = client.chat.completions.create(
         model=model,
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=normalize_max_tokens(256),
+        max_tokens=256,  # one compact moderation verdict; general default is 2048
         temperature=0.0,
     )
     latency_ms = (time.monotonic() - started) * 1000

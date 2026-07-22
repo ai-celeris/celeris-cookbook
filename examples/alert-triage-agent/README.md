@@ -5,7 +5,7 @@ the agent investigates by calling tools, `get_alert`, `search_runbooks`,
 `check_recent_deploys`, over synthetic fixture data, reasons across the
 results, and emits a structured verdict:
 
-```json
+```json docs-e2e=skip
 {
   "root_cause": "…",
   "evidence": ["…"],
@@ -21,7 +21,7 @@ actually correlate evidence rather than pattern-match.
 
 ## Run it
 
-```sh
+```sh docs-e2e=skip
 cd examples/alert-triage-agent
 pip install -r requirements.txt
 
@@ -38,7 +38,7 @@ You'll see each tool call as the agent makes it, then the final verdict.
 Each turn, the model must answer with **exactly one JSON object**. That is
 either a tool call:
 
-```json
+```json docs-e2e=skip
 {"tool": "search_runbooks", "args": {"query": "checkout-api latency"}}
 ```
 
@@ -62,17 +62,18 @@ triage in 4 tool turns with a correct, well-evidenced verdict on every run;
 the occasional truncated JSON reply is exactly what the corrective-nudge
 branch in the loop is for.
 
-### Budgeting inside a 4096-token window
+### Budgeting inside an 8192-token window
 
-Agent loops usually assume a big context. Celeris gives you 4096 tokens
-total (rules in the [latency guide](../../guides/latency.md)), so this example treats
-budget as a design constraint:
+Agent loops usually assume a big context. Celeris allows 8192 tokens total
+and at most 2048 input tokens (rules in the
+[latency guide](../../guides/latency.md)), so this example treats budget as a
+design constraint:
 
 - **Tool results are compact by design**, the runbook search returns the top
   2 hits, not the whole corpus. A tool that returns pages of JSON would evict
   the reasoning that needs it.
-- `max_tokens` is normalized to a supported value (multiple of 256 in
-  [256, 1024]); the rest of the window is the input budget.
+- `max_tokens` is 512 because each turn is one compact JSON object; general
+  examples use the 2048-token output default.
 - `fit_messages` drops the oldest tool exchanges (never the system prompt or
   the task) when the transcript outgrows the input budget.
 
