@@ -113,8 +113,8 @@ echo "17 3 * * 1-5" | celeris q "Explain this cron schedule in one sentence."
 # Turn a curl command into equivalent Python.
 pbpaste | celeris q "Rewrite this curl command as Python requests code. Reply with code only."
 
-# Name things well, in bulk.
-ls *.png | celeris q "Suggest kebab-case descriptive filenames for these screenshots, one per line, keeping the extension."
+# Bulk-rename messy filenames without writing the sed by hand.
+ls *.MOV | celeris q "Write mv commands that rename these files to lowercase kebab-case, keeping the extension. Reply with the commands only."
 ```
 
 ## Scripting patterns
