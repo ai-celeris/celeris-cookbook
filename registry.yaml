@@ -258,6 +258,7 @@
 - title: Shell tasks with the celeris CLI
   path: guides/cli-shell-tasks.md
   slug: cli-shell-tasks
+  topic: production
   kind: guide
   order: 6
   description: Put semantic operations in your pipes. Commit messages from diffs, per-line log triage, semantic filtering, extraction into jq, and the scripting patterns that make the official CLI dependable in loops.
