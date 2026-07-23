@@ -15,9 +15,8 @@ Five files on top of an empty Next.js app:
 | `app/layout.tsx` | Bare root layout. |
 | `package.json`, `tsconfig.json` | Standard Next.js scaffolding. |
 
-The route handler carries the two Celeris conventions used across this
-cookbook: append `/v1` to `CELERIS_BASE_URL` for the OpenAI SDK, and use the
-default `max_tokens=2048` output budget (rules in the
+The route handler uses the full SDK base URL and the service's
+`max_tokens=2048` default output budget (rules in the
 [latency guide](../../guides/latency.md)).
 
 ## Run locally
@@ -26,7 +25,7 @@ default `max_tokens=2048` output budget (rules in the
 cd examples/nextjs-vercel
 npm install
 
-export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 export CELERIS_API_KEY="<your-api-key>"
 
 npm run dev
@@ -43,7 +42,7 @@ npm i -g vercel
 vercel link                                  # create/link the project
 
 vercel env add CELERIS_API_KEY production    # paste the key when prompted
-vercel env add CELERIS_BASE_URL production   # paste the endpoint root
+vercel env add CELERIS_BASE_URL production   # paste the full SDK base URL
 
 vercel deploy --prod
 ```

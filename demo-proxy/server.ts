@@ -11,7 +11,7 @@
 //   - friendly JSON 429s the widget renders as a "busy, retry shortly" state
 //   - no message content and no key material is ever logged
 //
-//   export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+//   export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 //   export CELERIS_API_KEY="<your-api-key>"
 //   export DEMO_ALLOWED_ORIGINS="https://docs.celeris.ai"
 //   npm start                                   # listens on :8080

@@ -13,39 +13,41 @@ composes with pipes the way you expect.
 
 ## Setup
 
-```sh
+```sh docs-e2e=skip
 brew install ai-celeris/tools/celeris
 
-export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
 export CELERIS_API_KEY="<your-api-key>"
 ```
+
+The CLI uses the global production endpoint by default. Set
+`CELERIS_BASE_URL` only to override it; unlike the SDK examples, the CLI
+expects that override without `/v1`.
 
 The quick command is `celeris q`: arguments form the instruction, piped
 stdin is appended as context, and the answer streams back as plain text.
 
-```sh
+```sh docs-e2e=skip
 celeris q "Reply with one word: the capital of France."
 ```
 
-```text
+```text docs-e2e=skip
 Paris
 ```
 
 Every recipe below also works with the full-fidelity form,
 `celeris chat:completions create --format json`, when you want the whole
-response object. Token rules are the usual ones: `max_tokens` is 256 by
-default for `q` and must be 256, 512, 768, or 1024; see the
-[latency guide](latency.md) for budgeting.
+response object. `q` defaults to `max_tokens=256`; see the
+[latency guide](latency.md) before increasing it.
 
 ## Commit messages from the staged diff
 
-```sh
+```sh docs-e2e=skip
 git diff --staged | celeris q "Write a one-line conventional commit message for this diff. Reply with only the message."
 ```
 
 Wrap it in a function and it becomes a habit:
 
-```sh
+```sh docs-e2e=skip
 gcm() {
   git commit -m "$(git diff --staged | celeris q 'Write a one-line conventional commit message for this diff. Reply with only the message.')" -e
 }
@@ -58,7 +60,7 @@ every commit rather than trusting the model blindly.
 
 Summarize the interesting part of a noisy log:
 
-```sh
+```sh docs-e2e=skip
 tail -200 app.log | celeris q "List the distinct errors in this log, one per line, most frequent first. Ignore INFO lines."
 ```
 
@@ -66,7 +68,7 @@ Classify records one at a time when you need a per-line verdict. At
 sub-second latency a serial loop over a few hundred lines is a coffee sip,
 not a batch job:
 
-```sh
+```sh docs-e2e=skip
 grep ERROR app.log | sort -u | while IFS= read -r line; do
   verdict=$(printf '%s' "$line" | celeris q "Is this error caused by user input, our code, or a dependency? Reply with exactly one word: user, code, or dependency.")
   printf '%s\t%s\n' "$verdict" "$line"
@@ -78,7 +80,7 @@ done | sort
 `grep` matches strings; sometimes you need to match meaning. Keep the answer
 contract tiny (one word) and filter on it:
 
-```sh
+```sh docs-e2e=skip
 cat feedback.txt | while IFS= read -r item; do
   ans=$(printf '%s' "$item" | celeris q "Is this feedback about pricing or billing? Reply yes or no only.")
   [ "$ans" = "yes" ] && printf '%s\n' "$item"
@@ -90,7 +92,7 @@ done
 Ask for JSON only and pipe straight into `jq`. Temperature 0 and a seed keep
 reruns stable:
 
-```sh
+```sh docs-e2e=skip
 cat order-email.txt | celeris q --temperature 0 --seed 7 \
   "Extract items, quantities, and the delivery date from this email as JSON with keys items (array of {name, qty}) and delivery_date. Reply with JSON only." \
   | jq '.items[].name'
@@ -106,7 +108,7 @@ JSON only, no code fences") or switch to
 Anything you would paste into a browser chat fits better in the pipe you are
 already standing in:
 
-```sh
+```sh docs-e2e=skip
 # Explain a cron expression before you deploy it.
 echo "17 3 * * 1-5" | celeris q "Explain this cron schedule in one sentence."
 

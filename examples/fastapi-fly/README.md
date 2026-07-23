@@ -15,9 +15,9 @@ Five files:
 | `Dockerfile` | Standard slim Python image running uvicorn. |
 | `fly.toml` | Fly app config, contains **no** secrets. |
 
-`main.py` carries the two Celeris conventions used across this cookbook:
-append `/v1` to `CELERIS_BASE_URL` for the OpenAI SDK, and use the default
-`max_tokens=2048` output budget (rules in the
+`main.py` carries the two Celeris conventions used across this cookbook: use
+the full SDK base URL and the service's `max_tokens=2048` default output
+budget (rules in the
 [latency guide](../../guides/latency.md)).
 
 ## Why Fly.io (and not Render/Railway/…)?
@@ -37,7 +37,7 @@ prefer Render, `main.py` runs unchanged.
 cd examples/fastapi-fly
 pip install -r requirements.txt
 
-export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 export CELERIS_API_KEY="<your-api-key>"
 
 uvicorn main:app --reload
@@ -55,7 +55,7 @@ fly launch --no-deploy         # registers the app; accept the generated name
 
 # The point of this example: the key goes into Fly's encrypted secret store.
 fly secrets set CELERIS_API_KEY="<your-api-key>"
-fly secrets set CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+fly secrets set CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 
 fly deploy
 ```

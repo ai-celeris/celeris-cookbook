@@ -10,7 +10,7 @@
   topic: getting-started
   order: 1
   featured: true
-  description: Make your first Celeris chat completion with the OpenAI SDK, with correct output and input budgeting for the 8192-token total window and 2048-token input cap. Includes a streaming cell that times time-to-first-token.
+  description: Make your first Celeris chat completion with the OpenAI SDK, with correct 256-token output alignment and input budgeting for the 8192-token total window. Includes a streaming cell that times time-to-first-token.
   date: 2026-07-21
   authors:
     - celeris
@@ -150,7 +150,7 @@
   kind: guide
   order: 2
   featured: true
-  description: How to measure, budget, and design for latency. Metric vocabulary, the one-burst delivery model, the 8192-token total window and 2048-token input cap, and what becomes possible around 300 ms.
+  description: How to measure, budget, and design for latency. Metric vocabulary, the one-burst delivery model, the 8192-token total window and 256-token output alignment, and what becomes possible around 300 ms.
   date: 2026-07-21
   authors:
     - celeris

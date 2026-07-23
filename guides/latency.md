@@ -6,9 +6,8 @@ it. Two facts drive everything else:
 
 1. celeris-1 is a diffusion model. It generates the whole reply in parallel
    and usually delivers it as **one burst**, not token by token.
-2. Requests have an **8192-token total window**, with input capped at **2048
-   tokens**. Cookbook examples request **2048 output tokens by default** and
-   use smaller values only for deliberately short replies.
+2. Requests have an **8192-token total window**. An explicit `max_tokens` must
+   be a positive multiple of **256**; when omitted, it defaults to **2048**.
 
 ## The vocabulary
 
@@ -63,31 +62,36 @@ Because the reply arrives whole:
 
 ## Budgeting the token window
 
-One request has 8192 tokens for input and output combined, and input alone
-cannot exceed 2048 tokens. `max_tokens` reserves the output canvas. The
-cookbook defaults it to 2048; a label, small JSON object, or other explicitly
-short result can reserve less. The input budget is the smaller of the
-2048-token input cap and the room left in the total window:
+One request has 8192 tokens for input and requested output combined.
+`max_tokens` reserves the output canvas. It must be a positive multiple of
+256, and the service uses 2048 when you omit it. The input budget is whatever
+remains after that reservation:
 
 ```python docs-e2e=skip
 TOTAL_TOKEN_LIMIT = 8192
-MAX_INPUT_TOKENS = 2048
 DEFAULT_MAX_OUTPUT_TOKENS = 2048
+OUTPUT_TOKEN_BLOCK = 256
+
+
+def output_token_budget(requested: int | None = None) -> int:
+    """Apply the service default and validate an explicit reservation."""
+    value = DEFAULT_MAX_OUTPUT_TOKENS if requested is None else requested
+    if value <= 0 or value % OUTPUT_TOKEN_BLOCK:
+        raise ValueError("max_tokens must be a positive multiple of 256")
+    if value >= TOTAL_TOKEN_LIMIT:
+        raise ValueError("max_tokens must leave room for the prompt")
+    return value
 
 
 def input_token_budget(max_tokens: int = DEFAULT_MAX_OUTPUT_TOKENS) -> int:
-    """Maximum input tokens allowed with this output reservation."""
-    if not 0 < max_tokens < TOTAL_TOKEN_LIMIT:
-        raise ValueError("max_tokens must be between 1 and 8191")
-    return min(MAX_INPUT_TOKENS, TOTAL_TOKEN_LIMIT - max_tokens)
+    """Maximum prompt tokens left after the output reservation."""
+    return TOTAL_TOKEN_LIMIT - output_token_budget(max_tokens)
 ```
 
-With the default 2048-token output reservation, the input budget is 2048
-tokens because the input cap binds before the 8192-token total. A short
-classification can request 256 output tokens and still has the same 2048-token
-input cap. An
-unusually large 7000-token output reservation leaves only 1192 tokens for
-input because the total-window limit then binds.
+With the default 2048-token output reservation, up to 6144 tokens remain for
+the prompt. A short classification requesting 256 output tokens leaves 7936
+tokens. A large, block-aligned 6912-token output reservation leaves 1280
+tokens. Chat-template overhead counts against those input budgets.
 
 Celeris does not expose its tokenizer. Estimate about 4 bytes per token,
 leave an allowance for the chat template (the cookbook helpers use 8 tokens
@@ -96,11 +100,29 @@ not clip for you; an oversized request fails.
 
 Two budgeting habits from the examples:
 
-- **Use the default unless the task is clearly short.** General examples use
-  2048 output tokens. Labels, compact verdicts, and tool calls deliberately
-  reserve 256 or 512 instead.
+- **Reserve only what the task needs.** Labels, compact verdicts, and tool
+  calls deliberately reserve 256 or 512. Omit the field when the 2048-token
+  service default is appropriate.
 - **Drop oldest first.** Chat history and agent transcripts should evict
   their oldest turns, never the system prompt or the newest message.
+
+## Choosing an endpoint
+
+Use the global base URL unless you have a reason to prefer a region:
+
+```text docs-e2e=skip
+https://inference.celeris.ai/celeris-1/v1
+```
+
+For latency-sensitive workloads near US East, you can target:
+
+```text docs-e2e=skip
+https://us-east-1.aws.inference.celeris.ai/celeris-1/v1
+```
+
+Regional endpoints prefer that region but may fail over during maintenance or
+capacity constraints. Measure end-to-end latency and the `Server-Timing`
+header with the endpoint your application will actually use.
 
 ## What becomes possible around 300 ms
 

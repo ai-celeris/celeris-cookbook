@@ -15,7 +15,7 @@ clock per step, and shows how the totals compound.
 cd examples/agent-latency
 pip install -r requirements.txt
 
-export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 export CELERIS_API_KEY="<your-api-key>"
 
 python3 main.py

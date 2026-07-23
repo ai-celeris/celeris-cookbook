@@ -19,7 +19,7 @@ Celeris base URL.
 cd examples/chatbot
 npm install
 
-export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 export CELERIS_API_KEY="<your-api-key>"
 
 npm start

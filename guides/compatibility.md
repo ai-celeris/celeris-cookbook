@@ -4,11 +4,11 @@ Celeris serves an OpenAI-compatible chat completions API, so most tooling
 that speaks to OpenAI works by pointing it at your Celeris base URL. Two
 rules apply everywhere:
 
-1. The SDK-level base URL is your endpoint root **plus `/v1`**.
-2. Use 2048 output tokens by default (whatever the framework calls the
-   parameter), or a smaller value for a deliberately short reply. See the
-   [latency guide](latency.md) for the 8192-token total and 2048-token input
-   limits.
+1. Use the full SDK base URL, including the model and `/v1`:
+   `https://inference.celeris.ai/celeris-1/v1`.
+2. Explicit output limits must be positive multiples of 256 (whatever the
+   framework calls the parameter). The service defaults an omitted limit to
+   2048. See the [latency guide](latency.md) for the 8192-token total window.
 
 Every snippet below was run against a live workspace on 2026-07-22.
 
@@ -30,7 +30,7 @@ import os
 from openai import OpenAI
 
 client = OpenAI(
-    base_url=os.environ["CELERIS_BASE_URL"].rstrip("/") + "/v1",
+    base_url=os.environ["CELERIS_BASE_URL"],
     api_key=os.environ["CELERIS_API_KEY"],
 )
 reply = client.chat.completions.create(
@@ -55,7 +55,7 @@ if (!baseURL || !apiKey) {
 }
 
 const client = new OpenAI({
-  baseURL: baseURL.replace(/\/+$/, "") + "/v1",
+  baseURL,
   apiKey,
 });
 const reply = await client.chat.completions.create({
@@ -85,7 +85,7 @@ if (!baseURL || !apiKey) {
 
 const celeris = createOpenAICompatible({
   name: "celeris",
-  baseURL: baseURL.replace(/\/+$/, "") + "/v1",
+  baseURL,
   apiKey,
 });
 const { text } = await generateText({
@@ -109,7 +109,7 @@ from langchain_openai import ChatOpenAI
 
 llm = ChatOpenAI(
     model="celeris-1",
-    base_url=os.environ["CELERIS_BASE_URL"].rstrip("/") + "/v1",
+    base_url=os.environ["CELERIS_BASE_URL"],
     api_key=os.environ["CELERIS_API_KEY"],
     extra_body={"max_tokens": 256},
 )
@@ -127,7 +127,7 @@ import litellm
 
 response = litellm.completion(
     model="openai/celeris-1",
-    api_base=os.environ["CELERIS_BASE_URL"].rstrip("/") + "/v1",
+    api_base=os.environ["CELERIS_BASE_URL"],
     api_key=os.environ["CELERIS_API_KEY"],
     messages=[{"role": "user", "content": "Say hello in five words."}],
     max_tokens=256,
@@ -155,7 +155,7 @@ class City(BaseModel):
 
 client = instructor.from_openai(
     OpenAI(
-        base_url=os.environ["CELERIS_BASE_URL"].rstrip("/") + "/v1",
+        base_url=os.environ["CELERIS_BASE_URL"],
         api_key=os.environ["CELERIS_API_KEY"],
     ),
     mode=instructor.Mode.MD_JSON,
@@ -171,6 +171,9 @@ print(city.model_dump_json())
 
 ## Known limits across all frameworks
 
+- **Use Chat Completions for generation.** The stateless `/v1/responses`
+  surface is not currently exposed. Standard and streaming Chat Completions
+  are supported, as is the legacy Completions endpoint.
 - **No native tool calling.** The `tools` parameter is rejected by the
   serving configuration. Use prompt-driven JSON tool loops instead (see the
   [alert triage example](../examples/alert-triage-agent)).

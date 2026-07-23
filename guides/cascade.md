@@ -51,7 +51,7 @@ import os
 from openai import AsyncOpenAI
 
 client = AsyncOpenAI(
-    base_url=os.environ["CELERIS_BASE_URL"].rstrip("/") + "/v1",
+    base_url=os.environ["CELERIS_BASE_URL"],
     api_key=os.environ["CELERIS_API_KEY"],
 )
 

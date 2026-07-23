@@ -25,7 +25,7 @@ actually correlate evidence rather than pattern-match.
 cd examples/alert-triage-agent
 pip install -r requirements.txt
 
-export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 export CELERIS_API_KEY="<your-api-key>"
 
 python3 main.py               # triage ALERT-4127
@@ -64,8 +64,8 @@ branch in the loop is for.
 
 ### Budgeting inside an 8192-token window
 
-Agent loops usually assume a big context. Celeris allows 8192 tokens total
-and at most 2048 input tokens (rules in the
+Agent loops usually assume a big context. Celeris allows 8192 tokens across
+the prompt and requested output (rules in the
 [latency guide](../../guides/latency.md)), so this example treats budget as a
 design constraint:
 

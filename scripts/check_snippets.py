@@ -154,7 +154,7 @@ def execute_python_snippets() -> int:
     thread.start()
     old_base_url = os.environ.get("CELERIS_BASE_URL")
     old_api_key = os.environ.get("CELERIS_API_KEY")
-    os.environ["CELERIS_BASE_URL"] = f"http://127.0.0.1:{server.server_port}"
+    os.environ["CELERIS_BASE_URL"] = f"http://127.0.0.1:{server.server_port}/v1"
     os.environ["CELERIS_API_KEY"] = "snippet-test-key"
 
     executed = 0

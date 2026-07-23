@@ -12,7 +12,7 @@ small, fast models without native `tools` support, and every step fits
 Celeris's 8192-token window because tool results are compact by design.
 
 Usage:
-    export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+    export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
     export CELERIS_API_KEY="<your-api-key>"
     pip install -r requirements.txt
     python3 main.py            # triage the default alert (ALERT-4127)
@@ -32,16 +32,17 @@ MAX_STEPS = 8
 # --- Celeris token window (see the getting-started example) -------------------
 
 TOTAL_TOKEN_LIMIT = 8192
-MAX_INPUT_TOKENS = 2048
 ESTIMATED_BYTES_PER_TOKEN = 4
 
 MAX_TOKENS = 512  # deliberately compact JSON tool calls; general default is 2048
-# Everything sent to the model must fit under the independent input cap.
-INPUT_BUDGET_BYTES = (MAX_INPUT_TOKENS - 64) * ESTIMATED_BYTES_PER_TOKEN
+# Leave room for the output reservation and approximate chat-template overhead.
+INPUT_BUDGET_BYTES = (
+    TOTAL_TOKEN_LIMIT - MAX_TOKENS - 64
+) * ESTIMATED_BYTES_PER_TOKEN
 
 # --- Tools over fixture data --------------------------------------------------
-# Tool results are deliberately compact: with a 2048-token input cap, a tool that
-# returns pages of JSON would evict the reasoning that needs it.
+# Tool results are deliberately compact: pages of JSON would crowd out the
+# reasoning that needs them and make every later agent step slower.
 
 
 def get_alert(alert_id: str) -> dict:
@@ -138,8 +139,7 @@ def fit_messages(messages: list) -> list:
 
 
 def celeris_base_url() -> str:
-    """CELERIS_BASE_URL is the endpoint root (no /v1); the OpenAI SDK wants
-    the versioned path, so append /v1 unless it is already there."""
+    """Return the full SDK base URL, accepting legacy endpoint roots too."""
     base = (
         os.environ.get("CELERIS_BASE_URL") or os.environ.get("OPENAI_BASE_URL") or ""
     ).rstrip("/")

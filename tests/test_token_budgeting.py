@@ -15,13 +15,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_token_budget_constants_and_default():
     assert benchmark.TOTAL_TOKEN_LIMIT == 8192
-    assert benchmark.MAX_INPUT_TOKENS == 2048
     assert benchmark.DEFAULT_MAX_OUTPUT_TOKENS == 2048
+    assert benchmark.OUTPUT_TOKEN_BLOCK == 256
     assert benchmark.max_output_tokens() == 2048
     assert benchmark.max_output_tokens(256) == 256
 
 
-@pytest.mark.parametrize("requested", [0, -1, 8192, 9000])
+@pytest.mark.parametrize("requested", [0, -1, 1, 100, 7000, 8192, 9000])
 def test_invalid_output_budget_is_rejected(requested):
     with pytest.raises(ValueError):
         benchmark.max_output_tokens(requested)
@@ -29,9 +29,9 @@ def test_invalid_output_budget_is_rejected(requested):
 
 @pytest.mark.parametrize(
     ("max_tokens", "expected_input"),
-    [(2048, 2048), (256, 2048), (6144, 2048), (7000, 1192)],
+    [(2048, 6144), (256, 7936), (6144, 2048), (6912, 1280)],
 )
-def test_input_budget_respects_input_and_total_caps(max_tokens, expected_input):
+def test_input_budget_respects_total_window(max_tokens, expected_input):
     assert benchmark.input_token_budget(max_tokens) == expected_input
 
 
@@ -43,6 +43,9 @@ def test_no_stale_token_contract_claims():
         "256-" "1024",
         "between 256 and " "1024",
         "MAX_OUTPUT_TOKENS = " "1024",
+        "MAX_INPUT_TOKENS = " "2048",
+        "2048-token input " "cap",
+        "https://<your-" "celeris-endpoint>",
     )
     suffixes = {".ipynb", ".md", ".py", ".ts", ".txt", ".yaml"}
     offenders = []

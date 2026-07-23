@@ -5,8 +5,8 @@
 
 import OpenAI from "openai";
 
-// CELERIS_BASE_URL is the endpoint root (no /v1); the OpenAI SDK wants the
-// versioned path, so append /v1 unless it is already there.
+// The documented value is the full SDK URL. Keep accepting legacy endpoint
+// roots so existing deployments continue to work.
 function celerisBaseUrl(): string {
   const root = (process.env.CELERIS_BASE_URL ?? process.env.OPENAI_BASE_URL ?? "").replace(/\/+$/, "");
   return root.endsWith("/v1") ? root : `${root}/v1`;

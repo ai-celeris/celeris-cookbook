@@ -1,12 +1,11 @@
 // Celeris token-window budgeting.
 //
-// Requests have an 8192-token total window and a separate 2048-token input
-// cap. General requests default to 2048 output tokens; explicitly short tasks
-// can reserve less.
+// Requests have an 8192-token total window. Explicit output reservations must
+// be positive multiples of 256; the service default is 2048.
 
 export const TOTAL_TOKEN_LIMIT = 8192;
-export const MAX_INPUT_TOKENS = 2048;
 export const DEFAULT_MAX_OUTPUT_TOKENS = 2048;
+export const OUTPUT_TOKEN_BLOCK = 256;
 
 // Celeris does not expose its tokenizer; ~4 bytes/token is a serviceable
 // estimate, with a small allowance for the chat template.
@@ -19,12 +18,15 @@ export interface ChatMessage {
   content: string;
 }
 
-/** Maximum input tokens allowed with this output reservation. */
+/** Maximum prompt tokens left after the output reservation. */
 export function inputTokenBudget(maxTokens = DEFAULT_MAX_OUTPUT_TOKENS): number {
-  if (maxTokens <= 0 || maxTokens >= TOTAL_TOKEN_LIMIT) {
-    throw new RangeError("maxTokens must be between 1 and 8191");
+  if (maxTokens <= 0 || maxTokens % OUTPUT_TOKEN_BLOCK !== 0) {
+    throw new RangeError("maxTokens must be a positive multiple of 256");
   }
-  return Math.min(MAX_INPUT_TOKENS, TOTAL_TOKEN_LIMIT - maxTokens);
+  if (maxTokens >= TOTAL_TOKEN_LIMIT) {
+    throw new RangeError("maxTokens must leave room for the prompt");
+  }
+  return TOTAL_TOKEN_LIMIT - maxTokens;
 }
 
 function estimateTokens(messages: ChatMessage[]): number {

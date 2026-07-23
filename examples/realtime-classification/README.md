@@ -15,7 +15,7 @@ account, general) with celeris-1 and measures what that costs in latency.
 cd examples/realtime-classification
 pip install -r requirements.txt
 
-export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 export CELERIS_API_KEY="<your-api-key>"
 
 python3 main.py
@@ -46,7 +46,7 @@ between "route it while the page loads" and "route it later in a queue".
   sentence instead. First route mentioned wins.
 - This deliberately short classification uses `max_tokens=256`; see the
   [latency guide](../../guides/latency.md) for the 8192-token total window and
-  2048-token input cap.
+  256-token output alignment.
 - The sequential pass measures the interactive path. The concurrent pass
   shows a small worker pool draining a burst.
 

@@ -13,31 +13,29 @@ becomes a page under docs.celeris.ai/cookbook.
 
 ## Running the examples
 
-Every example needs:
+Every SDK example needs:
 
 ```sh
-export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 export CELERIS_API_KEY="<your-api-key>"
 ```
 
-(The OpenAI SDK's own `OPENAI_BASE_URL` / `OPENAI_API_KEY` work as fallbacks.)
-Then follow the example's README, Python examples use
-`pip install -r requirements.txt`, the chatbot uses `npm install && npm start`.
+The global endpoint is recommended for most applications. Use
+`https://us-east-1.aws.inference.celeris.ai/celeris-1/v1` only when you need
+to prefer US East. The OpenAI SDK's `OPENAI_BASE_URL` and `OPENAI_API_KEY`
+work as fallbacks.
 
 ## The Celeris token window
 
 Celeris requests have an **8192-token total window**:
 
-- Input is capped at **2048 tokens**, including all messages and chat-template
-  overhead.
-- Cookbook examples use **2048 output tokens by default**. Examples that ask
-  for a label, small JSON object, or another deliberately short answer use a
-  smaller `max_tokens` value.
-- Input plus the requested output must stay within the 8192-token total.
+- If `max_tokens` is omitted, the service defaults it to **2048**.
+- An explicit `max_tokens` must be a positive multiple of **256**.
+- Prompt tokens plus `max_tokens` must be at most **8192**.
 
-Every example budgets its prompt accordingly; the
-[getting-started notebook](examples/getting-started) has the canonical
-budgeting helpers.
+Use the smallest output reservation that fits the task. The
+[getting-started notebook](examples/getting-started) includes the canonical
+validation and budgeting helpers.
 
 ## Guides
 

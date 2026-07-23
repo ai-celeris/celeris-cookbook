@@ -6,7 +6,7 @@ measures wall clock per model step, then shows how per-step latency
 compounds as agents take more steps.
 
 Usage:
-    export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+    export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
     export CELERIS_API_KEY="<your-api-key>"
     pip install -r requirements.txt
     python3 main.py
@@ -85,8 +85,7 @@ TASK = (
 
 
 def celeris_base_url() -> str:
-    """CELERIS_BASE_URL is the endpoint root (no /v1). The OpenAI SDK wants
-    the versioned path, so append /v1 unless it is already there."""
+    """Return the full SDK base URL, accepting legacy endpoint roots too."""
     base = (
         os.environ.get("CELERIS_BASE_URL") or os.environ.get("OPENAI_BASE_URL") or ""
     ).rstrip("/")

@@ -17,7 +17,7 @@ truth.
 cd examples/extraction-at-scale
 pip install -r requirements.txt
 
-export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 export CELERIS_API_KEY="<your-api-key>"
 
 python3 main.py                      # 40 docs at each of concurrency 1, 4, 8

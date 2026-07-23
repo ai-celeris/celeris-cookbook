@@ -28,7 +28,7 @@ upstream failure classes.
 cd demo-proxy
 npm install
 
-export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 export CELERIS_API_KEY="<your-api-key>"
 export DEMO_ALLOWED_ORIGINS="http://localhost:3000"
 

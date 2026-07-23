@@ -82,7 +82,7 @@ try {
     ]);
     await run(TSX, [file], {
       ...process.env,
-      CELERIS_BASE_URL: `http://127.0.0.1:${address.port}`,
+      CELERIS_BASE_URL: `http://127.0.0.1:${address.port}/v1`,
       CELERIS_API_KEY: "snippet-test-key",
     });
   }

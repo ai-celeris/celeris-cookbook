@@ -13,7 +13,7 @@ Tasks with checkable answers (JSON parses + required keys, classification
 label match, short-answer match) are scored for correctness.
 
 Usage:
-    export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+    export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
     export CELERIS_API_KEY="<your-api-key>"
     pip install -r requirements.txt
     python3 main.py                     # 16 tasks x 3 repetitions, concurrency 3
@@ -35,27 +35,28 @@ from openai import APIError, APIStatusError, OpenAI
 # --- Celeris conventions (see the getting-started example) --------------------
 
 TOTAL_TOKEN_LIMIT = 8192
-MAX_INPUT_TOKENS = 2048
 DEFAULT_MAX_OUTPUT_TOKENS = 2048
+OUTPUT_TOKEN_BLOCK = 256
 SHORT_OUTPUT_TOKENS = 256
 
 
 def max_output_tokens(requested: int | None = None) -> int:
     """Use the 2048-token default or validate an explicit output budget."""
     value = DEFAULT_MAX_OUTPUT_TOKENS if requested is None else requested
-    if not 0 < value < TOTAL_TOKEN_LIMIT:
-        raise ValueError("max_tokens must be between 1 and 8191")
+    if value <= 0 or value % OUTPUT_TOKEN_BLOCK:
+        raise ValueError("max_tokens must be a positive multiple of 256")
+    if value >= TOTAL_TOKEN_LIMIT:
+        raise ValueError("max_tokens must leave room for the prompt")
     return value
 
 
 def input_token_budget(max_tokens: int = DEFAULT_MAX_OUTPUT_TOKENS) -> int:
-    """Maximum input tokens allowed with this output reservation."""
-    return min(MAX_INPUT_TOKENS, TOTAL_TOKEN_LIMIT - max_output_tokens(max_tokens))
+    """Maximum prompt tokens left after the output reservation."""
+    return TOTAL_TOKEN_LIMIT - max_output_tokens(max_tokens)
 
 
 def celeris_base_url() -> str:
-    """CELERIS_BASE_URL is the endpoint root (no /v1); the OpenAI SDK wants
-    the versioned path, so append /v1 unless it is already there."""
+    """Return the full SDK base URL, accepting legacy endpoint roots too."""
     base = (
         os.environ.get("CELERIS_BASE_URL") or os.environ.get("OPENAI_BASE_URL") or ""
     ).rstrip("/")

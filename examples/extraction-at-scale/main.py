@@ -7,7 +7,7 @@ minute at several concurrency levels, counts throttles and repairs, and
 scores field accuracy against the known ground truth.
 
 Usage:
-    export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+    export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
     export CELERIS_API_KEY="<your-api-key>"
     pip install -r requirements.txt
     python3 main.py                       # 40 docs at each of concurrency 1, 4, 8
@@ -64,8 +64,7 @@ def build_corpus(count: int) -> list:
 # --- Celeris conventions ------------------------------------------------------
 
 def celeris_base_url() -> str:
-    """CELERIS_BASE_URL is the endpoint root (no /v1). The OpenAI SDK wants
-    the versioned path, so append /v1 unless it is already there."""
+    """Return the full SDK base URL, accepting legacy endpoint roots too."""
     base = (
         os.environ.get("CELERIS_BASE_URL") or os.environ.get("OPENAI_BASE_URL") or ""
     ).rstrip("/")

@@ -6,7 +6,7 @@
 // point is that one synthesis costs a few hundred milliseconds.
 //
 //   npm install
-//   export CELERIS_BASE_URL="https://<your-celeris-endpoint>"
+//   export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
 //   export CELERIS_API_KEY="<your-api-key>"
 //   npm start          # http://localhost:8788
 
