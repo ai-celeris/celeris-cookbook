@@ -1,0 +1,40 @@
+// The one server-side file that talks to Celeris. Runs only on the server
+// (Vercel function / Node process). The API key comes from the environment:
+// locally from your shell, in production from Vercel's encrypted env store.
+// It never ships to the browser.
+
+import OpenAI from "openai";
+
+// The documented value is the full SDK URL. Keep accepting legacy endpoint
+// roots so existing deployments continue to work.
+function celerisBaseUrl(): string {
+  const root = (process.env.CELERIS_BASE_URL ?? process.env.OPENAI_BASE_URL ?? "").replace(/\/+$/, "");
+  return root.endsWith("/v1") ? root : `${root}/v1`;
+}
+
+const DEFAULT_MAX_OUTPUT_TOKENS = 2048;
+
+export async function POST(request: Request) {
+  const { prompt } = await request.json().catch(() => ({ prompt: "" }));
+  if (typeof prompt !== "string" || !prompt.trim()) {
+    return Response.json({ error: "prompt required" }, { status: 400 });
+  }
+
+  const apiKey = process.env.CELERIS_API_KEY ?? process.env.OPENAI_API_KEY;
+  if (!apiKey || !process.env.CELERIS_BASE_URL) {
+    return Response.json({ error: "server missing CELERIS_BASE_URL / CELERIS_API_KEY" }, { status: 500 });
+  }
+
+  const client = new OpenAI({ baseURL: celerisBaseUrl(), apiKey });
+  try {
+    const completion = await client.chat.completions.create({
+      model: process.env.CELERIS_MODEL ?? "celeris-1",
+      messages: [{ role: "user", content: prompt.slice(0, 8000) }],
+      max_tokens: DEFAULT_MAX_OUTPUT_TOKENS,
+      temperature: 0.3,
+    });
+    return Response.json({ reply: completion.choices[0]?.message?.content ?? "" });
+  } catch {
+    return Response.json({ error: "upstream request failed" }, { status: 502 });
+  }
+}

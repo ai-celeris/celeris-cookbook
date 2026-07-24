@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Celeris Chatbot</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Celeris Chatbot</h1>
+  <p>A streaming chatbot on <code>celeris-1</code>, watch the time-to-first-token.</p>
+</header>
+
+<main>
+  <div id="notice" class="notice" hidden></div>
+  <div id="transcript" aria-live="polite"></div>
+
+  <form id="composer">
+    <input id="prompt" type="text" placeholder="Ask something&hellip;" autocomplete="off" autofocus>
+    <button id="send" type="submit">Send</button>
+  </form>
+
+  <details class="own-key">
+    <summary>Use your own API key</summary>
+    <p>
+      Runs requests on your key instead of the server's. Kept in memory
+      only. Never persisted, never logged.
+    </p>
+    <input id="api-key" type="password" placeholder="Celeris API key" autocomplete="off">
+  </details>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

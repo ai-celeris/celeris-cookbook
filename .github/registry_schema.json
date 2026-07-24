@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "minLength": 1
+      },
+      "path": {
+        "type": "string",
+        "pattern": "^(examples|guides)/.+\\.(md|ipynb)$"
+      },
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
+      },
+      "topic": {
+        "type": "string",
+        "enum": [
+          "getting-started",
+          "interactive-apps",
+          "agents",
+          "production",
+          "evals-and-optimization"
+        ]
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1
+      },
+      "date": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+      },
+      "authors": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "minItems": 1
+      },
+      "archived": {
+        "type": "boolean"
+      },
+      "order": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "kind": {
+        "type": "string",
+        "enum": [
+          "example",
+          "guide"
+        ]
+      },
+      "featured": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "title",
+      "path",
+      "slug",
+      "topic",
+      "description",
+      "date",
+      "authors",
+      "tags"
+    ],
+    "additionalProperties": false
+  }
+}

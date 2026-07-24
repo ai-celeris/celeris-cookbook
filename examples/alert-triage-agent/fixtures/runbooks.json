@@ -1,0 +1,20 @@
+[
+  {
+    "id": "RB-12",
+    "title": "checkout-api latency",
+    "keywords": ["checkout-api", "latency", "p99", "slow"],
+    "body": "High checkout-api tail latency is usually one of: (1) a recent deploy changing the payment-provider call path, roll back first, ask questions later; (2) connection-pool exhaustion to the orders DB, check pool saturation and bump max connections; (3) a payment provider brownout, check the provider status page and enable the degraded-checkout feature flag."
+  },
+  {
+    "id": "RB-19",
+    "title": "orders DB connection pool",
+    "keywords": ["orders-db", "connection", "pool", "database"],
+    "body": "The orders DB pool saturates at ~80 connections per replica. Symptoms: rising p99 with flat p50 and no error-rate change. Mitigation: scale checkout-api replicas down (fewer pools), not up, then raise pool max in config service."
+  },
+  {
+    "id": "RB-7",
+    "title": "generic error-rate spike",
+    "keywords": ["errors", "5xx", "error-rate"],
+    "body": "For sudden 5xx spikes: check the most recent deploy across all services in the request path, then upstream provider status pages, then per-AZ health."
+  }
+]

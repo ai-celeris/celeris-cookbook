@@ -1,0 +1,16 @@
+{
+  "ALERT-4127": {
+    "id": "ALERT-4127",
+    "severity": "page",
+    "title": "checkout-api p99 latency above 2s",
+    "service": "checkout-api",
+    "fired_at": "2026-07-21T03:41:00Z",
+    "summary": "p99 latency 2.4s (threshold 2.0s) for 10 consecutive minutes in ap-southeast-2. Error rate steady at 0.2%.",
+    "metrics": {
+      "p99_latency_ms": 2400,
+      "p50_latency_ms": 180,
+      "error_rate_pct": 0.2,
+      "requests_per_min": 5200
+    }
+  }
+}

@@ -1,0 +1,132 @@
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  style:
+    name: Content style rules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: No dashes or forbidden terms in user-visible content
+        run: python3 scripts/style_check.py
+
+  registry:
+    name: Registry and notebook validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Validate registry and authors
+        run: python3 scripts/validate.py
+      - name: Validate notebooks (nbformat)
+        run: |
+          python3 - <<'EOF'
+          from pathlib import Path
+          import nbformat
+          checked = 0
+          for notebook in Path("examples").rglob("*.ipynb"):
+              if "node_modules" in notebook.parts:
+                  continue
+              nbformat.validate(nbformat.read(notebook, as_version=4))
+              checked += 1
+          print(f"{checked} notebook(s) valid")
+          EOF
+
+  python:
+    name: Python lint and unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Lint (ruff)
+        run: ruff check examples scripts tests
+      - name: Compile all examples
+        run: python3 -m compileall -q examples
+      - name: Unit tests (offline)
+        run: python3 -m pytest tests -q
+      - name: Import-check FastAPI example (offline)
+        run: |
+          python3 -m pip install -r examples/fastapi-fly/requirements.txt
+          python3 -c "import sys; sys.path.insert(0, 'examples/fastapi-fly'); import main; assert main.app.title"
+
+  snippets:
+    name: Published snippet checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Python snippet dependencies
+        run: python3 -m pip install -r requirements-snippets.txt
+      - name: Check Python, shell, JSON, and notebook snippets
+        run: python3 scripts/check_snippets.py
+      - name: Install TypeScript snippet dependencies
+        working-directory: tests/typescript-snippets
+        run: npm ci
+      - name: Type-check and execute TypeScript snippets
+        working-directory: tests/typescript-snippets
+        run: npm test
+
+  typescript:
+    name: TypeScript examples and demo proxy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install and typecheck chatbot
+        working-directory: examples/chatbot
+        run: |
+          npm install
+          npm run typecheck
+      - name: Install and typecheck instant-suggest
+        working-directory: examples/instant-suggest
+        run: |
+          npm install
+          npm run typecheck
+      - name: Install and typecheck demo-proxy
+        working-directory: demo-proxy
+        run: |
+          npm install
+          npm run typecheck
+
+      - name: Build burst-rendering example
+        working-directory: examples/burst-rendering
+        run: |
+          npm install
+          npm run build
+
+  nextjs:
+    name: Build Next.js example
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # next build type-checks and compiles the app; no credentials needed.
+      - name: Install and build
+        working-directory: examples/nextjs-vercel
+        run: |
+          npm install
+          npm run build

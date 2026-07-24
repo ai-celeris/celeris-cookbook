@@ -1,0 +1,272 @@
+# yaml-language-server: $schema=./.github/registry_schema.json
+
+# Index of cookbook examples. The website is generated from this file: each
+# entry becomes a page rendered from the file at `path` (a Markdown README or
+# a Jupyter notebook). See CONTRIBUTING.md for the entry format and rules.
+
+- title: Getting started with the Celeris API
+  path: examples/getting-started/getting-started.ipynb
+  slug: getting-started
+  topic: getting-started
+  order: 1
+  featured: true
+  description: Make your first Celeris chat completion with the OpenAI SDK, with correct 256-token output alignment and input budgeting for the 8192-token total window. Includes a streaming cell that times time-to-first-token.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - getting-started
+    - chat-completions
+    - token-budgeting
+    - streaming
+
+- title: Streaming chatbot
+  path: examples/chatbot/README.md
+  slug: chatbot
+  topic: interactive-apps
+  order: 2
+  description: See the speed in a browser. A web chatbot that measures time-to-first-token on every reply, built as a small TypeScript server plus a vanilla JS UI.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - streaming
+    - chat-completions
+    - typescript
+    - latency
+
+- title: Next.js on Vercel
+  path: examples/nextjs-vercel/README.md
+  slug: nextjs-vercel
+  topic: production
+  description: Put Celeris behind your own Next.js backend on Vercel. One route handler, with the API key in the managed environment store, never in the browser, code, or git.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - deployment
+    - security
+    - typescript
+    - nextjs
+
+- title: FastAPI on Fly.io
+  path: examples/fastapi-fly/README.md
+  slug: fastapi-fly
+  topic: production
+  description: Put Celeris behind your own FastAPI backend on Fly.io. One endpoint, with the API key in the encrypted secret store (fly secrets set), never in the browser, code, or git.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - deployment
+    - security
+    - python
+    - fastapi
+
+- title: Alert triage agent
+  path: examples/alert-triage-agent/README.md
+  slug: alert-triage-agent
+  topic: agents
+  description: A multi-step tool-use agent loop that triages a synthetic production alert with tools over fixture data and emits a structured verdict, all inside the 8192-token window.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - agents
+    - tool-use
+    - token-budgeting
+
+- title: Benchmark harness
+  path: examples/benchmark/README.md
+  slug: benchmark
+  topic: evals-and-optimization
+  description: Measure your own workspace in under a minute. Latency percentiles (TTFT and total), throttle, retry, empty, and truncation counts, and objective correctness scoring in one Markdown report.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - benchmarking
+    - latency
+    - evals
+
+- title: Real-time ticket routing
+  path: examples/realtime-classification/README.md
+  slug: realtime-classification
+  topic: production
+  description: Route support tickets in the request path. Measured at 260 ms median per ticket with 100 percent routing accuracy on the sample set, fast enough to classify before the page loads.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - classification
+    - latency
+    - production
+
+- title: Guardrails on every request
+  path: examples/guardrails/README.md
+  slug: guardrails
+  topic: production
+  description: A moderation and validation gate fast enough for the hot path. Structured allow, block, or flag verdicts with reasons, measured at about 290 ms median added latency per request.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - guardrails
+    - moderation
+    - latency
+    - production
+
+- title: Agent latency compounds
+  path: examples/agent-latency/README.md
+  slug: agent-latency
+  topic: agents
+  description: Why per-step speed decides whether an agent is interactive. A measured multi-step tool loop on celeris-1, and a table showing how per-step latency compounds over N steps.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - agents
+    - latency
+    - tool-use
+
+- title: Instant regex, synthesized as you type
+  path: examples/instant-suggest/README.md
+  slug: instant-suggest
+  topic: interactive-apps
+  featured: true
+  description: A web app that turns a plain-English description into a working regex on every typing pause, with in-browser test validation. Measured at about 0.8 s per synthesis end to end.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - interactive
+    - latency
+    - typescript
+
+- title: Understanding latency with celeris-1
+  path: guides/latency.md
+  slug: latency
+  topic: evals-and-optimization
+  kind: guide
+  order: 2
+  featured: true
+  description: How to measure, budget, and design for latency. Metric vocabulary, the one-burst delivery model, the 8192-token total window and 256-token output alignment, and what becomes possible around 300 ms.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - guide
+    - latency
+    - token-budgeting
+
+- title: The cascade, fast model first
+  path: guides/cascade.md
+  slug: cascade
+  topic: agents
+  kind: guide
+  order: 3
+  description: A reference architecture. celeris-1 answers in the hot path in about 300 ms; a larger model refines or handles escalations asynchronously. When to use which, with a runnable sketch.
+  date: 2026-07-21
+  authors:
+    - celeris
+  tags:
+    - guide
+    - architecture
+    - agents
+
+- title: Extraction at scale
+  path: examples/extraction-at-scale/README.md
+  slug: extraction-at-scale
+  topic: production
+  description: Structured JSON extraction over a document corpus with asyncio concurrency and a cheap-repair pass. Measured at 182 to 289 docs per minute with 99 percent field accuracy and zero failed documents.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - extraction
+    - throughput
+    - production
+
+- title: Rendering a one-burst reply
+  path: examples/burst-rendering/README.md
+  slug: burst-rendering
+  topic: interactive-apps
+  description: Three ways to render a whole-reply-at-once model in a chat UI (instant, fast fade, fixed-duration typewriter), with reduced-motion handling and guidance on when each feels best.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - interactive
+    - latency
+    - typescript
+
+- title: Instant query understanding for search
+  path: examples/instant-search/README.md
+  slug: instant-search
+  topic: interactive-apps
+  description: Query rewriting in front of a search index, measured at about 300 ms per rewrite, with graceful fallback to the raw query. Every successful rewrite improved the results.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - search
+    - latency
+    - production
+
+- title: Framework compatibility
+  path: guides/compatibility.md
+  slug: compatibility
+  topic: getting-started
+  kind: guide
+  order: 4
+  description: Verified snippets for the OpenAI SDKs, Vercel AI SDK, LangChain, LiteLLM, and Instructor against the Celeris endpoint, with the max_tokens caveat per framework and the known limits.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - guide
+    - integrations
+
+- title: Task fit, bring your own prompts
+  path: examples/task-fit/README.md
+  slug: task-fit
+  topic: evals-and-optimization
+  description: Answer "is this model enough for my task?" with your own prompts. A JSONL evaluation harness with objective checkers, per-task verdicts, and latency percentiles. Committed runs show it telling the truth in both directions.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - evals
+    - benchmarking
+    - production
+
+- title: The voice turn budget
+  path: guides/voice-turn.md
+  slug: voice-turn
+  topic: interactive-apps
+  kind: guide
+  order: 5
+  description: Where the milliseconds go in a voice agent turn. Measured celeris-1 reply step at 288 ms median beside cited ranges for speech to text and text to speech, and the total both ways.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - guide
+    - voice
+    - latency
+
+- title: Shell tasks with the celeris CLI
+  path: guides/cli-shell-tasks.md
+  slug: cli-shell-tasks
+  topic: production
+  kind: guide
+  order: 6
+  description: Put semantic operations in your pipes. Commit messages from diffs, per-line log triage, semantic filtering, extraction into jq, and the scripting patterns that make the official CLI dependable in loops.
+  date: 2026-07-22
+  authors:
+    - celeris
+  tags:
+    - guide
+    - cli
+    - shell
+    - extraction
