@@ -46,7 +46,8 @@ function clearNotice() {
 
 async function send(text) {
   messages.push({ role: "user", content: text });
-  addBubble("user").textContent = text;
+  const userBubble = addBubble("user");
+  userBubble.textContent = text;
   const assistantBubble = addBubble("assistant");
   assistantBubble.classList.add("pending");
 
@@ -73,10 +74,13 @@ async function send(text) {
 
     if (response.status === 429) {
       messages.pop();
+      userBubble.remove();
       assistantBubble.remove();
       showNotice(
         "Rate limited, the shared demo key has a low request cap. " +
-          "Wait a few seconds and try again, or expand “Use your own API key” below.",
+          "Wait a few seconds and try again" +
+          // The published embed has no own-key panel to point at.
+          (apiKeyInput ? ", or expand “Use your own API key” below." : "."),
         "warn",
       );
       return;
@@ -117,6 +121,7 @@ async function send(text) {
     );
   } catch (error) {
     messages.pop();
+    userBubble.remove();
     assistantBubble.remove();
     showNotice(`Request failed: ${error.message}. Check the server logs and try again.`, "error");
   } finally {

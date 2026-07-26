@@ -28,6 +28,18 @@ test("every demo loads the embed bridge", () => {
   }
 });
 
+// Regression guard. The host sizes the iframe from what embed.js reports, and
+// documentElement's box is clamped to that viewport, so measuring it feeds our
+// own answer back and the frame latches at its smallest value. Measure content.
+test("the embed bridge measures content height, not the root element box", () => {
+  const bridge = readFileSync(join(HERE, "embed.js"), "utf8");
+  assert.match(bridge, /body\.scrollHeight/, "height must come from content");
+  assert.ok(
+    !/documentElement\.getBoundingClientRect/.test(bridge),
+    "measuring documentElement's box latches the frame at its minimum height",
+  );
+});
+
 test("inference demos point at the shared proxy", () => {
   for (const name of ["chatbot", "instant-suggest"]) {
     const html = readFileSync(join(DIST, name, "index.html"), "utf8");
