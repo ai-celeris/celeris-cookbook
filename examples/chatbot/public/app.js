@@ -13,6 +13,11 @@ const apiKeyInput = document.getElementById("api-key");
 // model's input budget.
 const messages = [];
 
+// Where inference requests go. Unset when you run this example yourself, so it
+// stays this server's own route. The published interactive version on the
+// cookbook page sets it to a shared, rate-limited proxy instead.
+const API_BASE = window.__CELERIS_DEMO__?.apiBase ?? "api/";
+
 function addBubble(role) {
   const bubble = document.createElement("div");
   bubble.className = `bubble ${role}`;
@@ -49,8 +54,10 @@ async function send(text) {
   clearNotice();
 
   const headers = { "content-type": "application/json" };
-  // In-memory only: read the field on each send, never store elsewhere.
-  const userKey = apiKeyInput.value.trim();
+  // In-memory only: read the field on each send, never store elsewhere. The
+  // field is absent when the page runs against a shared proxy that only ever
+  // uses its own key.
+  const userKey = apiKeyInput?.value.trim() ?? "";
   if (userKey) headers["x-user-api-key"] = userKey;
 
   const started = performance.now();
@@ -58,7 +65,7 @@ async function send(text) {
   let reply = "";
 
   try {
-    const response = await fetch("api/chat", {
+    const response = await fetch(new URL("chat", new URL(API_BASE, location.href)), {
       method: "POST",
       headers,
       body: JSON.stringify({ messages }),

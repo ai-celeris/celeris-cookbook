@@ -5,8 +5,9 @@ Rules:
 - No em-dashes or en-dashes anywhere. Use commas, periods, or parentheses.
 - No internal product, system, or company names.
 
-Scope: examples/, demo-proxy/, registry.yaml, authors.yaml, README.md,
-CONTRIBUTING.md. Dependency directories and lockfiles are skipped.
+Scope: examples/, guides/, demos/, demo-proxy/, registry.yaml, authors.yaml,
+README.md, CONTRIBUTING.md. Dependency directories, build output, and lockfiles
+are skipped.
 
 Run in CI on every PR and locally via:
 
@@ -21,6 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SCOPE = [
     "examples",
     "guides",
+    "demos",
     "llms.txt",
     "demo-proxy",
     "registry.yaml",

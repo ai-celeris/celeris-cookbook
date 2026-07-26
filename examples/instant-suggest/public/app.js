@@ -5,6 +5,11 @@
 
 const DEBOUNCE_MS = 400;
 
+// Where synthesis requests go. Unset when you run this example yourself, so it
+// stays this server's own route. The published interactive version on the
+// cookbook page sets it to a shared, rate-limited proxy instead.
+const API_BASE = window.__CELERIS_DEMO__?.apiBase ?? "api/";
+
 const description = document.getElementById("description");
 const tests = document.getElementById("tests");
 const regexOutput = document.getElementById("regex");
@@ -56,7 +61,7 @@ async function synthesize() {
   showStatus("synthesizing…");
   const started = performance.now();
   try {
-    const response = await fetch("api/synthesize", {
+    const response = await fetch(new URL("synthesize", new URL(API_BASE, location.href)), {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ description: text }),

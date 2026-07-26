@@ -1,63 +1,37 @@
 # Cookbook demo proxy
 
-A small hardened proxy that lets the docs site's **live chatbot demo widget**
-(the optional widget on the [chatbot example](../examples/chatbot) page) talk
-to Celeris without ever exposing an API key to the browser.
+The interactive demos on the published cookbook pages (see [`../demos`](../demos))
+call a small shared proxy that holds an API key server-side, so the browser
+never sees one. That proxy is operational infrastructure for the docs site
+rather than an example, so it lives in the private infrastructure repository
+alongside the rest of the docs deployment.
 
-This is not an example. It is the operational piece behind the demo. It exposes
-`POST /api/chat` with the same request/response shape as the chatbot example
-server, plus the hardening a public shared endpoint needs:
+## What it does
 
-| Control | Default | Env |
+The proxy exposes one route per embedded app, each matching the shape of that
+example's own server so the embedded page runs the example's unmodified client
+code:
+
+| Route | Request | Response |
 | --- | --- | --- |
-| Origin allowlist (exact match, CORS) | `http://localhost:3000` | `DEMO_ALLOWED_ORIGINS` (comma-separated) |
-| Global rate limit (token bucket) | 2 rps, burst 4 | `DEMO_GLOBAL_RPS`, `DEMO_GLOBAL_BURST` |
-| Per-IP limit (fixed window) | 6/min | `DEMO_PER_IP_PER_MIN` |
-| Body size cap | 16 KB | `DEMO_MAX_BODY_BYTES` |
-| Conversation caps | 20 messages / 8000 chars | (fixed) |
+| `POST /cookbook-api/chat` | `{messages: [{role, content}]}` | streamed plain text |
+| `POST /cookbook-api/synthesize` | `{description}` | `{regex, explanation, server_ms}` |
 
-Throttled requests get a **friendly JSON 429** (`{"error": "rate_limited",
-"message": …, "retry_after_s": 5}` with a `Retry-After` header) that the
-widget renders as a "busy, try again shortly" state. Message content and key
-material are never logged; the only logs are startup configuration shape and
-upstream failure classes.
+It is reachable only through the docs domain, caps request size, message
+count, and output tokens, and runs on a dedicated key with its own spend
+limit, so a shared public endpoint can only ever leak a trickle of quota.
+Message content and key material are never logged.
 
-## Run locally
+## Building the same thing yourself
 
-```sh
-cd demo-proxy
-npm install
+If you want this pattern for your own app, the cookbook has two worked
+examples, both keeping the key on the server:
 
-export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
-export CELERIS_API_KEY="<your-api-key>"
-export DEMO_ALLOWED_ORIGINS="http://localhost:3000"
+- [Next.js on Vercel](../examples/nextjs-vercel): one route handler, with the
+  key in the managed environment store.
+- [FastAPI on Fly.io](../examples/fastapi-fly): one endpoint, with the key in
+  the encrypted secret store.
 
-npm start          # POST /api/chat on :8080, GET /healthz
-```
-
-## Deploy
-
-No standing infrastructure exists for this yet. Deploying is a deliberate
-manual step. Any small host that runs Docker Compose behind a reverse proxy
-works:
-
-1. Build the image from this directory's `Dockerfile` and add a service to
-   the compose file with `CELERIS_BASE_URL`, `CELERIS_API_KEY` (from the
-   host's secret store, never in the compose file), and
-   `DEMO_ALLOWED_ORIGINS=https://docs.celeris.ai`.
-2. Route it in Caddy (e.g. `demo.<zone>` → container port 8080). The proxy
-   trusts the first `X-Forwarded-For` hop for per-IP limiting, which Caddy
-   sets.
-3. Health check: `GET /healthz`.
-4. Then enable the widget on the docs site by setting
-   `COOKBOOK_CHAT_DEMO_URL=https://demo.<zone>/api/chat` in the docs build
-   environment (see the docs repo's `prepare-cookbook.mjs`).
-
-Keep the limits conservative: the whole point is that a stranger finding the
-endpoint can waste at most a trickle of quota.
-
-## Type checking
-
-```sh
-npm run typecheck
-```
+Neither needs a shared proxy. You only need one when a single public page has
+to serve many strangers on one key, which is the situation these demos are in
+and yours probably is not.

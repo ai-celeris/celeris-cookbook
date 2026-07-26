@@ -60,6 +60,11 @@ work at all; nobody waits that long mid-keystroke.
   the local server; `config.ts` resolves the endpoint and key from the
   environment, with an optional per-request user key header. A future hosted
   demo swaps that one module.
+- **An endpoint seam beside it.** `public/app.js` reads
+  `window.__CELERIS_DEMO__?.apiBase`, defaulting to this server's own `api/`
+  route, so running the example yourself changes nothing. The interactive
+  version embedded in the published cookbook page sets it to a shared,
+  rate-limited proxy that answers with the same JSON shape.
 
 ## Where this pattern fits
 

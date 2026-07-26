@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instant Regex</title>
+<link rel="stylesheet" href="style.css">
+<script>window.__CELERIS_DEMO__ = {"apiBase":"/cookbook-api/"};</script>
+</head>
+<body data-embed>
+<header>
+  <h1>Instant Regex</h1>
+  <p>Describe a pattern in plain English. The regex updates on every typing pause.</p>
+</header>
+
+<main>
+  <label for="description">Description</label>
+  <textarea id="description" rows="2" autofocus
+    placeholder="e.g. a US phone number with optional area code in parentheses"></textarea>
+
+  <div id="status" class="status" hidden></div>
+
+  <section class="result" aria-live="polite">
+    <label>Regex</label>
+    <pre id="regex" class="regex">Type a description above.</pre>
+    <p id="explanation" class="explanation"></p>
+    <p id="latency" class="latency"></p>
+  </section>
+
+  <section class="tester">
+    <label for="tests">Test strings (one per line, checked in your browser)</label>
+    <textarea id="tests" rows="5">(415) 555-0132
+415-555-0132
+call me maybe
++1 415 555 0132</textarea>
+    <ul id="test-results"></ul>
+  </section>
+</main>
+
+<script src="app.js"></script>
+<script src="embed.js"></script>
+</body>
+</html>

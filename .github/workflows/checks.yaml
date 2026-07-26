@@ -85,7 +85,7 @@ jobs:
         run: npm test
 
   typescript:
-    name: TypeScript examples and demo proxy
+    name: TypeScript examples and demo builds
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -102,17 +102,22 @@ jobs:
         run: |
           npm install
           npm run typecheck
-      - name: Install and typecheck demo-proxy
-        working-directory: demo-proxy
-        run: |
-          npm install
-          npm run typecheck
-
       - name: Build burst-rendering example
         working-directory: examples/burst-rendering
         run: |
           npm install
           npm run build
+
+      # The committed demo pages must match the example source they are built
+      # from, or the published demos silently drift from the documented code.
+      - name: Build demos and check the committed output is current
+        run: |
+          node demos/build.mjs
+          git diff --exit-code -- demos/dist \
+            || { echo "::error::demos/dist is stale; run 'node demos/build.mjs' and commit the result"; exit 1; }
+
+      - name: Test demo build output
+        run: node --test demos/build.test.mjs
 
   nextjs:
     name: Build Next.js example
