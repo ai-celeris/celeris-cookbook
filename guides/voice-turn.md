@@ -63,9 +63,10 @@ confirmations, device commands, list edits, timers, short factual answers,
 and routing to tools. Keep those on celeris-1 and the conversation stays
 conversational.
 
-For the occasional genuinely hard turn (multi-step planning, long
-reasoning), use the [cascade pattern](cascade.md): answer immediately with
-the fast model ("let me work that out") or route the turn to a larger model
-and spend the seconds only where they buy something. If you are unsure
+For the occasional turn where you want maximum reasoning depth (multi-step
+planning, long reasoning), use the [cascade pattern](cascade.md): answer
+immediately with celeris-1 ("let me work that out") or route the turn to a
+slower, more intelligent model and spend the seconds only where they buy
+something. If you are unsure
 which of your turns fit, run them through the
 [task-fit harness](../examples/task-fit); it will tell you per turn.
