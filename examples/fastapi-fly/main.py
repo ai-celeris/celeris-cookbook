@@ -66,7 +66,7 @@ def generate(request: GenerateRequest) -> dict:
             max_tokens=DEFAULT_MAX_OUTPUT_TOKENS,
             temperature=0.3,
         )
-    except Exception as error:  # noqa: BLE001 - single boundary to the upstream
+    except Exception as error:
         raise HTTPException(status_code=502, detail="upstream request failed") from error
 
     return {"reply": completion.choices[0].message.content or ""}
