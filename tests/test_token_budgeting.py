@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import pytest
-
 from conftest import load_example
 
 benchmark = load_example("benchmark", "examples/benchmark/main.py")
@@ -37,15 +36,15 @@ def test_input_budget_respects_total_window(max_tokens, expected_input):
 
 def test_no_stale_token_contract_claims():
     stale_fragments = (
-        "40" "96-token",
-        "40" "96 token",
-        "[256, " "1024]",
-        "256-" "1024",
-        "between 256 and " "1024",
-        "MAX_OUTPUT_TOKENS = " "1024",
-        "MAX_INPUT_TOKENS = " "2048",
-        "2048-token input " "cap",
-        "https://<your-" "celeris-endpoint>",
+        ("40" "96-token"),
+        ("40" "96 token"),
+        ("[256, " "1024]"),
+        ("256-" "1024"),
+        ("between 256 and " "1024"),
+        ("MAX_OUTPUT_TOKENS = " "1024"),
+        ("MAX_INPUT_TOKENS = " "2048"),
+        ("2048-token input " "cap"),
+        ("https://<your-" "celeris-endpoint>"),
     )
     suffixes = {".ipynb", ".md", ".py", ".ts", ".txt", ".yaml"}
     offenders = []

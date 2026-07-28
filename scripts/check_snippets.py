@@ -11,6 +11,7 @@ import subprocess
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from typing import ClassVar
 
 import yaml
 
@@ -88,9 +89,9 @@ def check_static_syntax(sources: list[Path]) -> tuple[int, int]:
 
 
 class FakeOpenAIHandler(BaseHTTPRequestHandler):
-    requests: list[tuple[str, dict]] = []
+    requests: ClassVar[list[tuple[str, dict]]] = []
 
-    def do_POST(self) -> None:  # noqa: N802
+    def do_POST(self) -> None:
         length = int(self.headers.get("content-length", "0"))
         body = json.loads(self.rfile.read(length))
         self.requests.append((self.path, body))
@@ -163,7 +164,7 @@ def execute_python_snippets() -> int:
             notebook = ROOT / "examples/getting-started/getting-started.ipynb"
             namespace = {"__name__": "__main__"}
             for index, code in enumerate(notebook_cells(notebook), 1):
-                exec(compile(code, f"{notebook.relative_to(ROOT)}:cell-{index}", "exec"), namespace)
+                exec(compile(code, f"{notebook.relative_to(ROOT)}:cell-{index}", "exec"), namespace)  # noqa: S102
                 executed += 1
 
             for guide in sorted((ROOT / "guides").glob("*.md")):
@@ -171,7 +172,7 @@ def execute_python_snippets() -> int:
                     if language != "python":
                         continue
                     namespace = {"__name__": "__main__"}
-                    exec(compile(code, f"{guide.relative_to(ROOT)}:fence-{index}", "exec"), namespace)
+                    exec(compile(code, f"{guide.relative_to(ROOT)}:fence-{index}", "exec"), namespace)  # noqa: S102
                     executed += 1
     finally:
         server.shutdown()

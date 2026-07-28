@@ -249,8 +249,10 @@ def summarize(samples: list, elapsed_s: float) -> str:
         "## Benchmark summary",
         "",
         f"- requests: {len(samples)} ({len(ok)} ok, {len(samples) - len(ok)} failed) in {elapsed_s:.1f}s",
-        f"- throttled (429): {sum(s.throttles for s in samples)} · retries: {sum(s.retries for s in samples)}"
-        f" · empty outputs: {sum(1 for s in ok if s.empty)} · truncated (length): {sum(1 for s in ok if s.truncated)}",
+        (
+            f"- throttled (429): {sum(s.throttles for s in samples)} · retries: {sum(s.retries for s in samples)}"
+            f" · empty outputs: {sum(1 for s in ok if s.empty)} · truncated (length): {sum(1 for s in ok if s.truncated)}"
+        ),
         "",
         "| metric | p50 | p90 | p99 | mean |",
         "| --- | --- | --- | --- | --- |",

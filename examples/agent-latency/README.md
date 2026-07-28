@@ -69,7 +69,8 @@ Match the model to the step, not the whole agent:
   lookups, formatting, validation, summarizing tool output. These are most
   of the steps in most agents, and they reward speed.
 - **Poor fits**: open-ended planning, novel code synthesis, long-context
-  reasoning. Send those few steps to a larger model if you need it.
+  reasoning. Send those few steps to a slower, more intelligent model if you
+  need it.
 
 A practical split: run the loop on a fast model and escalate individual
 steps only when they fail or need depth. The compounding table shows why

@@ -126,7 +126,7 @@ A few conventions make the CLI dependable inside scripts:
 - **Pin the sampling.** `--temperature 0 --seed 7` makes reruns repeatable
   in the common case, which matters once output feeds `jq` or a test.
 - **Demand a format.** End prompts with "Reply with only X". Small answer
-  contracts are what a fast small model is best at, and they make parsing
+  contracts keep fast responses fast, and they make parsing
   trivial.
 - **Check exit codes.** `celeris` exits 0 on success, 1 when the request or
   API fails, and 2 on a bad invocation, and errors go to stderr, so
