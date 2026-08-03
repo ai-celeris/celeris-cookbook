@@ -165,7 +165,7 @@
   topic: agents
   kind: guide
   order: 3
-  description: A reference architecture. celeris-1 answers in the hot path in about 300 ms; a larger model refines or handles escalations asynchronously. When to use which, with a runnable sketch.
+  description: A reference architecture. celeris-1 answers in the hot path in about 300 ms; a slower, more intelligent model refines or handles escalations asynchronously. When to use which, with a runnable sketch.
   date: 2026-07-21
   authors:
     - celeris
