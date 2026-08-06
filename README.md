@@ -43,7 +43,7 @@ validation and budgeting helpers.
   one-burst delivery model, and token-window budgeting. Examples link here
   instead of repeating the rules.
 - [The cascade, fast model first](guides/cascade.md): the reference
-  architecture for pairing celeris-1 with a larger model.
+  architecture for pairing celeris-1 with a slower, more intelligent model.
 - [Framework compatibility](guides/compatibility.md): verified snippets for
   common SDKs and frameworks.
 - [The voice turn budget](guides/voice-turn.md): the measured reply step

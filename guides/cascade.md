@@ -1,10 +1,11 @@
-# The cascade: fast model first, big model when needed
+# The cascade: fast model first, slow model when needed
 
-A fast small model answers most requests well and every request quickly. A
-large model answers hard requests better and every request slowly. You do
-not have to choose once for your whole product. Put celeris-1 in the hot
-path, return its answer immediately, and involve a larger model only for
-the cases that need it, off the critical path where possible.
+celeris-1 is a general purpose model that answers every request quickly and
+handles most of them outright. For the occasional request where you want to
+trade speed for maximum depth, a slower, more intelligent model can help,
+and you do not have to choose once for your whole product. Put celeris-1 in
+the hot path, return its answer immediately, and involve the slower model
+only for the cases that need it, off the critical path where possible.
 
 ## The shape
 
@@ -21,7 +22,7 @@ the cases that need it, off the critical path where possible.
                |  or refinement worthwhile
                v
      +-------------------+   seconds, asynchronous
-     |   larger model    | ----------------------> refine, escalate, or
+     |   slower model    | ----------------------> refine, escalate, or
      |   (slow path)     |                         audit in the background
      +-------------------+
 ```
@@ -35,7 +36,7 @@ Three common variants:
   output signals low confidence (or fails validation); only then does the
   slow path run, and the user waits only on the hard cases.
 - **Gate and audit.** The fast model screens every request in the hot path
-  (see the guardrails example); a larger model audits a sample or the
+  (see the guardrails example); a slower model audits a sample or the
   flagged cases asynchronously.
 
 ## A runnable sketch

@@ -57,7 +57,7 @@ def search_runbooks(query: str) -> list:
     words = set(re.findall(r"[a-z0-9-]+", query.lower()))
     scored = []
     for runbook in runbooks:
-        haystack = set(k.lower() for k in runbook["keywords"])
+        haystack = {k.lower() for k in runbook["keywords"]}
         haystack |= set(re.findall(r"[a-z0-9-]+", runbook["title"].lower()))
         score = len(words & haystack)
         if score:

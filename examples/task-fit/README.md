@@ -70,7 +70,7 @@ logic, a power-mod question, and calendar arithmetic all passed, while
 multi-step word-problem arithmetic (33%) and character reversal (0%) are
 genuinely wrong for this model. The summary says so and points at the
 [cascade guide](../../guides/cascade.md): keep the fits on the fast path,
-send the misses to a larger model.
+send the misses to a slower, more intelligent model.
 
 ## Reading the verdicts
 
@@ -78,8 +78,8 @@ send the misses to a larger model.
   Run your real traffic next.
 - **partial fit**: 60 to 90 percent. Usually prompt phrasing, a missing
   repair step, or an occasional empty reply. Cheap to fix; measure again.
-- **poor fit**: under 60 percent. Believe it. Use a larger model for this
-  task, or restructure the task into checkable smaller steps.
+- **poor fit**: under 60 percent. Believe it. Use a slower, more intelligent
+  model for this task, or restructure the task into checkable smaller steps.
 
 Latency comes free with every run (p50 and p95 across all repetitions), so
 the same report answers both halves of the decision: is it right enough,
