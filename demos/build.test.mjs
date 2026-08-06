@@ -1,6 +1,7 @@
 // Build-output contract for the embeddable demos. These run after
 // `node demos/build.mjs`, so CI builds first and then asserts.
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +10,12 @@ import test from "node:test";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DIST = join(HERE, "dist");
 const EXAMPLES = join(dirname(HERE), "examples");
+
+test("every registered demo can be rebuilt independently", () => {
+  execFileSync(process.execPath, [join(HERE, "build.mjs"), "chatbot"]);
+  assert.ok(existsSync(join(DIST, "chatbot", "index.html")));
+  assert.ok(existsSync(join(DIST, "instant-suggest", "index.html")), "targeted build removed a sibling");
+});
 
 test("burst-rendering demo is built", () => {
   const dir = join(DIST, "burst-rendering");

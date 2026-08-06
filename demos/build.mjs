@@ -6,7 +6,8 @@
 // in an iframe on that app's cookbook page. Output is committed; CI rebuilds
 // it and fails on a diff, so the published demos can never drift from source.
 //
-//   node demos/build.mjs
+//   node demos/build.mjs                  # rebuild everything
+//   node demos/build.mjs chatbot          # rebuild one demo for local iteration
 
 import { execFileSync } from "node:child_process";
 import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -77,6 +78,8 @@ function buildVite(name) {
 export function buildDemo(name) {
   const demo = DEMOS.find((entry) => entry.name === name);
   if (!demo) throw new Error(`unknown demo: ${name}`);
+  mkdirSync(DIST, { recursive: true });
+  rmSync(join(DIST, name), { recursive: true, force: true });
   if (demo.kind === "vite") buildVite(name);
   else buildStatic(name);
   cpSync(join(HERE, "embed.js"), join(DIST, name, "embed.js"));
@@ -84,9 +87,14 @@ export function buildDemo(name) {
 }
 
 function main() {
-  rmSync(DIST, { recursive: true, force: true });
-  mkdirSync(DIST, { recursive: true });
-  for (const demo of DEMOS) buildDemo(demo.name);
+  const requested = process.argv.slice(2);
+  if (requested.length === 0) {
+    rmSync(DIST, { recursive: true, force: true });
+    mkdirSync(DIST, { recursive: true });
+  }
+  for (const name of requested.length > 0 ? requested : DEMOS.map((demo) => demo.name)) {
+    buildDemo(name);
+  }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) main();
