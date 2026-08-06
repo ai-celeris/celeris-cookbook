@@ -1,7 +1,7 @@
 # On merge to main, tell the docs site (marqo-ai/diffusion-llm-service) that
 # the cookbook advanced. Its "Bump Cookbook Submodule" workflow updates the
-# submodule pointer and opens a PR; merging that PR republishes
-# docs.celeris.ai/cookbook.
+# submodule pointer and opens a PR; merging that PR builds the demo assets from
+# the pinned sources and republishes docs.celeris.ai/cookbook.
 #
 # DOCS_BUMP_TOKEN is a fine-grained PAT that can dispatch workflows in
 # marqo-ai/diffusion-llm-service (repository access: that repo only;

@@ -85,7 +85,7 @@ jobs:
         run: npm test
 
   typescript:
-    name: TypeScript examples and demo proxy
+    name: TypeScript examples and demo builds
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -102,17 +102,26 @@ jobs:
         run: |
           npm install
           npm run typecheck
-      - name: Install and typecheck demo-proxy
-        working-directory: demo-proxy
-        run: |
-          npm install
-          npm run typecheck
-
       - name: Build burst-rendering example
         working-directory: examples/burst-rendering
         run: |
           npm install
           npm run build
+
+      # dist/ is ignored. Prove the docs deployment can build every embedded
+      # page directly from this revision's example source.
+      - name: Build demos from source
+        run: node demos/build.mjs
+
+      - name: Test demo build output
+        run: node --test demos/build.test.mjs
+
+      - name: Install browser test dependencies
+        run: npm ci
+      - name: Install Playwright Chromium
+        run: npm exec playwright install --with-deps chromium
+      - name: Test embedded demos in a docs-style host
+        run: npm run test:e2e
 
   nextjs:
     name: Build Next.js example

@@ -1,5 +1,6 @@
 # Build output
 site/dist/
+demos/dist/
 
 # Python
 __pycache__/
@@ -24,3 +25,5 @@ __pycache__/
 # Node
 node_modules/
 .next/
+test-results/
+playwright-report/

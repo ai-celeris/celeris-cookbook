@@ -11,7 +11,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #12131a;
     --fg: #e7e8ee;
     --muted: #9a9dae;
@@ -21,6 +21,19 @@
     --good: #4ade80;
     --bad: #f87171;
   }
+}
+
+/* Embedded in a page with its own light and dark toggle: the host's choice
+   wins over the reader's operating system preference. Same palette as above. */
+:root[data-theme="dark"] {
+  --bg: #12131a;
+  --fg: #e7e8ee;
+  --muted: #9a9dae;
+  --border: #2a2c38;
+  --accent: #a5b4fc;
+  --accent-soft: #232447;
+  --good: #4ade80;
+  --bad: #f87171;
 }
 
 * { box-sizing: border-box; }
@@ -89,3 +102,8 @@ textarea {
 .match { color: var(--good); }
 .no-match { color: var(--bad); }
 .invalid { color: var(--bad); }
+
+/* Embedded in a docs page: that page already introduces the app. */
+body[data-embed] > header {
+  display: none;
+}

@@ -9,9 +9,32 @@ const sendButton = document.getElementById("send");
 const notice = document.getElementById("notice");
 const apiKeyInput = document.getElementById("api-key");
 
-// [{role, content}], resent whole each turn; the server clips history to the
-// model's input budget.
+// [{role, content}], kept only in this page's memory. The standalone server
+// clips history to the model's input budget; the hosted demo also bounds each
+// request before it reaches CloudFront.
 const messages = [];
+
+// Where inference requests go. Unset when you run this example yourself, so it
+// stays this server's own route. The published interactive version on the
+// cookbook page sets it to a shared, rate-limited proxy instead.
+const API_BASE = window.__CELERIS_DEMO__?.apiBase ?? "api/";
+
+function messagesForRequest() {
+  const config = window.__CELERIS_DEMO__;
+  if (!config) return messages;
+
+  const selected = messages.slice(-(config.maxMessages ?? 8));
+  const maxBodyBytes = config.maxBodyBytes ?? 7000;
+  while (
+    selected.length > 1 &&
+    new TextEncoder().encode(JSON.stringify({ messages: selected })).byteLength > maxBodyBytes
+  ) {
+    selected.shift();
+  }
+  // A clipped conversation must not begin with an orphaned assistant reply.
+  if (selected.length > 1 && selected[0].role === "assistant") selected.shift();
+  return selected;
+}
 
 function addBubble(role) {
   const bubble = document.createElement("div");
@@ -41,7 +64,8 @@ function clearNotice() {
 
 async function send(text) {
   messages.push({ role: "user", content: text });
-  addBubble("user").textContent = text;
+  const userBubble = addBubble("user");
+  userBubble.textContent = text;
   const assistantBubble = addBubble("assistant");
   assistantBubble.classList.add("pending");
 
@@ -49,8 +73,10 @@ async function send(text) {
   clearNotice();
 
   const headers = { "content-type": "application/json" };
-  // In-memory only: read the field on each send, never store elsewhere.
-  const userKey = apiKeyInput.value.trim();
+  // In-memory only: read the field on each send, never store elsewhere. The
+  // field is absent when the page runs against a shared proxy that only ever
+  // uses its own key.
+  const userKey = apiKeyInput?.value.trim() ?? "";
   if (userKey) headers["x-user-api-key"] = userKey;
 
   const started = performance.now();
@@ -58,18 +84,21 @@ async function send(text) {
   let reply = "";
 
   try {
-    const response = await fetch("api/chat", {
+    const response = await fetch(new URL("chat", new URL(API_BASE, location.href)), {
       method: "POST",
       headers,
-      body: JSON.stringify({ messages }),
+      body: JSON.stringify({ messages: messagesForRequest() }),
     });
 
     if (response.status === 429) {
       messages.pop();
+      userBubble.remove();
       assistantBubble.remove();
       showNotice(
         "Rate limited, the shared demo key has a low request cap. " +
-          "Wait a few seconds and try again, or expand “Use your own API key” below.",
+          "Wait a few seconds and try again" +
+          // The published embed has no own-key panel to point at.
+          (apiKeyInput ? ", or expand “Use your own API key” below." : "."),
         "warn",
       );
       return;
@@ -110,6 +139,7 @@ async function send(text) {
     );
   } catch (error) {
     messages.pop();
+    userBubble.remove();
     assistantBubble.remove();
     showNotice(`Request failed: ${error.message}. Check the server logs and try again.`, "error");
   } finally {

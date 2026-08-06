@@ -57,6 +57,12 @@ key a request runs on:
 3. **Workspace key (future)**: a login-aware proxy can resolve the key from
    the user's workspace; that slot is the same `resolveUpstream` seam.
 
+There is a matching seam on the endpoint side. `public/app.js` reads
+`window.__CELERIS_DEMO__?.apiBase`, defaulting to this server's own `api/`
+route, so running the example yourself leaves everything as described above.
+The interactive version embedded in the published cookbook page sets it to a
+shared, rate-limited proxy instead, and drops the user-supplied key panel.
+
 ## Type checking
 
 ```sh docs-e2e=skip
