@@ -11,7 +11,6 @@ This directory is a build target, not an example. The apps themselves live in
 ## Build
 
 ```sh
-npm ci --prefix examples/burst-rendering
 node demos/build.mjs
 node --test demos/build.test.mjs
 ```
@@ -19,6 +18,8 @@ node --test demos/build.test.mjs
 `dist/` is ignored build output. Cookbook CI builds and browser-tests it from
 the example source. The Celeris docs deployment repeats that build from the
 cookbook revision pinned by its submodule before publishing the pages.
+The build entry point installs an app's build dependencies when they are not
+already present, so callers do not need to know how individual examples build.
 
 ## How an embedded page differs from the standalone one
 

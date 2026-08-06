@@ -102,14 +102,9 @@ jobs:
         run: |
           npm install
           npm run typecheck
-      - name: Build burst-rendering example
-        working-directory: examples/burst-rendering
-        run: |
-          npm install
-          npm run build
-
       # dist/ is ignored. Prove the docs deployment can build every embedded
-      # page directly from this revision's example source.
+      # page directly from this revision's example source, including installing
+      # any build-only dependencies owned by an example.
       - name: Build demos from source
         run: node demos/build.mjs
 
