@@ -10,7 +10,7 @@
 //   node demos/build.mjs chatbot          # rebuild one demo for local iteration
 
 import { execFileSync } from "node:child_process";
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -66,6 +66,12 @@ function buildStatic(name) {
 function buildVite(name) {
   const example = join(ROOT, "examples", name);
   const target = join(DIST, name);
+  // The build entry point owns everything needed to produce dist/. This keeps
+  // docs deployment and local iteration independent of an example's package
+  // manager details while avoiding a reinstall on every watched rebuild.
+  if (!existsSync(join(example, "node_modules", ".bin", "vite"))) {
+    execFileSync("npm", ["ci"], { cwd: example, stdio: "inherit" });
+  }
   // Relative base: the page is served from /cookbook-demos/<name>/, not root.
   execFileSync("npm", ["run", "build", "--", "--base=./", `--outDir=${target}`, "--emptyOutDir"], {
     cwd: example,
