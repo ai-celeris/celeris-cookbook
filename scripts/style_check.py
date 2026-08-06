@@ -5,7 +5,7 @@ Rules:
 - No em-dashes or en-dashes anywhere. Use commas, periods, or parentheses.
 - No internal product, system, or company names.
 
-Scope: examples/, guides/, demos/, demo-proxy/, registry.yaml, authors.yaml,
+Scope: examples/, guides/, demos/, registry.yaml, authors.yaml,
 README.md, CONTRIBUTING.md. Dependency directories, build output, and lockfiles
 are skipped.
 
@@ -24,7 +24,6 @@ SCOPE = [
     "guides",
     "demos",
     "llms.txt",
-    "demo-proxy",
     "registry.yaml",
     "authors.yaml",
     "README.md",

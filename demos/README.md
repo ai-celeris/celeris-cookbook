@@ -11,12 +11,14 @@ This directory is a build target, not an example. The apps themselves live in
 ## Build
 
 ```sh
+npm ci --prefix examples/burst-rendering
 node demos/build.mjs
 node --test demos/build.test.mjs
 ```
 
-`dist/` is committed. CI rebuilds it and fails on any diff, so the published
-demos can never drift from the example source.
+`dist/` is ignored build output. Cookbook CI builds and browser-tests it from
+the example source. The Celeris docs deployment repeats that build from the
+cookbook revision pinned by its submodule before publishing the pages.
 
 ## How an embedded page differs from the standalone one
 
@@ -31,8 +33,5 @@ demos can never drift from the example source.
 4. `embed.js` reports the page height to the host and follows the docs light or
    dark theme.
 
-## The shared proxy
-
-The embedded apps do not carry a key. They call a small proxy that holds one
-server-side, capped and rate-limited, described in
-[`../demo-proxy`](../demo-proxy).
+The hosted inference demos call a same-origin endpoint and never carry an API
+key in the browser. Standalone examples continue to use their own local server.

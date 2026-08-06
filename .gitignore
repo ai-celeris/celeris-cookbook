@@ -1,5 +1,6 @@
 # Build output
 site/dist/
+demos/dist/
 
 # Python
 __pycache__/

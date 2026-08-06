@@ -3,8 +3,8 @@
 //
 // Each cookbook browser app becomes a self-contained static page under
 // dist/<name>/, served by the docs site at /cookbook-demos/<name>/ and shown
-// in an iframe on that app's cookbook page. Output is committed; CI rebuilds
-// it and fails on a diff, so the published demos can never drift from source.
+// in an iframe on that app's cookbook page. dist/ is generated and ignored;
+// the docs deployment builds it from the pinned cookbook submodule revision.
 //
 //   node demos/build.mjs                  # rebuild everything
 //   node demos/build.mjs chatbot          # rebuild one demo for local iteration
@@ -20,8 +20,7 @@ const DIST = join(HERE, "dist");
 
 // Where the embedded apps send inference requests. In production this is the
 // docs site's own origin, routed to the shared proxy. Overridable so a local
-// run can point at a proxy on another port; committed output always uses the
-// default.
+// run can point at a proxy on another port; deployed output uses the default.
 const API_BASE = process.env.CELERIS_DEMO_API_BASE || "/cookbook-api/";
 const SHARED_DEMO_CONFIG = {
   apiBase: API_BASE,
