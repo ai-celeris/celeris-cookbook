@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pytest
+
 from conftest import load_example
 
 benchmark = load_example("benchmark", "examples/benchmark/main.py")
