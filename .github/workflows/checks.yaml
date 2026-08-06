@@ -119,6 +119,13 @@ jobs:
       - name: Test demo build output
         run: node --test demos/build.test.mjs
 
+      - name: Install browser test dependencies
+        run: npm ci
+      - name: Install Playwright Chromium
+        run: npm exec playwright install --with-deps chromium
+      - name: Test embedded demos in a docs-style host
+        run: npm run test:e2e
+
   nextjs:
     name: Build Next.js example
     runs-on: ubuntu-latest

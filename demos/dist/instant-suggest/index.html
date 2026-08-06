@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Instant Regex</title>
 <link rel="stylesheet" href="style.css">
-<script>window.__CELERIS_DEMO__ = {"apiBase":"/cookbook-api/"};</script>
+<script>window.__CELERIS_DEMO__ = {"apiBase":"/cookbook-api/","maxBodyBytes":7000,"maxMessages":8};</script>
 </head>
 <body data-embed>
 <header>
@@ -15,7 +15,7 @@
 
 <main>
   <label for="description">Description</label>
-  <textarea id="description" rows="2" autofocus
+  <textarea id="description" rows="2" maxlength="500" autofocus
     placeholder="e.g. a US phone number with optional area code in parentheses"></textarea>
 
   <div id="status" class="status" hidden></div>

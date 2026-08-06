@@ -5,6 +5,7 @@
 // toggle. Both directions are same-origin: the host is the docs site itself.
 
 (function () {
+  var hostOrigin = location.origin;
   // Measure the content, not the root element's box. The host sizes this
   // iframe from what we report, and documentElement's box is clamped to that
   // viewport, so measuring it feeds our own answer back and latches at the
@@ -23,7 +24,7 @@
     // Round to a step so a sub-pixel reflow cannot start a resize ping-pong.
     if (Math.abs(height - last) < 4) return;
     last = height;
-    parent.postMessage({ type: "celeris-demo-height", height: height }, "*");
+    parent.postMessage({ type: "celeris-demo-height", height: height }, hostOrigin);
   }
 
   if (typeof ResizeObserver === "function") {
@@ -42,6 +43,7 @@
   window.addEventListener("load", postHeight);
 
   window.addEventListener("message", function (event) {
+    if (event.source !== parent || event.origin !== hostOrigin) return;
     var data = event.data;
     if (!data || data.type !== "celeris-demo-theme") return;
     if (data.theme === "dark" || data.theme === "light") {

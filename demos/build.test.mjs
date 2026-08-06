@@ -40,12 +40,30 @@ test("the embed bridge measures content height, not the root element box", () =>
   );
 });
 
+test("the embed bridge only exchanges messages with its same-origin host", () => {
+  const bridge = readFileSync(join(HERE, "embed.js"), "utf8");
+  assert.match(bridge, /event\.source !== parent/);
+  assert.match(bridge, /event\.origin !== hostOrigin/);
+  assert.match(bridge, /postMessage\([^;]+hostOrigin\)/s);
+  assert.ok(!bridge.includes('postMessage({ type: "celeris-demo-height", height: height }, "*")'));
+});
+
 test("inference demos point at the shared proxy", () => {
   for (const name of ["chatbot", "instant-suggest"]) {
     const html = readFileSync(join(DIST, name, "index.html"), "utf8");
-    assert.match(html, /window\.__CELERIS_DEMO__ = \{"apiBase":"\/cookbook-api\/"\}/);
+    assert.match(
+      html,
+      /window\.__CELERIS_DEMO__ = \{"apiBase":"\/cookbook-api\/","maxBodyBytes":7000,"maxMessages":8\}/,
+    );
     assert.match(html, /<body data-embed>/);
   }
+});
+
+test("the shared chatbot bounds history before it reaches the edge", () => {
+  const source = readFileSync(join(EXAMPLES, "chatbot", "public", "app.js"), "utf8");
+  assert.match(source, /new TextEncoder\(\)/);
+  assert.match(source, /messagesForRequest\(\)/);
+  assert.match(source, /config\.maxBodyBytes/);
 });
 
 test("demo app.js is copied unmodified from the example", () => {

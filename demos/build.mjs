@@ -22,6 +22,13 @@ const DIST = join(HERE, "dist");
 // run can point at a proxy on another port; committed output always uses the
 // default.
 const API_BASE = process.env.CELERIS_DEMO_API_BASE || "/cookbook-api/";
+const SHARED_DEMO_CONFIG = {
+  apiBase: API_BASE,
+  // Stay below both CloudFront's 8 KiB managed-rule threshold and the
+  // proxy's own request caps, including JSON framing and UTF-8 expansion.
+  maxBodyBytes: 7000,
+  maxMessages: 8,
+};
 
 export const DEMOS = [
   { name: "chatbot", kind: "static" },
@@ -40,7 +47,7 @@ function embedHtml(html) {
       .replace("<body>", "<body data-embed>")
       .replace(
         "</head>",
-        `<script>window.__CELERIS_DEMO__ = ${JSON.stringify({ apiBase: API_BASE })};</script>\n</head>`,
+        `<script>window.__CELERIS_DEMO__ = ${JSON.stringify(SHARED_DEMO_CONFIG)};</script>\n</head>`,
       )
       .replace("</body>", '<script src="embed.js"></script>\n</body>')
   );

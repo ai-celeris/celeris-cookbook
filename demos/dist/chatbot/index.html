@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Celeris Chatbot</title>
 <link rel="stylesheet" href="style.css">
-<script>window.__CELERIS_DEMO__ = {"apiBase":"/cookbook-api/"};</script>
+<script>window.__CELERIS_DEMO__ = {"apiBase":"/cookbook-api/","maxBodyBytes":7000,"maxMessages":8};</script>
 </head>
 <body data-embed>
 <header>
@@ -18,7 +18,7 @@
   <div id="transcript" aria-live="polite"></div>
 
   <form id="composer">
-    <input id="prompt" type="text" placeholder="Ask something&hellip;" autocomplete="off" autofocus>
+    <input id="prompt" type="text" maxlength="1000" placeholder="Ask something&hellip;" autocomplete="off" autofocus>
     <button id="send" type="submit">Send</button>
   </form>
 </main>
