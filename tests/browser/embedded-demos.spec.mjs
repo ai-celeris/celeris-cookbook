@@ -26,3 +26,13 @@ test("instant suggest calls its API and tests the safe result locally", async ({
   await expect(page.locator("#regex")).toHaveText("^hello$");
   await expect(page.locator("#test-results li").first()).toBeVisible();
 });
+
+test("instant search makes query understanding visible", async ({ page }) => {
+  await page.goto("/apps/instant-search/");
+  const query = page.locator("#query");
+  await expect(query).toHaveAttribute("maxlength", "500");
+  await query.fill("why am I told to slow down");
+  await expect(page.locator("#keywords")).toContainText("rate limiting");
+  await expect(page.locator("#understood-results")).toContainText("Rate limits and 429 responses");
+  await expect(page.locator("#latency")).toHaveText("14 ms model time");
+});

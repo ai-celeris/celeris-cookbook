@@ -26,6 +26,19 @@ createServer(async (request, response) => {
     response.end(JSON.stringify({ regex: "^hello$", explanation: "An exact match.", server_ms: 12 }));
     return;
   }
+  if (url.pathname === "/apps/instant-search/api/search" && request.method === "POST") {
+    response.setHeader("content-type", "application/json; charset=utf-8");
+    response.end(JSON.stringify({
+      raw_results: [],
+      results: [{
+        title: "Rate limits and 429 responses",
+        body: "Requests over your limit return HTTP 429.",
+      }],
+      keywords: ["rate limiting", "throttling"],
+      server_ms: 14,
+    }));
+    return;
+  }
   if (url.pathname === "/__last-chat") {
     response.setHeader("content-type", "application/json; charset=utf-8");
     response.end(JSON.stringify(lastChat));

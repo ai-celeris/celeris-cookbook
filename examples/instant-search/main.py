@@ -105,6 +105,9 @@ def rewrite(client: OpenAI, model: str, query: str) -> tuple:
                 messages=[{"role": "user", "content": REWRITE_PROMPT + query}],
                 max_tokens=256,  # short query rewrite; general default is 2048
                 temperature=0.0,
+                # Measure the complete rewrite. Streaming responses can expose
+                # incomplete timing headers, so keep this explicitly disabled.
+                stream=False,
             )
             break
         except APIStatusError as error:

@@ -104,6 +104,11 @@ jobs:
           npm run typecheck
       - name: Build browser application recipes from source
         run: npm run test:apps
+      - name: Install and typecheck instant-search
+        working-directory: examples/instant-search
+        run: |
+          npm install
+          npm run typecheck
       - name: Install browser test dependencies
         run: npm ci
       - name: Install Playwright Chromium

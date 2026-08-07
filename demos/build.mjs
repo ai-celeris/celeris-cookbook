@@ -20,6 +20,7 @@ const DIST = join(HERE, "dist");
 export const APPS = [
   { name: "chatbot", kind: "static" },
   { name: "instant-suggest", kind: "static" },
+  { name: "instant-search", kind: "static" },
   { name: "burst-rendering", kind: "vite" },
 ];
 

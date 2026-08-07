@@ -11,13 +11,13 @@ const DIST = join(HERE, "dist");
 
 test("all browser application recipes build from source", () => {
   execFileSync(process.execPath, [join(HERE, "build.mjs")], { cwd: ROOT, stdio: "inherit" });
-  for (const name of ["chatbot", "instant-suggest", "burst-rendering"]) {
+  for (const name of ["chatbot", "instant-suggest", "instant-search", "burst-rendering"]) {
     assert.ok(existsSync(join(DIST, name, "index.html")), `${name} did not produce index.html`);
   }
 });
 
 test("generated browser bundles use relative asset URLs", () => {
-  for (const name of ["chatbot", "instant-suggest", "burst-rendering"]) {
+  for (const name of ["chatbot", "instant-suggest", "instant-search", "burst-rendering"]) {
     const html = readFileSync(join(DIST, name, "index.html"), "utf8");
     assert.ok(!/(?:src|href)="\/(?!\/)/.test(html), `${name} contains a root-relative asset URL`);
   }

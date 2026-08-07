@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search that understands you</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!--
+IMPECCABLE_CONTRACT
+THESIS: Make query understanding visible as a before-and-after, not a black-box search field.
+OWN-WORLD: Inherit the cookbook apps' restrained indigo, neutral surfaces, and compact controls.
+COMPOSITION: One query leads into a split comparison; rewritten terms bridge intent to results.
+BEHAVIOR: Search follows a typing pause, cancels stale work, and preserves raw-query fallback.
+BOUNDARIES: No invented benchmark claims, decorative dashboards, or interaction beyond this recipe.
+-->
+<header>
+  <h1>Search that understands you</h1>
+  <p>Try a vague support question. Celeris turns it into terms the index can use.</p>
+</header>
+
+<main>
+  <form id="search-form" role="search">
+    <label for="query">What are you trying to find?</label>
+    <div class="search-row">
+      <input id="query" type="search" maxlength="500" autocomplete="off"
+        value="why do I keep getting told to slow down">
+      <button id="search-button" type="submit">Understand</button>
+    </div>
+  </form>
+
+  <div class="examples" aria-label="Example searches">
+    <span>Try</span>
+    <button type="button" data-query="getting my money back">getting my money back</button>
+    <button type="button" data-query="hook that tells my server when stuff happens">server hook</button>
+  </div>
+
+  <div id="status" class="status" role="status" aria-live="polite"></div>
+
+  <div class="comparison" aria-live="polite">
+    <section>
+      <div class="result-heading">
+        <h2>Literal match</h2>
+        <span>original words</span>
+      </div>
+      <ol id="raw-results" class="results"></ol>
+    </section>
+
+    <section class="understood">
+      <div class="result-heading">
+        <h2>Understood search</h2>
+        <span id="latency"></span>
+      </div>
+      <div id="keywords" class="keywords" aria-label="Rewritten search terms"></div>
+      <ol id="understood-results" class="results"></ol>
+    </section>
+  </div>
+
+  <details class="own-key">
+    <summary>Use your own API key</summary>
+    <p>Runs this search on your key. Kept in memory only, never persisted.</p>
+    <input id="api-key" type="password" placeholder="Celeris API key" autocomplete="off">
+  </details>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
