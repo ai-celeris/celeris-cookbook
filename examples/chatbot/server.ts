@@ -108,8 +108,8 @@ async function handleChat(request: IncomingMessage, response: ServerResponse): P
       return;
     }
     if (isRateLimit(error)) {
-      // First-class state, not a generic failure: hosted demos share a
-      // low-RPS key, so the UI treats 429 as "try again shortly".
+      // First-class state, not a generic failure: the UI can tell the caller
+      // to retry after the configured request ceiling resets.
       sendJson(response, 429, { error: "rate_limited" });
       return;
     }

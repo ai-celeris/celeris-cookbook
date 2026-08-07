@@ -1,14 +1,29 @@
-// Live regex synthesis. On every typing pause (400 ms), send the description
+// Live regex synthesis. On every typing pause (200 ms), send the description
 // to the local server, cancel any in-flight request, and re-check the test
 // strings against the new regex right here in the browser. The regex check is
 // deterministic and local; only the synthesis calls the model.
 
-const DEBOUNCE_MS = 400;
+const DEBOUNCE_MS = 200;
 
-// Where synthesis requests go. Unset when you run this example yourself, so it
-// stays this server's own route. The published interactive version on the
-// cookbook page sets it to a shared, rate-limited proxy instead.
-const API_BASE = window.__CELERIS_DEMO__?.apiBase ?? "api/";
+// Where synthesis requests go. A host may inject another API-compatible base;
+// without one, the standalone example uses its own local server.
+const API_BASE = window.__CELERIS_APP_CONFIG__?.apiBase ?? "api/";
+const SYNTHESIZE_URL = new URL("synthesize", new URL(API_BASE, location.href));
+
+// Prime DNS/TLS and the browser's CORS-preflight cache before the first typing
+// pause. Compatible application servers can use this best-effort signal to call Celeris
+// /echo and warm their own outbound connection without invoking the model.
+if (window.__CELERIS_APP_CONFIG__?.prewarm) {
+  fetch(SYNTHESIZE_URL, {
+    method: "OPTIONS",
+    mode: "cors",
+    credentials: "omit",
+    headers: {
+      "content-type": "application/json",
+      "x-celeris-warmup": "1",
+    },
+  }).catch(() => {});
+}
 
 const description = document.getElementById("description");
 const tests = document.getElementById("tests");
@@ -61,7 +76,7 @@ async function synthesize() {
   showStatus("synthesizing…");
   const started = performance.now();
   try {
-    const response = await fetch(new URL("synthesize", new URL(API_BASE, location.href)), {
+    const response = await fetch(SYNTHESIZE_URL, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ description: text }),

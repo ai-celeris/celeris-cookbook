@@ -48,6 +48,51 @@ total = network round trip + server time
 The practical rules: keep replies as short as the task allows, and keep the
 connection warm.
 
+### Prewarm before the first user request
+
+For latency-sensitive browser apps, start the connection while the user is
+reading or typing rather than after they click. An author-issued `OPTIONS` with
+the same non-safelisted header names as the eventual request makes the browser
+perform and cache the real CORS preflight, while also establishing DNS and TLS:
+
+```ts docs-e2e=skip
+const chatUrl = `${baseUrl}/chat/completions`;
+
+fetch(chatUrl, {
+  method: "OPTIONS",
+  mode: "cors",
+  credentials: "omit",
+  headers: {
+    Authorization: "Bearer cors-preflight-warmup",
+    "Content-Type": "application/json",
+  },
+}).catch(() => {}); // best effort; never block the UI
+```
+
+If your application has a server, also send an authenticated
+small `POST` to `/<model>/echo` during startup. `/echo` returns the request body,
+does not invoke the model, and does not consume inference quota; it establishes
+the server-to-Celeris connection before the first completion. Apply a
+timeout, deduplicate concurrent warm-ups, and ignore failures. The real request
+remains the source of truth.
+
+```ts docs-e2e=skip
+const modelUrl = baseUrl.replace(/\/v1\/?$/, "");
+
+await fetch(`${modelUrl}/echo`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.CELERIS_API_KEY}`,
+    "Content-Type": "text/plain",
+  },
+  body: "warm",
+  signal: AbortSignal.timeout(5000),
+}).catch(() => {});
+```
+
+Keep this authenticated call on your server. Do not put an API key into
+browser JavaScript to prewarm a connection.
+
 ## Design for the burst
 
 Because the reply arrives whole:

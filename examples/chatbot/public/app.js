@@ -1,6 +1,6 @@
 // Chat UI: streams from the local server and measures latency in the browser
 // (time-to-first-token is the showcase). Rate limits (429) are a first-class
-// friendly state, not an error: hosted demos share a low-RPS key.
+// friendly state, not an error: deployments may deliberately use a low-RPS key.
 
 const transcript = document.getElementById("transcript");
 const composer = document.getElementById("composer");
@@ -10,19 +10,32 @@ const notice = document.getElementById("notice");
 const apiKeyInput = document.getElementById("api-key");
 
 // [{role, content}], kept only in this page's memory. The standalone server
-// clips history to the model's input budget; the hosted demo also bounds each
-// request before it reaches CloudFront.
+// clips history to the model's input budget; an injected deployment config can
+// impose a smaller client-side request bound too.
 const messages = [];
 
-// Where inference requests go. Unset when you run this example yourself, so it
-// stays this server's own route. The published interactive version on the
-// cookbook page sets it to a shared, rate-limited proxy instead.
-const API_BASE = window.__CELERIS_DEMO__?.apiBase ?? "api/";
+// Where inference requests go. A host may inject another API-compatible base;
+// without one, the standalone example uses its own local server.
+const API_BASE = window.__CELERIS_APP_CONFIG__?.apiBase ?? "api/";
+const CHAT_URL = new URL("chat", new URL(API_BASE, location.href));
+
+// Best effort: make the browser establish DNS/TLS and cache the CORS preflight
+// before the first user action. A compatible application server can use this author-issued
+// OPTIONS as a signal to warm its own connection to Celeris with /echo.
+if (window.__CELERIS_APP_CONFIG__?.prewarm) {
+  fetch(CHAT_URL, {
+    method: "OPTIONS",
+    mode: "cors",
+    credentials: "omit",
+    headers: {
+      "content-type": "application/json",
+      "x-celeris-warmup": "1",
+    },
+  }).catch(() => {});
+}
 
 function messagesForRequest() {
-  const config = window.__CELERIS_DEMO__;
-  if (!config) return messages;
-
+  const config = window.__CELERIS_APP_CONFIG__ ?? {};
   const selected = messages.slice(-(config.maxMessages ?? 8));
   const maxBodyBytes = config.maxBodyBytes ?? 7000;
   while (
@@ -74,8 +87,7 @@ async function send(text) {
 
   const headers = { "content-type": "application/json" };
   // In-memory only: read the field on each send, never store elsewhere. The
-  // field is absent when the page runs against a shared proxy that only ever
-  // uses its own key.
+  // A deployment that owns credentials outside the page may omit the field.
   const userKey = apiKeyInput?.value.trim() ?? "";
   if (userKey) headers["x-user-api-key"] = userKey;
 
@@ -84,7 +96,7 @@ async function send(text) {
   let reply = "";
 
   try {
-    const response = await fetch(new URL("chat", new URL(API_BASE, location.href)), {
+    const response = await fetch(CHAT_URL, {
       method: "POST",
       headers,
       body: JSON.stringify({ messages: messagesForRequest() }),
