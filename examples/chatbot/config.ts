@@ -1,9 +1,8 @@
 // Endpoint + credential resolution, kept in one place on purpose.
 //
 // The web client never talks to Celeris directly: it talks to this server,
-// which holds the credential. That is exactly the shape a future hosted demo
-// takes, swap this module's env lookup for a shared low-RPS proxy key or a
-// workspace-aware (Cognito-backed) key lookup and nothing else changes.
+// which holds the credential. Another deployment can replace this module's
+// environment lookup without changing the browser application.
 //
 // Credential precedence per request:
 //   1. A user-supplied key forwarded by the browser (in-memory only, sent as

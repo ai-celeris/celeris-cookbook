@@ -85,7 +85,7 @@ jobs:
         run: npm test
 
   typescript:
-    name: TypeScript examples and demo builds
+    name: TypeScript application examples
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -102,20 +102,11 @@ jobs:
         run: |
           npm install
           npm run typecheck
-      # dist/ is ignored. Prove the docs deployment can build every embedded
-      # page directly from this revision's example source, including installing
-      # any build-only dependencies owned by an example.
-      - name: Build demos from source
-        run: node demos/build.mjs
-
-      - name: Test demo build output
-        run: node --test demos/build.test.mjs
-
       - name: Install browser test dependencies
         run: npm ci
       - name: Install Playwright Chromium
         run: npm exec playwright install --with-deps chromium
-      - name: Test embedded demos in a docs-style host
+      - name: Test browser applications
         run: npm run test:e2e
 
   nextjs:

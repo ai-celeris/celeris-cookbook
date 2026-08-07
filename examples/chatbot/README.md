@@ -41,15 +41,15 @@ npm start
   time-to-first-token / total time / chars-per-second in the browser, where
   the numbers actually matter.
 
-## Credential seams (for hosted demos)
+## Credential and endpoint seams
 
 This example is built to run locally on your own key, but the credential path
-is deliberately pluggable, `config.ts` is the only place that decides whose
+is deliberately pluggable: `config.ts` is the only place that decides whose
 key a request runs on:
 
 1. **Server key (default)**: from `CELERIS_API_KEY` in the server's
-   environment. A hosted demo swaps this for a shared, low-rate-limit proxy
-   key. That is why the UI treats **429 as a first-class "rate limited,
+   environment. A deployment may instead use a shared, low-rate-limit key.
+   That is why the UI treats **429 as a first-class "rate limited,
    try again shortly" state** with retry guidance, not a generic error.
 2. **User-supplied key**: expand *"Use your own API key"* in the UI to run
    requests on your key instead. It is kept in browser memory only, sent per
@@ -57,11 +57,11 @@ key a request runs on:
 3. **Workspace key (future)**: a login-aware proxy can resolve the key from
    the user's workspace; that slot is the same `resolveUpstream` seam.
 
-There is a matching seam on the endpoint side. `public/app.js` reads
-`window.__CELERIS_DEMO__?.apiBase`, defaulting to this server's own `api/`
+There is a matching seam on the endpoint side. `public/app.js` reads an optional
+`window.__CELERIS_APP_CONFIG__?.apiBase`, defaulting to this server's own `api/`
 route, so running the example yourself leaves everything as described above.
-The interactive version embedded in the published cookbook page sets it to a
-shared, rate-limited proxy instead, and drops the user-supplied key panel.
+When a host also sets `prewarm: true`, the page issues a best-effort startup
+`OPTIONS` to establish its connection and CORS cache before the first prompt.
 
 ## Type checking
 

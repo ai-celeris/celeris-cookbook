@@ -24,7 +24,7 @@ npm start
 ```
 
 Type a description ("a US phone number with optional area code in
-parentheses"). About half a second after you stop typing, the regex appears,
+parentheses"). About a fifth of a second after you stop typing, synthesis starts,
 and the test strings below re-check themselves against it.
 
 ## Measured results
@@ -45,7 +45,7 @@ work at all; nobody waits that long mid-keystroke.
 
 ## How it works
 
-- **Debounce and cancel.** The browser waits 400 ms after the last
+- **Debounce and cancel.** The browser waits 200 ms after the last
   keystroke, then calls the server. A new keystroke aborts any in-flight
   request, so only the latest description ever renders.
 - **Deterministic checking in the browser.** The model proposes; the browser
@@ -58,13 +58,16 @@ work at all; nobody waits that long mid-keystroke.
   is invalid JSON, so the parser retries with lone backslashes doubled.
 - **Same credential seam as the chatbot example.** The browser only talks to
   the local server; `config.ts` resolves the endpoint and key from the
-  environment, with an optional per-request user key header. A future hosted
-  demo swaps that one module.
-- **An endpoint seam beside it.** `public/app.js` reads
-  `window.__CELERIS_DEMO__?.apiBase`, defaulting to this server's own `api/`
-  route, so running the example yourself changes nothing. The interactive
-  version embedded in the published cookbook page sets it to a shared,
-  rate-limited proxy that answers with the same JSON shape.
+  environment, with an optional per-request user key header. Another deployment
+  can replace that one module without changing the browser application.
+- **An endpoint seam beside it.** `public/app.js` reads an optional
+  `window.__CELERIS_APP_CONFIG__?.apiBase`, defaulting to this server's own `api/`
+  route. Any host can inject another API-compatible endpoint without changing
+  the application.
+- **Prewarm before intent.** When a host sets `prewarm: true`, the page sends a
+  best-effort `OPTIONS` during startup. That establishes the browser connection
+  and CORS cache while the user is still reading; a server can use the signal
+  to warm its Celeris connection with `/echo` too.
 
 ## Where this pattern fits
 
