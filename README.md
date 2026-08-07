@@ -25,6 +25,20 @@ The global endpoint is recommended for most applications. Use
 to prefer US East. The OpenAI SDK's `OPENAI_BASE_URL` and `OPENAI_API_KEY`
 work as fallbacks.
 
+### Building the browser apps
+
+The browser-based recipes can also be built as ordinary static applications:
+
+```sh docs-e2e=skip
+npm run build:apps
+# or build one recipe
+npm run build:apps -- chatbot
+```
+
+The command writes ignored output to `demos/dist/<name>/`. It contains no
+hosting configuration; deploy it behind the matching example server or let
+your own hosting pipeline adapt it.
+
 ## The Celeris token window
 
 Celeris requests have an **8192-token total window**:
@@ -78,6 +92,7 @@ validation and budgeting helpers.
 | `registry.yaml` | Index of examples: title, slug, topic, description, tags, authors, date. The website builds its topic-grouped sidebar from this. |
 | `authors.yaml` | Optional display metadata for authors (falls back to GitHub profile). |
 | `examples/` | One directory per example: a notebook or a mini-app with a README. |
+| `demos/build.mjs` | Source-only build entry point for the browser application recipes. |
 | `scripts/` | Registry validation (`scripts/validate.py`). |
 
 ## Publishing

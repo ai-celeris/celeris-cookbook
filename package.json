@@ -2,6 +2,8 @@
   "name": "celeris-cookbook-checks",
   "private": true,
   "scripts": {
+    "build:apps": "node demos/build.mjs",
+    "test:apps": "node --test demos/build.test.mjs",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
