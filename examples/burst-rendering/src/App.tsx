@@ -2,7 +2,7 @@ import { useState } from "react";
 import BurstReply, { type BurstMode } from "./BurstReply";
 
 // Demo page: simulate a reply landing whole after ~300 ms (the shape of a
-// real celeris-1 response), rendered three ways side by side.
+// real Celeris-1 response), rendered three ways side by side.
 
 const REPLY =
   "Your order shipped yesterday and is on track for delivery on Thursday. " +
@@ -46,7 +46,7 @@ export default function App() {
     <main>
       <h1>Rendering a one-burst reply</h1>
       <p className="intro">
-        celeris-1 delivers the whole reply at once, typically in about 300 ms.
+        Celeris-1 delivers the whole reply at once, typically in about 300 ms.
         Press deliver and compare three ways of putting that on screen.
       </p>
       <button onClick={deliver} disabled={waiting}>

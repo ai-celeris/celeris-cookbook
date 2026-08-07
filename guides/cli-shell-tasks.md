@@ -3,7 +3,7 @@
 The shell is where latency pays off most. A command that answers in a few
 hundred milliseconds feels like part of the pipeline; a command that takes
 five seconds breaks your flow, and a per-line loop over a thousand lines
-becomes lunch. celeris-1 returns small completions fast enough that semantic
+becomes lunch. Celeris-1 returns small completions fast enough that semantic
 operations (classify, extract, rewrite, summarize) can sit inside ordinary
 shell one-liners next to `grep` and `jq`.
 

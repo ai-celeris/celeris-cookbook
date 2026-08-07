@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-// Renders a reply that arrived whole, the way celeris-1 delivers. Three
+// Renders a reply that arrived whole, the way Celeris-1 delivers. Three
 // treatments:
 //
 //   instant:    show the full reply the moment it lands. The honest default.

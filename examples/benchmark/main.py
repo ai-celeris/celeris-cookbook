@@ -5,7 +5,7 @@ Run a small built-in task set (summarize / extract-JSON / classify /
 short-answer) against your own workspace and get a latency + reliability +
 correctness report you can paste anywhere (the summary is Markdown).
 
-Measures per request: time-to-first-token and total latency (celeris-1 is a
+Measures per request: time-to-first-token and total latency (Celeris-1 is a
 diffusion model that usually delivers the whole reply in one burst, so TTFT
 tends to equal total, it is measured anyway), throttles (429s), retries,
 transport/HTTP errors, empty outputs, and truncation (finish_reason=length).
@@ -83,7 +83,7 @@ EXTRACT_PROMPTS = [
 
 # NOTE on phrasing: prompts that demand a BARE single-word/number answer
 # ("Reply with just the number") frequently return an EMPTY completion from
-# celeris-1 (completion_tokens=1, finish_reason=stop). Sentence-eliciting
+# Celeris-1 (completion_tokens=1, finish_reason=stop). Sentence-eliciting
 # phrasings answer reliably, so the tasks use those; the empty-output counter
 # still catches the defect whenever it occurs.
 
@@ -272,7 +272,7 @@ def summarize(samples: list, elapsed_s: float) -> str:
             score = "n/a (no objective check)"
         lines.append(f"| {category} | {len(rows)} | {sum(1 for s in checked if s.correct)} | {score} |" if checked else f"| {category} | {len(rows)} | - | {score} |")
     lines.append("")
-    lines.append("_TTFT ≈ total is expected: celeris-1 is a diffusion model and usually delivers the whole reply in one burst._")
+    lines.append("_TTFT ≈ total is expected: Celeris-1 is a diffusion model and usually delivers the whole reply in one burst._")
     return "\n".join(lines)
 
 

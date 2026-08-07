@@ -1,9 +1,9 @@
 # The cascade: fast model first, slow model when needed
 
-celeris-1 is a general purpose model that answers every request quickly and
+Celeris-1 is a general purpose model that answers every request quickly and
 handles most of them outright. For the occasional request where you want to
 trade speed for maximum depth, a slower, more intelligent model can help,
-and you do not have to choose once for your whole product. Put celeris-1 in
+and you do not have to choose once for your whole product. Put Celeris-1 in
 the hot path, return its answer immediately, and involve the slower model
 only for the cases that need it, off the critical path where possible.
 
@@ -14,7 +14,7 @@ only for the cases that need it, off the critical path where possible.
                |
                v
      +-------------------+   answer in ~300 ms
-     |   celeris-1       | ----------------------> user sees a result now
+     |   Celeris-1       | ----------------------> user sees a result now
      |   (hot path)      |
      +-------------------+
                |

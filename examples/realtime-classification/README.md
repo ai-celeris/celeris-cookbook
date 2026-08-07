@@ -7,7 +7,7 @@ hundred milliseconds, classification can sit directly in the request path:
 the ticket is routed before the confirmation page renders.
 
 This example routes tickets to one of four teams (billing, technical,
-account, general) with celeris-1 and measures what that costs in latency.
+account, general) with Celeris-1 and measures what that costs in latency.
 
 ## Run it
 
@@ -41,7 +41,7 @@ between "route it while the page loads" and "route it later in a queue".
 ## How it works
 
 - One prompt per ticket asks which team should handle it and requests a
-  short sentence back. celeris-1 answers bare one-word prompts unreliably
+  short sentence back. Celeris-1 answers bare one-word prompts unreliably
   (they often come back empty), so the parser pulls the route name out of a
   sentence instead. First route mentioned wins.
 - This deliberately short classification uses `max_tokens=256`; see the

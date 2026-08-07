@@ -6,7 +6,7 @@ number of steps. At 2 seconds per step, a 10-step agent takes 20 seconds and
 users give up. At a few hundred milliseconds per step, the same agent
 finishes in seconds and can live inside an interactive product.
 
-This example runs a small order-support agent on celeris-1, measures wall
+This example runs a small order-support agent on Celeris-1, measures wall
 clock per step, and shows how the totals compound.
 
 ## Run it
