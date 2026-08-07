@@ -1,10 +1,10 @@
-# Understanding latency with celeris-1
+# Understanding latency with Celeris-1
 
 This guide explains how to measure, budget, and design for latency on the
 Celeris API. The examples in this cookbook link here instead of repeating
 it. Two facts drive everything else:
 
-1. celeris-1 is a diffusion model. It generates the whole reply in parallel
+1. Celeris-1 is a diffusion model. It generates the whole reply in parallel
    and usually delivers it as **one burst**, not token by token.
 2. Requests have an **8192-token total window**. An explicit `max_tokens` must
    be a positive multiple of **256**; when omitted, it defaults to **2048**.
@@ -19,7 +19,7 @@ it. Two facts drive everything else:
 
 On token-by-token models these three numbers tell different stories: TTFT
 sets how soon something appears, tokens per second sets how long the user
-watches text arrive. On celeris-1 they collapse: **TTFT equals total** in
+watches text arrive. On Celeris-1 they collapse: **TTFT equals total** in
 practice, and tokens per second over a near-zero streaming window is not a
 meaningful number.
 

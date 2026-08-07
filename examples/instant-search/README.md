@@ -5,7 +5,7 @@ usually adds a second or more before retrieval even starts, so most teams
 skip it and ship worse results. At around 300 ms per rewrite, it fits in
 front of every search, even per keystroke pause.
 
-This example puts a celeris-1 rewrite in front of a deliberately tiny
+This example puts a Celeris-1 rewrite in front of a deliberately tiny
 in-memory keyword index. The index is toy; the interesting part is what the
 rewrite does to result quality and what it costs in latency.
 

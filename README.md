@@ -3,7 +3,7 @@
 Example code and guides for building with the [Celeris](https://celeris.ai)
 API. Published at [docs.celeris.ai/cookbook](https://docs.celeris.ai/cookbook/).
 
-Celeris serves **celeris-1**, a low-latency diffusion LLM, through an
+Celeris serves **Celeris-1**, a low-latency diffusion LLM, through an
 OpenAI-compatible API: the official OpenAI SDKs *are* the Celeris clients,
 pointed at your Celeris base URL. Each example lives in `examples/<name>/`
 as a Jupyter notebook or a runnable mini-app, every example is standalone
@@ -39,11 +39,11 @@ validation and budgeting helpers.
 
 ## Guides
 
-- [Understanding latency with celeris-1](guides/latency.md): metrics, the
+- [Understanding latency with Celeris-1](guides/latency.md): metrics, the
   one-burst delivery model, and token-window budgeting. Examples link here
   instead of repeating the rules.
 - [The cascade, fast model first](guides/cascade.md): the reference
-  architecture for pairing celeris-1 with a slower, more intelligent model.
+  architecture for pairing Celeris-1 with a slower, more intelligent model.
 - [Framework compatibility](guides/compatibility.md): verified snippets for
   common SDKs and frameworks.
 - [The voice turn budget](guides/voice-turn.md): the measured reply step

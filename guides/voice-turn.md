@@ -8,10 +8,10 @@ turn-taking in conversation"), and anything much past a second feels like
 talking to a machine. The language model step is usually the budget's
 biggest line item, and it is the one you can change most easily.
 
-This guide has one measured component (the celeris-1 reply step) and cites
+This guide has one measured component (the Celeris-1 reply step) and cites
 the rest. It uses no speech dependencies; it is a budget, not a voice app.
 
-## Measured: the reply step on celeris-1
+## Measured: the reply step on Celeris-1
 
 Ten realistic voice turns (timers, lookups, small talk, a translation),
 `max_tokens` 256, one to two sentence replies, run live on 2026-07-22:
@@ -23,7 +23,7 @@ p50 288 ms, mean 363 ms, min 270 ms, max 1020 ms (n=10)
 The 1020 ms outlier was the first request on a cold connection; the nine
 warm turns sat between 270 and 322 ms. Reply quality was appropriate for a
 voice surface: short, direct, and honest about missing tool access. Because
-celeris-1 delivers the whole reply as one burst (see the
+Celeris-1 delivers the whole reply as one burst (see the
 [latency guide](latency.md)), text to speech can start on the complete
 sentence immediately; there is no token trickle to wait out.
 
@@ -45,7 +45,7 @@ measurements, and your stack will vary:
 
 ## The budget, both ways
 
-| step | typical with a large LLM | with celeris-1 (measured) |
+| step | typical with a large LLM | with Celeris-1 (measured) |
 | --- | --- | --- |
 | Speech to text finalization (cited) | 150 to 400 ms | 150 to 400 ms |
 | LLM reply | 1000 to 1500 ms (cited) | **288 ms p50 (measured)** |
@@ -60,12 +60,12 @@ answers about as fast as a person.
 
 Most voice turns are exactly the shapes a fast model handles well:
 confirmations, device commands, list edits, timers, short factual answers,
-and routing to tools. Keep those on celeris-1 and the conversation stays
+and routing to tools. Keep those on Celeris-1 and the conversation stays
 conversational.
 
 For the occasional turn where you want maximum reasoning depth (multi-step
 planning, long reasoning), use the [cascade pattern](cascade.md): answer
-immediately with celeris-1 ("let me work that out") or route the turn to a
+immediately with Celeris-1 ("let me work that out") or route the turn to a
 slower, more intelligent model and spend the seconds only where they buy
 something. If you are unsure
 which of your turns fit, run them through the

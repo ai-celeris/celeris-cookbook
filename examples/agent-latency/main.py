@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""How per-step latency compounds in agents, measured on celeris-1.
+"""How per-step latency compounds in agents, measured on Celeris-1.
 
 Runs a small order-support agent (a JSON tool loop over built-in data),
 measures wall clock per model step, then shows how per-step latency

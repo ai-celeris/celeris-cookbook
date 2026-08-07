@@ -1,6 +1,6 @@
 # Alert triage agent
 
-A multi-step **tool-use agent loop** on `celeris-1`: given a production alert,
+A multi-step **tool-use agent loop** on Celeris-1: given a production alert,
 the agent investigates by calling tools, `get_alert`, `search_runbooks`,
 `check_recent_deploys`, over synthetic fixture data, reasons across the
 results, and emits a structured verdict:
@@ -57,7 +57,7 @@ thing that changes; the tools and verdict schema stay the same.
 Concretely: the current Celeris serving deployment rejects the `tools`
 parameter (`400: "auto" tool choice requires --enable-auto-tool-choice and
 --tool-call-parser to be set`), so prompt-driven is the pattern that works
-today. The model follows it well, in smoke testing, celeris-1 completed the
+today. The model follows it well, in smoke testing, Celeris-1 completed the
 triage in 4 tool turns with a correct, well-evidenced verdict on every run;
 the occasional truncated JSON reply is exactly what the corrective-nudge
 branch in the loop is for.

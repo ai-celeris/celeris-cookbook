@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Is celeris-1 a fit for YOUR task? Bring your prompts and find out.
+"""Is Celeris-1 a fit for YOUR task? Bring your prompts and find out.
 
-Reads a JSONL file of tasks, runs each against celeris-1 N times, and
+Reads a JSONL file of tasks, runs each against Celeris-1 N times, and
 reports a task-fit verdict: per-task quality, latency percentiles, empty and
 truncation counts, and a plain-language summary. The tool is built to tell
 the truth in both directions; a poor-fit result is as useful as a good one.

@@ -3,7 +3,7 @@
 "Is a fast, moderate-intelligence model enough for my task?" is the right
 question, and nobody should answer it with vibes. This tool answers it with
 your own prompts: drop a JSONL file of tasks with objective checkers, run
-them repeatedly against celeris-1, and read a per-task verdict. It is built
+them repeatedly against Celeris-1, and read a per-task verdict. It is built
 to tell the truth in both directions; a poor-fit answer saves you a bad
 launch, a strong-fit answer saves you a larger bill.
 

@@ -138,7 +138,7 @@ async function send(text) {
     const total = performance.now() - started;
     const ttft = firstTokenAt === null ? total : firstTokenAt - started;
     const streamMs = total - ttft;
-    // celeris-1 is a diffusion model: it usually generates the whole reply in
+    // Celeris-1 is a diffusion model: it usually generates the whole reply in
     // parallel and the stream arrives as one burst, so a chars/s figure over
     // the (near-zero) stream window is meaningless. Only show a rate when the
     // delivery was actually spread out.

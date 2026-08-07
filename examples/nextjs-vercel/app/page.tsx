@@ -35,7 +35,7 @@ export default function Home() {
         <input
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Ask celeris-1 something…"
+          placeholder="Ask Celeris-1 something…"
           style={{ width: "70%", padding: "0.5rem" }}
         />
         <button disabled={busy || !prompt.trim()} style={{ padding: "0.5rem 1rem", marginLeft: "0.5rem" }}>

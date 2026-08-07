@@ -7,7 +7,7 @@ Markdown report of latency, reliability, and correctness.
 
 What it measures per request:
 
-- **Latency**: time-to-first-token and total (p50/p90/p99/mean). celeris-1
+- **Latency**: time-to-first-token and total (p50/p90/p99/mean). Celeris-1
   usually delivers the whole reply in one burst, so TTFT equals total in
   practice (see the [latency guide](../../guides/latency.md)).
 - **Reliability**: throttles (429s, retried with backoff and counted),
@@ -38,7 +38,7 @@ test. 429s are retried (up to twice, with backoff) and reported.
 A real run against a live workspace (2026-07-21, concurrency 2):
 
 ```text docs-e2e=skip
-model celeris-1 · 48 requests (3x16 tasks) · concurrency 2
+model Celeris-1 · 48 requests (3x16 tasks) · concurrency 2
 
 completed 48/48 requests
 ```
@@ -60,13 +60,13 @@ completed 48/48 requests
 > | classify | 12 | 10 | 10/12 (83%) |
 > | short-answer | 12 | 12 | 12/12 (100%) |
 >
-> _TTFT ≈ total is expected: celeris-1 is a diffusion model and usually
+> _TTFT ≈ total is expected: Celeris-1 is a diffusion model and usually
 > delivers the whole reply in one burst._
 
 ## Prompt-phrasing note (worth reading before you edit the tasks)
 
 Prompts that demand a **bare single-word or single-number answer** ("Reply
-with just the number") frequently return an *empty* completion from celeris-1
+with just the number") frequently return an *empty* completion from Celeris-1
 (`completion_tokens=1`, `finish_reason=stop`). Sentence-eliciting phrasings
 ("Answer in a short sentence") respond reliably, so the built-in tasks use
 those, and the empty-output counter surfaces the defect whenever it shows up

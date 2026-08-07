@@ -120,7 +120,7 @@
   path: examples/agent-latency/README.md
   slug: agent-latency
   topic: agents
-  description: Why per-step speed decides whether an agent is interactive. A measured multi-step tool loop on celeris-1, and a table showing how per-step latency compounds over N steps.
+  description: Why per-step speed decides whether an agent is interactive. A measured multi-step tool loop on Celeris-1, and a table showing how per-step latency compounds over N steps.
   date: 2026-07-21
   authors:
     - celeris
@@ -143,7 +143,7 @@
     - latency
     - typescript
 
-- title: Understanding latency with celeris-1
+- title: Understanding latency with Celeris-1
   path: guides/latency.md
   slug: latency
   topic: evals-and-optimization
@@ -165,7 +165,7 @@
   topic: agents
   kind: guide
   order: 3
-  description: A reference architecture. celeris-1 answers in the hot path in about 300 ms; a slower, more intelligent model refines or handles escalations asynchronously. When to use which, with a runnable sketch.
+  description: A reference architecture. Celeris-1 answers in the hot path in about 300 ms; a slower, more intelligent model refines or handles escalations asynchronously. When to use which, with a runnable sketch.
   date: 2026-07-21
   authors:
     - celeris
@@ -246,7 +246,7 @@
   topic: interactive-apps
   kind: guide
   order: 5
-  description: Where the milliseconds go in a voice agent turn. Measured celeris-1 reply step at 288 ms median beside cited ranges for speech to text and text to speech, and the total both ways.
+  description: Where the milliseconds go in a voice agent turn. Measured Celeris-1 reply step at 288 ms median beside cited ranges for speech to text and text to speech, and the total both ways.
   date: 2026-07-22
   authors:
     - celeris

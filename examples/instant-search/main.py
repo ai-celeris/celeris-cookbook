@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Query understanding in front of search, fast enough to run per keystroke pause.
 
-Rewrites a natural-language query into search keywords with celeris-1, then
+Rewrites a natural-language query into search keywords with Celeris-1, then
 runs both the original and rewritten query against a toy in-memory index.
 The index is deliberately simple keyword matching; the model call is the
 point. Measures rewrite latency per query.

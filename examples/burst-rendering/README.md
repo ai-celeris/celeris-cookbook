@@ -1,7 +1,7 @@
 # Rendering a one-burst reply
 
 Chat UIs grew up around models that trickle tokens, so the standard kit is
-streaming text, blinking cursors, and progress spinners. celeris-1 delivers
+streaming text, blinking cursors, and progress spinners. Celeris-1 delivers
 the whole reply at once, typically in about 300 ms, and that kit becomes the
 wrong mental model: there is nothing to trickle, and a token-by-token
 animation would slow down text that already arrived.

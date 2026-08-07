@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Real-time ticket routing with celeris-1.
+"""Real-time ticket routing with Celeris-1.
 
 Routes support tickets to the right team fast enough to sit inside an
 interactive request path. Measures per-request latency and short-burst
@@ -46,7 +46,7 @@ def celeris_base_url() -> str:
 
 
 def build_prompt(ticket: str) -> str:
-    # Sentence-style answers are reliable on celeris-1. Prompts that demand a
+    # Sentence-style answers are reliable on Celeris-1. Prompts that demand a
     # bare one-word answer often come back empty, so ask for a short sentence
     # and parse the route out of it.
     return (
