@@ -20,17 +20,17 @@
     - token-budgeting
     - streaming
 
-- title: Streaming chatbot
+- title: Chatbot with model timing
   path: examples/chatbot/README.md
   slug: chatbot
   topic: interactive-apps
   order: 2
-  description: See the speed in a browser. A web chatbot that measures time-to-first-token on every reply, built as a small TypeScript server plus a vanilla JS UI.
+  description: See the speed in a browser. A web chatbot that shows model processing time from Server-Timing and end-to-end latency on every reply, built as a small TypeScript server plus a vanilla JS UI.
   date: 2026-07-21
   authors:
     - celeris
   tags:
-    - streaming
+    - server-timing
     - chat-completions
     - typescript
     - latency

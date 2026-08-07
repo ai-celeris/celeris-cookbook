@@ -12,6 +12,7 @@ test("the chatbot is fast, bounded, isolated, and renders replies as text", asyn
   }
 
   await expect(page.locator(".bubble.assistant").last()).toContainText("Fast reply <script>");
+  await expect(page.locator(".stats").last()).toHaveText(/model time 12 ms · total \d+ ms/);
   expect(await page.locator("body").evaluate(() => window.__demoXss)).toBeUndefined();
   const body = await page.request.get("/__last-chat").then((response) => response.json());
   expect(body.messages.length).toBeLessThanOrEqual(8);
