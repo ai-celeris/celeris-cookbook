@@ -102,6 +102,8 @@ jobs:
         run: |
           npm install
           npm run typecheck
+      - name: Build browser application recipes from source
+        run: npm run test:apps
       - name: Install browser test dependencies
         run: npm ci
       - name: Install Playwright Chromium
