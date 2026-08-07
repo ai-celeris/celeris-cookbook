@@ -91,6 +91,7 @@ async function handleChat(request: IncomingMessage, response: ServerResponse): P
           messages,
           max_tokens: maxTokens,
           temperature: 0.3,
+          stream: false,
         })
         .withResponse();
 

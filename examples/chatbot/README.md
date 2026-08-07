@@ -38,10 +38,10 @@ npm start
 - **`public/app.js`** renders the reply and shows model processing time from
   `Server-Timing` alongside total time measured in the browser.
 
-The upstream request uses a complete response intentionally. For complete
-responses, the API's `processing` duration includes prompt processing and
-generation. Streaming headers arrive before generation, so their `processing`
-duration cannot be presented as model time.
+The upstream request explicitly sets `stream: false`. For complete responses,
+the API's `processing` duration includes prompt processing and generation.
+Streaming headers arrive before generation, so their `processing` duration
+cannot be presented as model time.
 
 ## Credential and endpoint seams
 
