@@ -71,7 +71,7 @@ validation and budgeting helpers.
 | Example | What it shows |
 | --- | --- |
 | [`getting-started`](examples/getting-started) | First chat completion with the OpenAI SDK, token-window budgeting, streaming. |
-| [`chatbot`](examples/chatbot) | Streaming web chatbot measuring time-to-first-token, the latency showcase. |
+| [`chatbot`](examples/chatbot) | Web chatbot showing model processing time for every response. |
 | [`alert-triage-agent`](examples/alert-triage-agent) | Multi-step tool-use agent loop with a structured verdict, inside the 8192-token window. |
 | [`nextjs-vercel`](examples/nextjs-vercel) | Minimal full-stack Next.js deploy with the key in Vercel's managed env store. |
 | [`fastapi-fly`](examples/fastapi-fly) | Minimal FastAPI deploy with the key in Fly.io's encrypted secret store. |

@@ -1,9 +1,9 @@
-// Minimal streaming chatbot server for the Celeris API.
+// Minimal chatbot server for the Celeris API.
 //
-// Serves the static UI from public/ and streams chat completions through
-// POST /api/chat using the OpenAI SDK pointed at the Celeris base URL. The
-// browser measures time-to-first-token itself, the point of this example is
-// seeing Celeris's latency, so the server adds as little as possible on top.
+// Serves the static UI from public/ and proxies chat completions through
+// POST /api/chat using the OpenAI SDK pointed at the Celeris base URL. Complete
+// responses include generation in Server-Timing, so the browser can show the
+// model's own processing time separately from end-to-end latency.
 //
 //   npm install
 //   export CELERIS_BASE_URL="https://inference.celeris.ai/celeris-1/v1"
@@ -84,24 +84,26 @@ async function handleChat(request: IncomingMessage, response: ServerResponse): P
   const messages = fitConversation(SYSTEM_PROMPT, history, maxTokens);
 
   try {
-    const stream = await client.chat.completions.create({
-      model: upstream.model,
-      messages,
-      max_tokens: maxTokens,
-      temperature: 0.3,
-      stream: true,
-    });
+    const { data: completion, response: upstreamResponse } =
+      await client.chat.completions
+        .create({
+          model: upstream.model,
+          messages,
+          max_tokens: maxTokens,
+          temperature: 0.3,
+          stream: false,
+        })
+        .withResponse();
 
-    response.writeHead(200, {
+    const serverTiming = upstreamResponse.headers.get("server-timing");
+    const headers: Record<string, string> = {
       "content-type": "text/plain; charset=utf-8",
       "cache-control": "no-store",
-      "x-accel-buffering": "no",
-    });
-    for await (const chunk of stream) {
-      const delta = chunk.choices[0]?.delta?.content;
-      if (delta) response.write(delta);
-    }
-    response.end();
+    };
+    if (serverTiming) headers["server-timing"] = serverTiming;
+
+    response.writeHead(200, headers);
+    response.end(completion.choices[0]?.message.content ?? "");
   } catch (error) {
     if (response.headersSent) {
       response.end();

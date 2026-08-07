@@ -1,15 +1,13 @@
-# Streaming chatbot
+# Chatbot with model timing
 
 A small web chatbot on Celeris-1 built to show off the thing Celeris is for:
-**speed**. The browser measures time-to-first-token and total latency for
-every reply and prints them under each message. On a warm connection a full
-multi-sentence reply typically lands in **~250-300 ms end to end**, and
-because Celeris-1 is a diffusion model that generates the whole reply in
-parallel, the stream usually arrives as a single burst (first token ≈ full
-response).
+**speed**. Every reply shows the model's server-side processing time from the
+API's `Server-Timing` header, followed by total browser-observed latency. This
+keeps the value Celeris controls separate from network time, which varies with
+the user's location and connection.
 
 The stack is deliberately tiny: a vanilla JS page served by a ~150-line
-Node/TypeScript server that streams chat completions through the
+Node/TypeScript server that proxies chat completions through the
 [OpenAI SDK for JS](https://github.com/openai/openai-node) pointed at the
 Celeris base URL.
 
@@ -29,17 +27,21 @@ npm start
 ## How it works
 
 - **`server.ts`** serves `public/` and exposes `POST /api/chat`: it takes the
-  conversation so far, fits it into the model's input budget, and streams the
-  completion back as plain text chunks.
+  conversation so far, fits it into the model's input budget, and returns the
+  completion as text while forwarding the API's `Server-Timing` header.
 - **`budget.ts`** is the Celeris token-window math (rules in the
   [latency guide](../../guides/latency.md)). `fitConversation` keeps the system prompt
   and the newest turns, dropping the oldest history first, so long chats
   keep working.
 - **`config.ts`** resolves the endpoint and credential in one place. The
   browser never holds the server's key.
-- **`public/app.js`** renders the stream as it arrives and computes
-  time-to-first-token / total time / chars-per-second in the browser, where
-  the numbers actually matter.
+- **`public/app.js`** renders the reply and shows model processing time from
+  `Server-Timing` alongside total time measured in the browser.
+
+The upstream request explicitly sets `stream: false`. For complete responses,
+the API's `processing` duration includes prompt processing and generation.
+Streaming headers arrive before generation, so their `processing` duration
+cannot be presented as model time.
 
 ## Credential and endpoint seams
 

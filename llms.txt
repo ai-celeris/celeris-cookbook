@@ -23,8 +23,8 @@ set. The index of examples is registry.yaml.
 
 - [Getting started](examples/getting-started/getting-started.ipynb): first
   request with the OpenAI SDK, budgeting helpers, burst timing.
-- [Streaming chatbot](examples/chatbot/README.md): web chat measuring
-  time-to-first-token in the browser.
+- [Chatbot with model timing](examples/chatbot/README.md): web chat showing
+  model processing time and end-to-end latency for every response.
 - [Instant regex](examples/instant-suggest/README.md): artifact synthesized
   on every typing pause with in-browser validation.
 - [Real-time ticket routing](examples/realtime-classification/README.md):

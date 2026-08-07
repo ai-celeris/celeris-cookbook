@@ -2,7 +2,7 @@
   "name": "celeris-cookbook-chatbot",
   "private": true,
   "type": "module",
-  "description": "Streaming chatbot showcasing Celeris latency, using the OpenAI SDK for JS.",
+  "description": "Chatbot showcasing Celeris model time, using the OpenAI SDK for JS.",
   "scripts": {
     "start": "tsx server.ts",
     "typecheck": "tsc --noEmit"

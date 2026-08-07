@@ -1,6 +1,6 @@
-// Chat UI: streams from the local server and measures latency in the browser
-// (time-to-first-token is the showcase). Rate limits (429) are a first-class
-// friendly state, not an error: deployments may deliberately use a low-RPS key.
+// Chat UI: displays Celeris's Server-Timing metric next to browser-observed
+// total latency. Rate limits (429) are a first-class friendly state, not an
+// error: deployments may deliberately use a low-RPS key.
 
 const transcript = document.getElementById("transcript");
 const composer = document.getElementById("composer");
@@ -57,10 +57,14 @@ function addBubble(role) {
   return bubble;
 }
 
-function addStats(text) {
+function addStats(modelMs, totalMs) {
   const stats = document.createElement("div");
   stats.className = "stats";
-  stats.textContent = text;
+  const modelTime = document.createElement("span");
+  modelTime.className = "model-time";
+  modelTime.textContent =
+    modelMs === null ? "model time unavailable" : `model time ${Math.round(modelMs)} ms`;
+  stats.append(modelTime, ` · total ${Math.round(totalMs)} ms`);
   transcript.appendChild(stats);
   transcript.scrollTop = transcript.scrollHeight;
 }
@@ -73,6 +77,15 @@ function showNotice(text, kind) {
 
 function clearNotice() {
   notice.hidden = true;
+}
+
+function processingDuration(serverTiming) {
+  const match = serverTiming?.match(
+    /(?:^|,)\s*processing\s*;\s*dur\s*=\s*(\d+(?:\.\d+)?)/i,
+  );
+  if (!match) return null;
+  const duration = Number(match[1]);
+  return Number.isFinite(duration) ? duration : null;
 }
 
 async function send(text) {
@@ -92,8 +105,6 @@ async function send(text) {
   if (userKey) headers["x-user-api-key"] = userKey;
 
   const started = performance.now();
-  let firstTokenAt = null;
-  let reply = "";
 
   try {
     const response = await fetch(CHAT_URL, {
@@ -120,35 +131,15 @@ async function send(text) {
       throw new Error(detail.error ?? `HTTP ${response.status}`);
     }
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      if (firstTokenAt === null) {
-        firstTokenAt = performance.now();
-        assistantBubble.classList.remove("pending");
-      }
-      reply += decoder.decode(value, { stream: true });
-      assistantBubble.textContent = reply;
-      transcript.scrollTop = transcript.scrollHeight;
-    }
+    const modelMs = processingDuration(response.headers.get("server-timing"));
+    const reply = await response.text();
+    assistantBubble.classList.remove("pending");
+    assistantBubble.textContent = reply;
+    transcript.scrollTop = transcript.scrollHeight;
 
     messages.push({ role: "assistant", content: reply });
     const total = performance.now() - started;
-    const ttft = firstTokenAt === null ? total : firstTokenAt - started;
-    const streamMs = total - ttft;
-    // Celeris-1 is a diffusion model: it usually generates the whole reply in
-    // parallel and the stream arrives as one burst, so a chars/s figure over
-    // the (near-zero) stream window is meaningless. Only show a rate when the
-    // delivery was actually spread out.
-    const rate =
-      streamMs > 50
-        ? ` · ${Math.round(reply.length / (streamMs / 1000))} chars/s`
-        : ` · ${reply.length} chars in one burst`;
-    addStats(
-      `first token ${Math.round(ttft)} ms · total ${Math.round(total)} ms${rate}`,
-    );
+    addStats(modelMs, total);
   } catch (error) {
     messages.pop();
     userBubble.remove();

@@ -17,7 +17,9 @@ createServer(async (request, response) => {
     const chunks = [];
     for await (const chunk of request) chunks.push(chunk);
     lastChat = JSON.parse(Buffer.concat(chunks).toString("utf8"));
+    await new Promise((resolve) => setTimeout(resolve, 20));
     response.setHeader("content-type", "text/plain; charset=utf-8");
+    response.setHeader("server-timing", "routing;dur=1.2, processing;dur=12.4");
     response.end("Fast reply <script>window.__demoXss = true</script>");
     return;
   }
