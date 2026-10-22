@@ -20,8 +20,7 @@ const API_BASE = window.__CELERIS_APP_CONFIG__?.apiBase ?? "api/";
 const CHAT_URL = new URL("chat", new URL(API_BASE, location.href));
 
 // Best effort: make the browser establish DNS/TLS and cache the CORS preflight
-// before the first user action. A compatible application server can use this author-issued
-// OPTIONS as a signal to warm its own connection to Celeris with /echo.
+// before the first user action.
 if (window.__CELERIS_APP_CONFIG__?.prewarm) {
   fetch(CHAT_URL, {
     method: "OPTIONS",
