@@ -11,8 +11,7 @@ const API_BASE = window.__CELERIS_APP_CONFIG__?.apiBase ?? "api/";
 const SYNTHESIZE_URL = new URL("synthesize", new URL(API_BASE, location.href));
 
 // Prime DNS/TLS and the browser's CORS-preflight cache before the first typing
-// pause. Compatible application servers can use this best-effort signal to call Celeris
-// /echo and warm their own outbound connection without invoking the model.
+// pause. Best effort; failures are ignored.
 if (window.__CELERIS_APP_CONFIG__?.prewarm) {
   fetch(SYNTHESIZE_URL, {
     method: "OPTIONS",

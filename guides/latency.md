@@ -69,29 +69,10 @@ fetch(chatUrl, {
 }).catch(() => {}); // best effort; never block the UI
 ```
 
-If your application has a server, also send an authenticated
-small `POST` to `/<model>/echo` during startup. `/echo` returns the request body,
-does not invoke the model, and does not consume inference quota; it establishes
-the server-to-Celeris connection before the first completion. Apply a
-timeout, deduplicate concurrent warm-ups, and ignore failures. The real request
-remains the source of truth.
-
-```ts docs-e2e=skip
-const modelUrl = baseUrl.replace(/\/v1\/?$/, "");
-
-await fetch(`${modelUrl}/echo`, {
-  method: "POST",
-  headers: {
-    Authorization: `Bearer ${process.env.CELERIS_API_KEY}`,
-    "Content-Type": "text/plain",
-  },
-  body: "warm",
-  signal: AbortSignal.timeout(5000),
-}).catch(() => {});
-```
-
-Keep this authenticated call on your server. Do not put an API key into
-browser JavaScript to prewarm a connection.
+The `OPTIONS` request is answered at the edge and never reaches a model. It
+carries a placeholder `Authorization` value, so no API key goes into browser
+JavaScript. Make the call best effort: ignore failures and deduplicate
+concurrent warm-ups. The real request remains the source of truth.
 
 ## Design for the burst
 

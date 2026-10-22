@@ -66,8 +66,7 @@ work at all; nobody waits that long mid-keystroke.
   the application.
 - **Prewarm before intent.** When a host sets `prewarm: true`, the page sends a
   best-effort `OPTIONS` during startup. That establishes the browser connection
-  and CORS cache while the user is still reading; a server can use the signal
-  to warm its Celeris connection with `/echo` too.
+  and CORS cache while the user is still reading.
 
 ## Where this pattern fits
 
